@@ -185,17 +185,35 @@
             gap: 0.75rem;
             text-decoration: none;
             cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
         }
 
         .logo-img {
-            width: 3.5rem;
-            height: 3.5rem;
-            border-radius: 0.5rem;
+            width: 3rem;
+            height: 3rem;
+            border-radius: 0.75rem;
             object-fit: contain;
         }
 
         .logo-text {
-            display: none;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .logo-text-main {
+            font-size: 1.25rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffffff, #d946ef);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+            letter-spacing: -0.01em;
         }
 
         .nav-links {
@@ -796,6 +814,15 @@
                 display: none;
             }
 
+            .logo-img {
+                width: 2.5rem;
+                height: 2.5rem;
+            }
+
+            .logo-text-main {
+                font-size: 1.1rem;
+            }
+
             .form-group {
                 flex-direction: column;
             }
@@ -872,11 +899,24 @@
 
         @media (min-width: 1024px) {
             .hero {
-                padding: 6rem 0 4rem;
+                padding: 0 2rem;
             }
 
             .content-box {
                 padding: 3rem;
+            }
+
+            .logo-img {
+                width: 3.5rem;
+                height: 3.5rem;
+            }
+
+            .logo-text-main {
+                font-size: 1.5rem;
+            }
+
+            h1 {
+                font-size: 5rem;
             }
         }
 
@@ -915,7 +955,9 @@
             <div class="logo" onclick="showPage('home')">
                 <!-- REPLACE 'logo-placeholder.png' WITH YOUR ACTUAL LOGO FILE PATH -->
                 <img src="https://qoqbdiixztolvtcjdnle.supabase.co/storage/v1/object/sign/betweenus3/betweenus.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9lMTYxZDg1My1iMGRlLTRkNjQtYTQxYS0xNTY5MmFmMGJhNWEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJiZXR3ZWVudXMzL2JldHdlZW51cy5wbmciLCJpYXQiOjE3NjM2NDUwOTYsImV4cCI6MTc1MzE2NDUwOTZ9.aULhfLOqba7Rrf62Np9y8d_b9MVNfsoL1YV7dDWSYGY" alt="Between Us Logo" class="logo-img">
-                <span class="logo-text">Between Us</span>
+                <div class="logo-text">
+                    <span class="logo-text-main">Between Us</span>
+                </div>
             </div>
             <div class="nav-links">
                 <a class="nav-link" onclick="showPage('home')">Home</a>
