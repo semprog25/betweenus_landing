@@ -141,7 +141,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
 
       {/* Features Section */}
       <section className="relative z-10 px-6 py-20 max-w-7xl mx-auto">
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <FeatureCard
             icon={<Shield className="size-8" />}
             title="100% Anonymous"
