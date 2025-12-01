@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Sparkles, Heart, MessageCircle, Shield, Globe, ArrowRight, Check } from 'lucide-react';
+import { Sparkles, Heart, MessageCircle, Shield, Globe, ArrowRight, Check, Smartphone, Apple, Bell } from 'lucide-react';
 import { projectId, publicAnonKey } from '../utils/supabase/info';
 
 interface HomePageProps {
@@ -181,6 +181,57 @@ export function HomePage({ onNavigate }: HomePageProps) {
           <StatCard number="10K+" label="Community Members" />
           <StatCard number="50K+" label="Supportive Messages" />
           <StatCard number="100K+" label="Daily Check-ins" />
+        </div>
+      </section>
+
+      {/* Download Section */}
+      <section className="relative z-10 px-6 py-20 max-w-5xl mx-auto">
+        <div className="relative rounded-3xl p-[1px] bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500">
+          <div className="bg-[#0f0f23] rounded-[23px] p-10 md:p-16 text-center relative overflow-hidden">
+            {/* Background glow effects */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-2/3 h-1/2 bg-purple-500/10 blur-[80px] rounded-full pointer-events-none"></div>
+            
+            <div className="relative z-10 flex flex-col items-center">
+              {/* Badge */}
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-500/10 border border-orange-500/30 mb-8">
+                <Smartphone className="size-4 text-orange-400" />
+                <span className="text-sm font-medium text-orange-300">Mobile Apps</span>
+              </div>
+
+              <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-pink-300 via-purple-300 to-indigo-300 bg-clip-text text-transparent">
+                Download Between Us
+              </h2>
+
+              <p className="text-lg text-gray-300 max-w-2xl mx-auto mb-12">
+                Our mobile apps are coming soon! Join the waitlist to be notified when we launch on iOS and Android.
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-10">
+                {/* iOS Button Dummy */}
+                <button className="flex items-center gap-3 px-6 py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all w-52 justify-center group backdrop-blur-sm">
+                  <Apple className="size-8 fill-white" />
+                  <div className="text-left">
+                    <div className="text-[10px] uppercase tracking-wider text-gray-400">Download on the</div>
+                    <div className="text-base font-bold">App Store</div>
+                  </div>
+                </button>
+
+                {/* Android Button Dummy */}
+                <button className="flex items-center gap-3 px-6 py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all w-52 justify-center group backdrop-blur-sm">
+                  <Smartphone className="size-8 text-white" />
+                  <div className="text-left">
+                    <div className="text-[10px] uppercase tracking-wider text-gray-400">Get it on</div>
+                    <div className="text-base font-bold">Google Play</div>
+                  </div>
+                </button>
+              </div>
+
+              <div className="inline-flex items-center gap-2 text-sm text-purple-200 font-medium">
+                <Bell className="size-4 text-yellow-400 fill-yellow-400" />
+                Coming soon! Thank you for signing up to the waitlist.
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
