@@ -1,4 +1,6 @@
 User-agent: *
 Allow: /
+Disallow: /journal-admin.html
+Disallow: /landing-cms
 
 Sitemap: https://betweenus.fun/sitemap.xml

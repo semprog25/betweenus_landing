@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex,nofollow" />
+  <title>Journal Admin · Between Us</title>
+  <link rel="canonical" href="https://betweenus.fun/journal-admin.html" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.8/dist/umd/supabase.min.js"></script>
+  <style>
+    :root {
+      --bg: #05040a;
+      --panel: rgba(255,255,255,.04);
+      --border: rgba(255,255,255,.1);
+      --text: #f4f4f5;
+      --muted: #a1a1aa;
+      --accent: #d946ef;
+      --danger: #f43f5e;
+      --ok: #34d399;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Outfit, system-ui, sans-serif;
+      background: linear-gradient(180deg, #000 0%, #0a0118 50%, #000 100%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 1.25rem; }
+    h1 { font-size: 1.5rem; margin: 0 0 .25rem; }
+    .muted { color: var(--muted); font-size: .9rem; }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.25rem;
+      margin-top: 1rem;
+    }
+    label { display: block; font-size: .8rem; color: var(--muted); margin: .75rem 0 .35rem; }
+    input, select, textarea {
+      width: 100%;
+      background: rgba(0,0,0,.35);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      padding: .65rem .75rem;
+      font: inherit;
+    }
+    textarea { min-height: 220px; resize: vertical; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
+    @media (max-width: 720px) { .row { grid-template-columns: 1fr; } }
+    .actions { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1rem; }
+    button, .btn {
+      border: 0;
+      border-radius: 999px;
+      padding: .6rem 1rem;
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+      background: linear-gradient(90deg, #d946ef, #f97316);
+      color: #fff;
+    }
+    button.secondary, .btn.secondary {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+    button.danger { background: var(--danger); }
+    button:disabled { opacity: .5; cursor: not-allowed; }
+    table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+    th, td { text-align: left; padding: .55rem .4rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+    .badge {
+      display: inline-block;
+      padding: .15rem .5rem;
+      border-radius: 999px;
+      font-size: .72rem;
+      border: 1px solid var(--border);
+      text-transform: uppercase;
+      letter-spacing: .03em;
+    }
+    .badge.published { color: var(--ok); }
+    .badge.draft { color: #fbbf24; }
+    .badge.scheduled { color: #60a5fa; }
+    .badge.archived { color: var(--muted); }
+    #toast {
+      position: fixed; bottom: 1rem; right: 1rem; max-width: 22rem;
+      background: #18181b; border: 1px solid var(--border); padding: .75rem 1rem;
+      border-radius: 12px; display: none; z-index: 50;
+    }
+    #toast.error { border-color: var(--danger); }
+    .hidden { display: none !important; }
+    .stats { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: .75rem; }
+    .stat {
+      min-width: 7rem; padding: .75rem; border-radius: 12px;
+      border: 1px solid var(--border); background: rgba(255,255,255,.03);
+    }
+    .stat b { display: block; font-size: 1.25rem; }
+    #previewPane {
+      border: 1px solid var(--border); border-radius: 12px; padding: 1rem;
+      background: #0b0b10; margin-top: 1rem; max-height: 28rem; overflow: auto;
+    }
+    #previewPane img { max-width: 100%; height: auto; border-radius: 8px; }
+    .toolbar { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="toolbar">
+      <div>
+        <h1>Between Us Journal Admin</h1>
+        <p class="muted">Editorial CMS · notindex · authorized admins only</p>
+      </div>
+      <div id="userBar" class="hidden">
+        <span class="muted" id="userEmail"></span>
+        <button type="button" class="secondary" id="logoutBtn">Log out</button>
+      </div>
+    </div>
+
+    <section id="loginView" class="card">
+      <h2>Sign in</h2>
+      <p class="muted">Use your Supabase Auth email/password. Access requires LANDING_CMS_BOOTSTRAP_ADMIN_IDS.</p>
+      <label for="email">Email</label>
+      <input id="email" type="email" autocomplete="username" />
+      <label for="password">Password</label>
+      <input id="password" type="password" autocomplete="current-password" />
+      <div class="actions">
+        <button type="button" id="loginBtn">Sign in</button>
+      </div>
+      <p class="muted" id="loginHint" style="margin-top:1rem"></p>
+    </section>
+
+    <section id="appView" class="hidden">
+      <div class="card">
+        <h2>Dashboard</h2>
+        <div class="stats" id="stats"></div>
+      </div>
+
+      <div class="card">
+        <div class="toolbar">
+          <h2 style="margin:0">Articles</h2>
+          <button type="button" id="newBtn">New article</button>
+        </div>
+        <div style="overflow-x:auto;margin-top:1rem">
+          <table>
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Status</th>
+                <th>Category</th>
+                <th>Author</th>
+                <th>Updated</th>
+                <th>Published</th>
+                <th>Featured</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="listBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="editorCard" class="card hidden">
+        <h2 id="editorTitle">Edit article</h2>
+        <input type="hidden" id="articleId" />
+        <div class="row">
+          <div>
+            <label for="fTitle">Title</label>
+            <input id="fTitle" />
+          </div>
+          <div>
+            <label for="fSlug">Slug</label>
+            <input id="fSlug" placeholder="should-you-tell-your-best-friend" />
+          </div>
+        </div>
+        <label for="fSubtitle">Subtitle</label>
+        <input id="fSubtitle" />
+        <label for="fExcerpt">Excerpt</label>
+        <textarea id="fExcerpt" style="min-height:90px"></textarea>
+        <label for="fBody">Body (HTML — sanitized server-side)</label>
+        <textarea id="fBody"></textarea>
+        <p class="muted" id="readingTime">Reading time: —</p>
+        <div class="row">
+          <div>
+            <label for="fCategory">Category</label>
+            <input id="fCategory" list="catList" placeholder="Relationships" />
+            <datalist id="catList">
+              <option value="Relationships"></option>
+              <option value="Dating"></option>
+              <option value="Friendship"></option>
+              <option value="Secrets"></option>
+              <option value="Breakups"></option>
+              <option value="Boundaries"></option>
+            </datalist>
+          </div>
+          <div>
+            <label for="fAuthor">Author</label>
+            <input id="fAuthor" value="Between Us Editorial" />
+          </div>
+        </div>
+        <div class="row">
+          <div>
+            <label for="fTags">Tags (comma-separated)</label>
+            <input id="fTags" />
+          </div>
+          <div>
+            <label for="fLocale">Locale</label>
+            <select id="fLocale">
+              <option value="en">en</option>
+              <option value="de">de</option>
+              <option value="fr">fr</option>
+              <option value="es">es</option>
+              <option value="hi">hi</option>
+              <option value="zh">zh</option>
+            </select>
+          </div>
+        </div>
+        <div class="row">
+          <div>
+            <label for="fTranslationGroup">Translation group ID</label>
+            <input id="fTranslationGroup" placeholder="optional UUID" />
+          </div>
+          <div>
+            <label for="fPublishedAt">Publish date</label>
+            <input id="fPublishedAt" type="datetime-local" />
+          </div>
+        </div>
+        <div class="row">
+          <div>
+            <label for="fFeaturedImage">Featured image path/URL</label>
+            <input id="fFeaturedImage" />
+            <input id="fImageFile" type="file" accept="image/jpeg,image/png,image/webp,image/gif" style="margin-top:.5rem" />
+          </div>
+          <div>
+            <label for="fFeaturedAlt">Image alt text</label>
+            <input id="fFeaturedAlt" />
+            <label for="fSocialImage">Social image</label>
+            <input id="fSocialImage" />
+          </div>
+        </div>
+        <div class="row">
+          <div>
+            <label for="fSeoTitle">SEO title</label>
+            <input id="fSeoTitle" />
+          </div>
+          <div>
+            <label for="fSeoDesc">SEO description</label>
+            <input id="fSeoDesc" />
+          </div>
+        </div>
+        <div class="row">
+          <div>
+            <label for="fCanonical">Canonical URL</label>
+            <input id="fCanonical" placeholder="https://betweenus.fun/journal/..." />
+          </div>
+          <div>
+            <label for="fRelated">Related article IDs (comma UUIDs)</label>
+            <input id="fRelated" />
+          </div>
+        </div>
+        <div class="row">
+          <div>
+            <label><input type="checkbox" id="fFeatured" /> Featured</label>
+            <label><input type="checkbox" id="fNoindex" /> Noindex</label>
+            <label><input type="checkbox" id="fAllowMissingImage" /> Allow publish without featured image</label>
+          </div>
+          <div>
+            <label for="fStatus">Status</label>
+            <select id="fStatus">
+              <option value="draft">draft</option>
+              <option value="scheduled">scheduled</option>
+              <option value="published">published</option>
+              <option value="archived">archived</option>
+            </select>
+          </div>
+        </div>
+        <div class="actions">
+          <button type="button" id="saveDraftBtn">Save draft</button>
+          <button type="button" class="secondary" id="previewBtn">Preview</button>
+          <button type="button" id="publishBtn">Publish…</button>
+          <button type="button" class="secondary" id="archiveBtn">Archive</button>
+          <button type="button" class="danger" id="deleteBtn">Delete</button>
+          <button type="button" class="secondary" id="cancelEditBtn">Close</button>
+        </div>
+        <div id="previewPane" class="hidden"></div>
+      </div>
+    </section>
+  </div>
+  <div id="toast"></div>
+
+  <script>
+(function () {
+  var SUPABASE_URL = 'https://qoqbdiixztolvtcjdnle.supabase.co'
+  var ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFvcWJkaWl4enRvbHZ0Y2pkbmxlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE0NDEwNjcsImV4cCI6MjA3NzAxNzA2N30.MpuwFgrc1rhlhaCG73LQWgjahM3m0uR4cEd7xvnLO6g'
+  var EDGE = SUPABASE_URL + '/functions/v1/make-server-6c9b0e48'
+  var sb = window.supabase.createClient(SUPABASE_URL, ANON_KEY)
+  var session = null
+  var articles = []
+
+  function $(id) { return document.getElementById(id) }
+  function toast(msg, isError) {
+    var el = $('toast')
+    el.textContent = msg
+    el.className = isError ? 'error' : ''
+    el.style.display = 'block'
+    setTimeout(function () { el.style.display = 'none' }, 4500)
+  }
+
+  function slugify(title) {
+    return String(title || '').toLowerCase().trim()
+      .replace(/[^a-z0-9\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/^-|-$/g, '')
+      .slice(0, 120)
+  }
+
+  function readingEstimate(html) {
+    var text = String(html || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()
+    var words = text ? text.split(' ').length : 0
+    return Math.max(1, Math.ceil(words / 200))
+  }
+
+  async function api(path, opts) {
+    opts = opts || {}
+    if (!session || !session.access_token) throw new Error('Not signed in')
+    var res = await fetch(EDGE + path, {
+      method: opts.method || 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': ANON_KEY,
+        'Authorization': 'Bearer ' + session.access_token,
+      },
+      body: opts.body ? JSON.stringify(opts.body) : undefined,
+    })
+    var json = await res.json().catch(function () { return {} })
+    if (!res.ok) {
+      var err = new Error(json.error || ('HTTP ' + res.status))
+      err.status = res.status
+      err.payload = json
+      throw err
+    }
+    return json
+  }
+
+  function showLoggedOut() {
+    $('loginView').classList.remove('hidden')
+    $('appView').classList.add('hidden')
+    $('userBar').classList.add('hidden')
+  }
+
+  async function showLoggedIn() {
+    try {
+      var me = await api('/landing-cms/me')
+      if (!me.success || me.role !== 'admin') throw new Error('No CMS access')
+      $('loginView').classList.add('hidden')
+      $('appView').classList.remove('hidden')
+      $('userBar').classList.remove('hidden')
+      $('userEmail').textContent = me.email || me.userId
+      await refreshList()
+    } catch (e) {
+      var hint = $('loginHint')
+      if (e.status === 403 && e.payload && e.payload.userId) {
+        hint.textContent = 'Signed in but not a CMS admin. Add this UUID to LANDING_CMS_BOOTSTRAP_ADMIN_IDS and redeploy the Edge Function: ' + e.payload.userId
+      } else {
+        hint.textContent = e.message || 'CMS access denied'
+      }
+      toast(hint.textContent, true)
+      showLoggedOut()
+    }
+  }
+
+  function fmtDate(iso) {
+    if (!iso) return '—'
+    try { return new Date(iso).toLocaleString() } catch (_) { return iso }
+  }
+
+  function renderStats() {
+    var counts = { draft: 0, scheduled: 0, published: 0, archived: 0, featured: 0 }
+    articles.forEach(function (a) {
+      if (counts[a.status] !== undefined) counts[a.status]++
+      if (a.featured) counts.featured++
+    })
+    $('stats').innerHTML =
+      ['draft','scheduled','published','archived','featured'].map(function (k) {
+        return '<div class="stat"><b>' + counts[k] + '</b><span class="muted">' + k + '</span></div>'
+      }).join('')
+  }
+
+  function renderList() {
+    var body = $('listBody')
+    body.innerHTML = ''
+    if (!articles.length) {
+      body.innerHTML = '<tr><td colspan="8" class="muted">No articles yet. Create your first draft.</td></tr>'
+      return
+    }
+    articles.forEach(function (a) {
+      var tr = document.createElement('tr')
+      tr.innerHTML =
+        '<td>' + escapeHtml(a.title) + '</td>' +
+        '<td><span class="badge ' + a.status + '">' + a.status + '</span></td>' +
+        '<td>' + escapeHtml(a.category || '') + '</td>' +
+        '<td>' + escapeHtml(a.author || '') + '</td>' +
+        '<td>' + fmtDate(a.updated_at) + '</td>' +
+        '<td>' + fmtDate(a.published_at) + '</td>' +
+        '<td>' + (a.featured ? 'yes' : '—') + '</td>' +
+        '<td></td>'
+      var actions = tr.lastElementChild
+      ;[
+        ['Edit', function () { openEditor(a) }],
+        ['Preview', function () { previewArticle(a.id) }],
+        ['Publish', function () { publishArticle(a.id) }],
+        ['Archive', function () { archiveArticle(a.id) }],
+        ['Delete', function () { deleteArticle(a.id) }],
+      ].forEach(function (pair) {
+        var b = document.createElement('button')
+        b.type = 'button'
+        b.className = 'secondary'
+        b.style.margin = '0 .2rem .2rem 0'
+        b.style.padding = '.3rem .55rem'
+        b.style.fontSize = '.75rem'
+        b.textContent = pair[0]
+        b.onclick = pair[1]
+        actions.appendChild(b)
+      })
+      body.appendChild(tr)
+    })
+  }
+
+  function escapeHtml(s) {
+    return String(s || '')
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+  }
+
+  async function refreshList() {
+    var res = await api('/landing-cms/journal-articles')
+    articles = res.articles || []
+    renderStats()
+    renderList()
+  }
+
+  function clearEditor() {
+    $('articleId').value = ''
+    $('fTitle').value = ''
+    $('fSlug').value = ''
+    $('fSubtitle').value = ''
+    $('fExcerpt').value = ''
+    $('fBody').value = ''
+    $('fCategory').value = 'Relationships'
+    $('fAuthor').value = 'Between Us Editorial'
+    $('fTags').value = ''
+    $('fLocale').value = 'en'
+    $('fTranslationGroup').value = ''
+    $('fPublishedAt').value = ''
+    $('fFeaturedImage').value = ''
+    $('fFeaturedAlt').value = ''
+    $('fSocialImage').value = ''
+    $('fSeoTitle').value = ''
+    $('fSeoDesc').value = ''
+    $('fCanonical').value = ''
+    $('fRelated').value = ''
+    $('fFeatured').checked = false
+    $('fNoindex').checked = false
+    $('fAllowMissingImage').checked = false
+    $('fStatus').value = 'draft'
+    $('previewPane').classList.add('hidden')
+    $('readingTime').textContent = 'Reading time: —'
+  }
+
+  function openEditor(a) {
+    clearEditor()
+    $('editorCard').classList.remove('hidden')
+    $('editorTitle').textContent = a && a.id ? 'Edit article' : 'New article'
+    if (!a) return
+    $('articleId').value = a.id || ''
+    $('fTitle').value = a.title || ''
+    $('fSlug').value = a.slug || ''
+    $('fSubtitle').value = a.subtitle || ''
+    $('fExcerpt').value = a.excerpt || ''
+    $('fBody').value = a.body || ''
+    $('fCategory').value = a.category || ''
+    $('fAuthor').value = a.author || ''
+    $('fTags').value = (a.tags || []).join(', ')
+    $('fLocale').value = a.locale || 'en'
+    $('fTranslationGroup').value = a.translation_group_id || ''
+    if (a.published_at) {
+      var d = new Date(a.published_at)
+      var local = new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16)
+      $('fPublishedAt').value = local
+    }
+    $('fFeaturedImage').value = a.featured_image || a.featured_image_url || ''
+    $('fFeaturedAlt').value = a.featured_image_alt || ''
+    $('fSocialImage').value = a.social_image || a.social_image_url || ''
+    $('fSeoTitle').value = a.seo_title || ''
+    $('fSeoDesc').value = a.seo_description || ''
+    $('fCanonical').value = a.canonical_url || ''
+    $('fRelated').value = (a.related_article_ids || []).join(', ')
+    $('fFeatured').checked = !!a.featured
+    $('fNoindex').checked = !!a.noindex
+    $('fStatus').value = a.status || 'draft'
+    $('readingTime').textContent = 'Reading time: ~' + (a.reading_time_minutes || readingEstimate(a.body)) + ' min'
+  }
+
+  function collectPayload(forceStatus) {
+    var tags = $('fTags').value.split(',').map(function (t) { return t.trim() }).filter(Boolean)
+    var related = $('fRelated').value.split(',').map(function (t) { return t.trim() }).filter(Boolean)
+    var publishedAt = $('fPublishedAt').value
+      ? new Date($('fPublishedAt').value).toISOString()
+      : null
+    return {
+      title: $('fTitle').value,
+      slug: $('fSlug').value || slugify($('fTitle').value),
+      subtitle: $('fSubtitle').value || null,
+      excerpt: $('fExcerpt').value,
+      body: $('fBody').value,
+      category: $('fCategory').value,
+      author: $('fAuthor').value,
+      tags: tags,
+      locale: $('fLocale').value,
+      translation_group_id: $('fTranslationGroup').value || null,
+      published_at: publishedAt,
+      featured_image: $('fFeaturedImage').value || null,
+      featured_image_alt: $('fFeaturedAlt').value || null,
+      social_image: $('fSocialImage').value || null,
+      seo_title: $('fSeoTitle').value || null,
+      seo_description: $('fSeoDesc').value || null,
+      canonical_url: $('fCanonical').value || null,
+      related_article_ids: related,
+      featured: $('fFeatured').checked,
+      noindex: $('fNoindex').checked,
+      status: forceStatus || $('fStatus').value || 'draft',
+      allow_missing_image: $('fAllowMissingImage').checked,
+    }
+  }
+
+  async function saveDraft() {
+    var payload = collectPayload('draft')
+    var id = $('articleId').value
+    var res
+    if (id) res = await api('/landing-cms/journal-articles/' + id, { method: 'PATCH', body: payload })
+    else res = await api('/landing-cms/journal-articles', { method: 'POST', body: payload })
+    $('articleId').value = res.article.id
+    toast('Draft saved')
+    await refreshList()
+  }
+
+  async function publishArticle(id) {
+    if (!confirm('Publish this article?')) return
+    var articleId = id || $('articleId').value
+    if (!articleId) {
+      await saveDraft()
+      articleId = $('articleId').value
+    } else if (!id) {
+      await api('/landing-cms/journal-articles/' + articleId, {
+        method: 'PATCH',
+        body: collectPayload(),
+      })
+    }
+    var res = await api('/landing-cms/journal-articles/' + articleId + '/publish', {
+      method: 'POST',
+      body: {
+        allow_missing_image: $('fAllowMissingImage').checked,
+        published_at: $('fPublishedAt').value ? new Date($('fPublishedAt').value).toISOString() : undefined,
+      },
+    })
+    toast(res.article.status === 'scheduled' ? 'Scheduled' : 'Published (run generateJournal to update static site)')
+    await refreshList()
+    openEditor(res.article)
+  }
+
+  async function archiveArticle(id) {
+    var articleId = id || $('articleId').value
+    if (!articleId) return
+    if (!confirm('Archive this article?')) return
+    await api('/landing-cms/journal-articles/' + articleId + '/archive', { method: 'POST', body: {} })
+    toast('Archived')
+    await refreshList()
+  }
+
+  async function deleteArticle(id) {
+    var articleId = id || $('articleId').value
+    if (!articleId) return
+    if (!confirm('Delete this article permanently?')) return
+    await api('/landing-cms/journal-articles/' + articleId, { method: 'DELETE' })
+    toast('Deleted')
+    $('editorCard').classList.add('hidden')
+    await refreshList()
+  }
+
+  async function previewArticle(id) {
+    var articleId = id || $('articleId').value
+    if (!articleId) {
+      toast('Save the article first', true)
+      return
+    }
+    var res = await api('/landing-cms/journal-articles/' + articleId + '/preview', { method: 'POST', body: {} })
+    var p = res.preview
+    var pane = $('previewPane')
+    pane.classList.remove('hidden')
+    pane.innerHTML =
+      '<p class="muted">Between Us Journal · Editorial · PREVIEW (not public)</p>' +
+      '<h2>' + escapeHtml(p.title) + '</h2>' +
+      (p.subtitle ? '<p><em>' + escapeHtml(p.subtitle) + '</em></p>' : '') +
+      '<p class="muted">' + escapeHtml(p.author) + ' · ' + escapeHtml(p.category) + '</p>' +
+      (p.featured_image_url ? '<p><img src="' + escapeHtml(p.featured_image_url) + '" alt="" /></p>' : '') +
+      '<div>' + (p.body || '') + '</div>'
+    if (!id) $('editorCard').scrollIntoView({ behavior: 'smooth' })
+  }
+
+  $('fTitle').addEventListener('blur', function () {
+    if (!$('fSlug').value) $('fSlug').value = slugify($('fTitle').value)
+  })
+  $('fBody').addEventListener('input', function () {
+    $('readingTime').textContent = 'Reading time: ~' + readingEstimate($('fBody').value) + ' min'
+  })
+
+  $('fImageFile').addEventListener('change', async function (ev) {
+    var file = ev.target.files && ev.target.files[0]
+    if (!file) return
+    try {
+      var signed = await api('/landing-cms/journal-images/signed-upload', {
+        method: 'POST',
+        body: { filename: file.name, contentType: file.type, byteSize: file.size },
+      })
+      var up = await fetch(signed.signedUrl, {
+        method: 'PUT',
+        headers: { 'Content-Type': file.type },
+        body: file,
+      })
+      if (!up.ok) throw new Error('Upload failed')
+      $('fFeaturedImage').value = signed.path
+      if (!$('fSocialImage').value) $('fSocialImage').value = signed.path
+      toast('Image uploaded')
+    } catch (e) {
+      toast(e.message || 'Upload failed', true)
+    }
+  })
+
+  $('loginBtn').onclick = async function () {
+    try {
+      var email = $('email').value.trim()
+      var password = $('password').value
+      var { data, error } = await sb.auth.signInWithPassword({ email: email, password: password })
+      if (error) throw error
+      session = data.session
+      await showLoggedIn()
+    } catch (e) {
+      toast(e.message || 'Login failed', true)
+    }
+  }
+  $('logoutBtn').onclick = async function () {
+    await sb.auth.signOut()
+    session = null
+    showLoggedOut()
+  }
+  $('newBtn').onclick = function () { openEditor(null) }
+  $('cancelEditBtn').onclick = function () { $('editorCard').classList.add('hidden') }
+  $('saveDraftBtn').onclick = function () { saveDraft().catch(function (e) { toast(e.message, true) }) }
+  $('publishBtn').onclick = function () { publishArticle().catch(function (e) { toast(e.message, true) }) }
+  $('archiveBtn').onclick = function () { archiveArticle().catch(function (e) { toast(e.message, true) }) }
+  $('deleteBtn').onclick = function () { deleteArticle().catch(function (e) { toast(e.message, true) }) }
+  $('previewBtn').onclick = function () { previewArticle().catch(function (e) { toast(e.message, true) }) }
+
+  sb.auth.getSession().then(function (res) {
+    session = res.data.session
+    if (session) showLoggedIn()
+    else showLoggedOut()
+  })
+})()
+  </script>
+</body>
+</html>
