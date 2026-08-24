@@ -15,6 +15,20 @@
     <meta name="twitter:title" content="Between Us">
     <meta name="twitter:description" content="Say what you can't say anywhere else. Read LIVE stories and join the conversation.">
     <meta name="robots" content="index,follow">
+    <meta property="og:image" content="https://qoqbdiixztolvtcjdnle.supabase.co/storage/v1/object/sign/betweenus3/betweenus.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9lMTYxZDg1My1iMGRlLTRkNjQtYTQxYS0xNTY5MmFmMGJhNWEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJiZXR3ZWVudXMzL2JldHdlZW51cy5wbmciLCJpYXQiOjE3NjM2NDUwOTYsImV4cCI6MTc1MzE2NDUwOTZ9.aULhfLOqba7Rrf62Np9y8d_b9MVNfsoL1YV7dDWSYGY">
+    <meta name="twitter:image" content="https://qoqbdiixztolvtcjdnle.supabase.co/storage/v1/object/sign/betweenus3/betweenus.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9lMTYxZDg1My1iMGRlLTRkNjQtYTQxYS0xNTY5MmFmMGJhNWEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJiZXR3ZWVudXMzL2JldHdlZW51cy5wbmciLCJpYXQiOjE3NjM2NDUwOTYsImV4cCI6MTc1MzE2NDUwOTZ9.aULhfLOqba7Rrf62Np9y8d_b9MVNfsoL1YV7dDWSYGY">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Between Us",
+      "url": "https://betweenus.fun/",
+      "description": "Anonymous stories. Real feelings. People who get it."
+    }
+    </script>
     <style>
         * {
             margin: 0;
@@ -23,7 +37,7 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            font-family: 'Outfit', system-ui, sans-serif;
             line-height: 1.6;
             color: #ffffff;
             overflow-x: hidden;
@@ -439,7 +453,7 @@
                 transform: translateX(-50%) translateY(0);
             }
             50% {
-                transform: translateX(-50%) translateY(10px);
+                transform: translateX(-50%) translateY(4px);
             }
         }
 
@@ -798,6 +812,359 @@
             line-height: 1.8;
         }
 
+
+        /* Phase 1 — hero / auth / journal / mobile nav */
+        .brand-mark {
+            font-family: 'Syne', system-ui, sans-serif;
+            font-weight: 800;
+            font-size: clamp(2.75rem, 8vw, 4.75rem);
+            letter-spacing: -0.04em;
+            line-height: 1;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #ffffff 0%, #f0abfc 35%, #e879f9 65%, #f97316 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero h1.hero-tagline {
+            font-family: 'Syne', system-ui, sans-serif;
+            font-size: clamp(1.35rem, 3.5vw, 1.85rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #f5f3ff;
+            background: none;
+            -webkit-text-fill-color: #f5f3ff;
+            letter-spacing: -0.02em;
+            line-height: 1.25;
+            max-width: 28rem;
+        }
+
+        .hero-support {
+            font-size: 1.05rem;
+            color: #a1a1aa;
+            margin-bottom: 2rem;
+            max-width: 28rem;
+            line-height: 1.65;
+        }
+
+        .hero-cta-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            justify-content: center;
+            margin-bottom: 1.25rem;
+        }
+
+        .btn-secondary {
+            padding: 1rem 1.75rem;
+            border-radius: 0.75rem;
+            background: transparent;
+            color: #f5f3ff;
+            font-weight: 600;
+            border: 1.5px solid rgba(217, 70, 239, 0.45);
+            cursor: pointer;
+            transition: border-color 0.25s, background 0.25s, transform 0.25s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+            text-decoration: none;
+            font-family: inherit;
+        }
+
+        .btn-secondary:hover {
+            border-color: #e879f9;
+            background: rgba(217, 70, 239, 0.12);
+            transform: translateY(-1px);
+        }
+
+        .btn-ghost {
+            padding: 0.65rem 1rem;
+            border: none;
+            background: transparent;
+            color: #c4b5fd;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            text-decoration: underline;
+            text-underline-offset: 4px;
+            font-family: inherit;
+        }
+
+        .btn-ghost:hover { color: #f0abfc; }
+
+        .hero-stack {
+            position: relative;
+            width: min(100%, 22rem);
+            height: 11.5rem;
+            margin: 1.75rem auto 0;
+        }
+
+        .hero-stack-card {
+            position: absolute;
+            inset: 0;
+            border-radius: 1rem;
+            border: 1px solid rgba(167, 139, 250, 0.28);
+            background: rgba(12, 8, 24, 0.88);
+            backdrop-filter: blur(16px);
+            padding: 1rem 1.1rem;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+            transition: transform 0.35s ease;
+            overflow: hidden;
+        }
+
+        .hero-stack-card:nth-child(1) { transform: translateY(0) rotate(-1.5deg); z-index: 3; }
+        .hero-stack-card:nth-child(2) { transform: translateY(10px) rotate(1.2deg) scale(0.97); z-index: 2; opacity: 0.85; }
+        .hero-stack-card:nth-child(3) { transform: translateY(20px) rotate(-0.8deg) scale(0.94); z-index: 1; opacity: 0.65; }
+
+        .hero-stack-meta {
+            font-size: 0.7rem;
+            color: #a78bfa;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 0.4rem;
+        }
+
+        .hero-stack-text {
+            font-size: 0.9rem;
+            line-height: 1.45;
+            color: #e4e4e7;
+            display: -webkit-box;
+            -webkit-line-clamp: 4;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .hero-stack-empty {
+            color: #71717a;
+            font-size: 0.9rem;
+            text-align: center;
+            padding-top: 3rem;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .nav-join {
+            padding: 0.45rem 1rem;
+            border-radius: 999px;
+            border: 1px solid rgba(217, 70, 239, 0.5);
+            background: rgba(217, 70, 239, 0.15);
+            color: #fff;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .nav-join:hover { background: rgba(217, 70, 239, 0.28); }
+
+        .nav-user {
+            font-size: 0.8rem;
+            color: #c4b5fd;
+            max-width: 9rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .nav-toggle {
+            display: none;
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 0.5rem;
+            border: 1px solid rgba(167, 139, 250, 0.35);
+            background: rgba(15, 10, 30, 0.7);
+            color: #fff;
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            top: 3.5rem;
+            left: 1rem;
+            right: 1rem;
+            z-index: 100;
+            background: rgba(10, 6, 20, 0.96);
+            border: 1px solid rgba(167, 139, 250, 0.3);
+            border-radius: 1rem;
+            padding: 0.75rem;
+            flex-direction: column;
+            gap: 0.25rem;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        .mobile-nav.open { display: flex; }
+
+        .mobile-nav a, .mobile-nav button {
+            text-align: left;
+            padding: 0.85rem 1rem;
+            border-radius: 0.65rem;
+            border: none;
+            background: transparent;
+            color: #e4e4e7;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            font-family: inherit;
+            text-decoration: none;
+        }
+
+        .mobile-nav a:hover, .mobile-nav button:hover {
+            background: rgba(217, 70, 239, 0.12);
+        }
+
+        .auth-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            background: rgba(0, 0, 0, 0.72);
+            backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1.25rem;
+        }
+
+        .auth-overlay.open { display: flex; }
+
+        .auth-panel {
+            width: min(100%, 26rem);
+            background: linear-gradient(180deg, #140a22 0%, #0a0612 100%);
+            border: 1px solid rgba(217, 70, 239, 0.35);
+            border-radius: 1.25rem;
+            padding: 1.75rem 1.5rem;
+            box-shadow: 0 30px 80px rgba(88, 28, 135, 0.35);
+            position: relative;
+        }
+
+        .auth-panel h2 {
+            font-family: 'Syne', system-ui, sans-serif;
+            font-size: 1.5rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .auth-panel .auth-sub {
+            color: #a1a1aa;
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+
+        .auth-close {
+            position: absolute;
+            top: 0.85rem;
+            right: 0.85rem;
+            width: 2.25rem;
+            height: 2.25rem;
+            border-radius: 999px;
+            border: 1px solid rgba(167,139,250,0.3);
+            background: transparent;
+            color: #e4e4e7;
+            cursor: pointer;
+            font-size: 1.1rem;
+        }
+
+        .auth-provider {
+            width: 100%;
+            margin-bottom: 0.65rem;
+            padding: 0.9rem 1rem;
+            border-radius: 0.75rem;
+            border: 1px solid rgba(167, 139, 250, 0.35);
+            background: rgba(255,255,255,0.04);
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.95rem;
+        }
+
+        .auth-provider:hover { background: rgba(217, 70, 239, 0.12); }
+
+        .auth-divider {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: #71717a;
+            font-size: 0.8rem;
+            margin: 1rem 0;
+        }
+
+        .auth-divider::before, .auth-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(113, 113, 122, 0.4);
+        }
+
+        .auth-email-fields { display: none; flex-direction: column; gap: 0.65rem; }
+        .auth-email-fields.open { display: flex; }
+
+        .auth-msg {
+            margin-top: 0.85rem;
+            font-size: 0.85rem;
+            min-height: 1.2rem;
+        }
+
+        .auth-msg.error { color: #fca5a5; }
+        .auth-msg.success { color: #86efac; }
+
+        .journal-hero {
+            max-width: 42rem;
+            margin: 0 auto;
+            padding: 5rem 1rem 3rem;
+            text-align: center;
+        }
+
+        .journal-hero h1 {
+            font-family: 'Syne', system-ui, sans-serif;
+            font-size: clamp(2rem, 5vw, 3rem);
+            margin-bottom: 1rem;
+        }
+
+        .journal-card {
+            max-width: 40rem;
+            margin: 0 auto 1.25rem;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            border: 1px solid rgba(167, 139, 250, 0.25);
+            background: rgba(15, 10, 30, 0.65);
+            text-align: left;
+        }
+
+        .journal-card h3 {
+            font-family: 'Syne', system-ui, sans-serif;
+            margin-bottom: 0.5rem;
+            color: #f5f3ff;
+        }
+
+        .journal-card p { color: #a1a1aa; line-height: 1.65; font-size: 0.95rem; }
+
+        .journal-note {
+            text-align: center;
+            color: #71717a;
+            font-size: 0.9rem;
+            margin: 2rem auto 4rem;
+            max-width: 28rem;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .scroll-indicator, .blob, .star, .particle, .hero-stack-card {
+                animation: none !important;
+            }
+            .btn:hover:not(:disabled), .btn-secondary:hover {
+                transform: none;
+            }
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             h1 {
@@ -814,6 +1181,14 @@
 
             .nav-links {
                 display: none;
+            }
+
+            .nav-toggle {
+                display: inline-flex;
+            }
+
+            .hero-stack {
+                height: 10.5rem;
             }
 
             .hero-logo {
@@ -945,71 +1320,73 @@
 
         <!-- Navigation -->
         <nav>
-            <div class="logo"></div>
+            <div class="logo" role="button" tabindex="0" onclick="navigateHome()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();navigateHome()}" aria-label="Between Us home"></div>
             <div class="nav-links">
-                <a class="nav-link" onclick="navigateHome()">Home</a>
-                <a class="nav-link" href="#live" onclick="navigateHome(); setTimeout(()=>document.getElementById('live')?.scrollIntoView({behavior:'smooth'}),50)">LIVE</a>
-                <a class="nav-link" onclick="showPage('privacy'); history.pushState({},'', '/privacy')">Privacy</a>
-                <a class="nav-link" onclick="showPage('terms'); history.pushState({},'', '/terms')">Terms</a>
-                <a class="nav-link" onclick="showPage('support'); history.pushState({},'', '/support')">Support</a>
+                <a class="nav-link" href="/" onclick="event.preventDefault();navigateHome()">Home</a>
+                <a class="nav-link" href="#live" onclick="event.preventDefault();navigateHome();setTimeout(()=>document.getElementById('live')?.scrollIntoView({behavior:'smooth'}),50)">Stories</a>
+                <a class="nav-link" href="/journal" onclick="event.preventDefault();navigateJournal()">Journal</a>
+                <a class="nav-link" href="/privacy" onclick="event.preventDefault();showPage('privacy');history.pushState({},'', '/privacy')">Privacy</a>
+                <a class="nav-link" href="/support" onclick="event.preventDefault();showPage('support');history.pushState({},'', '/support')">Support</a>
+            </div>
+            <div class="nav-actions">
+                <span id="navUser" class="nav-user" hidden></span>
+                <button type="button" class="nav-join" id="navJoinBtn" onclick="openAuthPanel()" aria-label="Join Between Us">Join</button>
+                <button type="button" class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobileNav">☰</button>
             </div>
         </nav>
+        <div class="mobile-nav" id="mobileNav" hidden>
+            <a href="/" onclick="event.preventDefault();closeMobileNav();navigateHome()">Home</a>
+            <a href="#live" onclick="event.preventDefault();closeMobileNav();navigateHome();setTimeout(()=>document.getElementById('live')?.scrollIntoView({behavior:'smooth'}),50)">Stories</a>
+            <a href="/journal" onclick="event.preventDefault();closeMobileNav();navigateJournal()">Journal</a>
+            <a href="/privacy" onclick="event.preventDefault();closeMobileNav();showPage('privacy');history.pushState({},'', '/privacy')">Privacy</a>
+            <a href="/support" onclick="event.preventDefault();closeMobileNav();showPage('support');history.pushState({},'', '/support')">Support</a>
+            <button type="button" onclick="closeMobileNav();openAuthPanel()">Join Between Us</button>
+        </div>
 
         <!-- Main Content -->
         <div class="content">
             <!-- HOME PAGE -->
             <div id="home" class="page active">
                 <!-- Hero Section -->
-                <section class="hero">
-                    <!-- Floating Hero Logo -->
-                    <img src="https://qoqbdiixztolvtcjdnle.supabase.co/storage/v1/object/sign/betweenus3/betweenus.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9lMTYxZDg1My1iMGRlLTRkNjQtYTQxYS0xNTY5MmFmMGJhNWEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJiZXR3ZWVudXMzL2JldHdlZW51cy5wbmciLCJpYXQiOjE3NjM2NDUwOTYsImV4cCI6MTc1MzE2NDUwOTZ9.aULhfLOqba7Rrf62Np9y8d_b9MVNfsoL1YV7dDWSYGY" alt="Between Us Logo" class="hero-logo">
-                    
-                    <div class="badge">
-                        <svg class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-                        </svg>
-                        <span>Text + image community</span>
-                    </div>
-                    
-                    <h1>Say what you can't say anywhere else</h1>
-                    
-                    <p class="hero-text">
-                        Between Us is where people write, discover, vote and discuss anonymous stories —
-                        including images and memes. Read the LIVE feed below, then join the conversation in the app.
+                <section class="hero" aria-label="Between Us hero">
+                    <img src="https://qoqbdiixztolvtcjdnle.supabase.co/storage/v1/object/sign/betweenus3/betweenus.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9lMTYxZDg1My1iMGRlLTRkNjQtYTQxYS0xNTY5MmFmMGJhNWEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJiZXR3ZWVudXMzL2JldHdlZW51cy5wbmciLCJpYXQiOjE3NjM2NDUwOTYsImV4cCI6MTc1MzE2NDUwOTZ9.aULhfLOqba7Rrf62Np9y8d_b9MVNfsoL1YV7dDWSYGY" alt="" class="hero-logo" width="160" height="64">
+
+                    <p class="brand-mark" aria-label="Between Us">BETWEEN US</p>
+
+                    <h1 class="hero-tagline">Say what you can't say anywhere else.</h1>
+
+                    <p class="hero-support">
+                        Anonymous stories. Real feelings. People who get it.
                     </p>
 
-                    <div class="store-cta" id="storeCta" style="display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap;margin:1.5rem 0 0.5rem;">
-                        <a id="ctaAppStore" class="btn" href="https://apps.apple.com/search?term=Between%20Us" style="text-decoration:none;display:inline-flex;align-items:center;gap:0.5rem;" aria-label="Get Between Us on the App Store">App Store</a>
-                        <a id="ctaPlayStore" class="btn" href="https://play.google.com/store/apps/details?id=com.betweenus.app" style="text-decoration:none;display:inline-flex;align-items:center;gap:0.5rem;background:linear-gradient(135deg,#f97316,#fb923c);" aria-label="Get Between Us on Google Play">Google Play</a>
+                    <div class="hero-cta-row">
+                        <button type="button" class="btn" onclick="openAuthPanel()" aria-label="Join Between Us">Join Between Us</button>
+                        <a class="btn-secondary" href="#live" onclick="event.preventDefault();document.getElementById('live')?.scrollIntoView({behavior:'smooth'})">Explore Stories</a>
+                    </div>
+                    <button type="button" class="btn-ghost" onclick="navigateJournal()">Read the Journal</button>
+
+                    <div class="hero-stack" id="heroStack" aria-live="polite" aria-label="Public story previews">
+                        <div class="hero-stack-empty">Loading stories…</div>
                     </div>
 
-                    <!-- Email Signup Form -->
-                    <form class="email-form" id="waitlistForm">
+                    <div class="store-cta" id="storeCta" style="display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap;margin:2rem 0 0.5rem;">
+                        <a id="ctaAppStore" class="btn-secondary" href="https://apps.apple.com/search?term=Between%20Us" style="text-decoration:none;" aria-label="Get Between Us on the App Store">App Store</a>
+                        <a id="ctaPlayStore" class="btn-secondary" href="https://play.google.com/store/apps/details?id=com.betweenus.app" style="text-decoration:none;" aria-label="Get Between Us on Google Play">Google Play</a>
+                    </div>
+
+                    <form class="email-form" id="waitlistForm" style="margin-top:1.5rem;">
                         <div class="form-group">
-                            <input 
-                                type="email" 
-                                id="email" 
-                                placeholder="Enter your email" 
-                                required
-                            >
+                            <input type="email" id="email" placeholder="Email for launch updates" required aria-label="Email for waitlist">
                             <button type="submit" class="btn" id="submitBtn">
                                 <span id="btnText">Join Waitlist</span>
-                                <svg class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                                </svg>
                             </button>
                         </div>
                         <div id="waitlistMessage"></div>
                     </form>
 
-                    <p style="font-size: 0.9rem; color: #6b7280; margin-top: 1rem;">
-                        Be the first to know about launches and updates. No spam, ever.
-                    </p>
-
-                    <!-- Scroll Indicator -->
                     <div class="scroll-indicator">
-                        <span>Scroll to LIVE stories</span>
-                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <span>Scroll to stories</span>
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
                         </svg>
                     </div>
@@ -1018,7 +1395,7 @@
                 <!-- LIVE Feed -->
                 <section id="live" class="live-section" style="max-width:720px;margin:0 auto 4rem;padding:0 1rem;">
                     <div style="display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1.25rem;">
-                        <h2 style="font-size:1.75rem;background:linear-gradient(135deg,#e879f9,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">LIVE</h2>
+                        <h2 style="font-size:1.75rem;background:linear-gradient(135deg,#e879f9,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Stories</h2>
                         <div class="live-filters" style="display:flex;gap:0.5rem;flex-wrap:wrap;">
                             <button type="button" class="live-filter active" data-sort="trending" onclick="loadLiveFeed('trending')" style="padding:0.4rem 0.8rem;border-radius:999px;border:1px solid rgba(167,139,250,0.4);background:rgba(167,139,250,0.2);color:#fff;cursor:pointer;">Trending</button>
                             <button type="button" class="live-filter" data-sort="newest" onclick="loadLiveFeed('newest')" style="padding:0.4rem 0.8rem;border-radius:999px;border:1px solid rgba(167,139,250,0.4);background:transparent;color:#fff;cursor:pointer;">Newest</button>
@@ -1034,65 +1411,65 @@
                 </section>
 
                 <!-- Features Section -->
-                <section class="features-grid">
+                <section class="features-grid" aria-label="What Between Us is about">
                     <div class="feature-card">
                         <div class="feature-icon">
-                            <svg class="icon-lg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <svg class="icon-lg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                             </svg>
                         </div>
-                        <h3 class="feature-title">100% Anonymous</h3>
-                        <p class="feature-desc">Share your thoughts safely without revealing your identity. Your privacy is our top priority.</p>
+                        <h3 class="feature-title">Anonymous to others</h3>
+                        <p class="feature-desc">Your public face is an anonymous handle. Accountable to Between Us — not performed for followers.</p>
                     </div>
 
                     <div class="feature-card orange">
                         <div class="feature-icon orange">
-                            <svg class="icon-lg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <svg class="icon-lg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                             </svg>
                         </div>
-                        <h3 class="feature-title orange">Daily Check-ins</h3>
-                        <p class="feature-desc">Track your emotional wellness with beautiful interactive mood bubbles in 6 languages.</p>
+                        <h3 class="feature-title orange">Me Too</h3>
+                        <p class="feature-desc">The reaction that matters: someone else has been there. Shared experience over empty likes.</p>
                     </div>
 
                     <div class="feature-card">
                         <div class="feature-icon">
-                            <svg class="icon-lg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <svg class="icon-lg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                             </svg>
                         </div>
-                        <h3 class="feature-title">Community Support</h3>
-                        <p class="feature-desc">Receive caring responses from a supportive community who understands what you're going through.</p>
+                        <h3 class="feature-title">People who get it</h3>
+                        <p class="feature-desc">Replies and stories from people who understand the moment — not a therapy session, a human connection.</p>
                     </div>
 
                     <div class="feature-card">
                         <div class="feature-icon">
-                            <svg class="icon-lg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            <svg class="icon-lg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                         </div>
-                        <h3 class="feature-title">Multi-Language</h3>
-                        <p class="feature-desc">Express yourself in your preferred language: English, Spanish, French, German, Italian, or Portuguese.</p>
+                        <h3 class="feature-title">The Tea</h3>
+                        <p class="feature-desc">Gossip, drama, dating disasters, workplace stories, and hot takes — moderated, never doxxing.</p>
                     </div>
 
                     <div class="feature-card orange">
                         <div class="feature-icon orange">
-                            <svg class="icon-lg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                            <svg class="icon-lg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                             </svg>
                         </div>
-                        <h3 class="feature-title orange">Vibrant Design</h3>
-                        <p class="feature-desc">Beautiful neon aesthetics with smooth animations, floating orbs, and calming gradients.</p>
+                        <h3 class="feature-title orange">Between Us Journal</h3>
+                        <p class="feature-desc">Editorial stories from the Between Us team — deeper takes that connect back to real community voices.</p>
                     </div>
 
                     <div class="feature-card">
                         <div class="feature-icon">
-                            <svg class="icon-lg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                            <svg class="icon-lg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
                             </svg>
                         </div>
-                        <h3 class="feature-title">Gamified Wellness</h3>
-                        <p class="feature-desc">Earn points and rewards for maintaining your mental health journey and supporting others.</p>
+                        <h3 class="feature-title">Web + iOS + Android</h3>
+                        <p class="feature-desc">One account across platforms. Read here. Spill, reply, and stay in the conversation in the app.</p>
                     </div>
                 </section>
 
@@ -1108,7 +1485,7 @@
                     <h2 class="download-title">Download Between Us</h2>
                     
                     <p class="download-text">
-                        Our mobile apps are coming soon! Join the waitlist to be notified when we launch on iOS and Android.
+                        Get the full Between Us experience on your phone — Spill, Me Too, Activity, and your private space.
                     </p>
 
                     <p style="font-size: 1.125rem; color: #e879f9; margin-top: 2rem; font-weight: 600;">
@@ -1243,7 +1620,7 @@
                             <p>If you have questions about this Privacy Policy or our data practices, please contact us:</p>
                             <div class="contact-box">
                                 <p><strong>Email:</strong> <a href="mailto:privacy@betweenus.semprog.de">privacy@betweenus.semprog.de</a></p>
-                                <p><strong>Support:</strong> <a href="mailto:support@betweenus.semprog.de">support@betweenus.semprog.de</a></p>
+                                <p><strong>Support:</strong> <a href="mailto:support@betweenus.fun">support@betweenus.semprog.de</a></p>
                                 <p><strong>Legal:</strong> <a href="mailto:legal@betweenus.semprog.de">legal@betweenus.semprog.de</a></p>
                                 <p><strong>Website:</strong> <a href="https://betweenus.semprog.de">betweenus.semprog.de</a></p>
                             </div>
@@ -1379,7 +1756,7 @@
                             <p>If you have questions about these Terms, please contact us:</p>
                             <div class="contact-box">
                                 <p><strong>Email:</strong> <a href="mailto:legal@betweenus.semprog.de">legal@betweenus.semprog.de</a></p>
-                                <p><strong>Support:</strong> <a href="mailto:support@betweenus.semprog.de">support@betweenus.semprog.de</a></p>
+                                <p><strong>Support:</strong> <a href="mailto:support@betweenus.fun">support@betweenus.semprog.de</a></p>
                                 <p><strong>Website:</strong> <a href="https://betweenus.semprog.de">betweenus.semprog.de</a></p>
                             </div>
                         </div>
@@ -1523,13 +1900,39 @@
                     <div style="margin-top: 3rem;">
                         <h2 style="text-align: center; margin-bottom: 2rem; color: #f0abfc;">Other Ways to Reach Us</h2>
                         <div class="contact-box">
-                            <p><strong>General Support:</strong> <a href="mailto:support@betweenus.semprog.de">support@betweenus.semprog.de</a></p>
+                            <p><strong>General Support:</strong> <a href="mailto:support@betweenus.fun">support@betweenus.semprog.de</a></p>
                             <p><strong>Privacy Concerns:</strong> <a href="mailto:privacy@betweenus.semprog.de">privacy@betweenus.semprog.de</a></p>
                             <p><strong>Legal Inquiries:</strong> <a href="mailto:legal@betweenus.semprog.de">legal@betweenus.semprog.de</a></p>
                             <p><strong>Press & Media:</strong> <a href="mailto:press@betweenus.semprog.de">press@betweenus.semprog.de</a></p>
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <!-- JOURNAL PAGE -->
+            <div id="journal" class="page">
+                <section class="journal-hero">
+                    <div class="badge" style="margin-bottom:1.5rem;">
+                        <span>Editorial</span>
+                    </div>
+                    <h1>Between Us Journal</h1>
+                    <p class="hero-support" style="margin-left:auto;margin-right:auto;">
+                        Stories and essays from the Between Us team — not user posts.
+                        Written to sit beside the community, never above it.
+                    </p>
+                    <button type="button" class="btn" onclick="openAuthPanel()" style="margin-top:0.5rem;">Join Between Us</button>
+                    <button type="button" class="btn-ghost" onclick="navigateHome();setTimeout(()=>document.getElementById('live')?.scrollIntoView({behavior:'smooth'}),80)">Explore community stories</button>
+                </section>
+
+                <article class="journal-card">
+                    <h3>Why we built Between Us</h3>
+                    <p>People need a place to say the thing they can't put on their real feed — without pretending it's therapy, and without turning anonymity into cruelty.</p>
+                </article>
+                <article class="journal-card">
+                    <h3>Coming next</h3>
+                    <p>Full Journal articles with SEO pages, related community stories, and the same content inside the iOS and Android apps. Editorial publishing is team-only.</p>
+                </article>
+                <p class="journal-note">Journal articles are published only by Between Us editors. Community Spill stays in Stories.</p>
             </div>
 
             <!-- STORY PAGE (public share / deep link) -->
@@ -1549,6 +1952,29 @@
             </div>
         </div>
 
+        <!-- Auth Panel -->
+        <div class="auth-overlay" id="authOverlay" role="dialog" aria-modal="true" aria-labelledby="authTitle" hidden>
+            <div class="auth-panel">
+                <button type="button" class="auth-close" onclick="closeAuthPanel()" aria-label="Close">×</button>
+                <h2 id="authTitle">Join Between Us</h2>
+                <p class="auth-sub">Your real identity doesn't have to be your public identity.</p>
+                <button type="button" class="auth-provider" onclick="authWithGoogle()">Continue with Google</button>
+                <button type="button" class="auth-provider" onclick="authWithApple()">Continue with Apple</button>
+                <button type="button" class="auth-provider" onclick="toggleAuthEmail()">Continue with Email</button>
+                <div class="auth-email-fields" id="authEmailFields">
+                    <div class="auth-divider">email</div>
+                    <input type="email" id="authEmail" placeholder="Email" autocomplete="email" aria-label="Email">
+                    <input type="password" id="authPassword" placeholder="Password (min 6 characters)" autocomplete="current-password" aria-label="Password">
+                    <button type="button" class="btn" style="width:100%;" onclick="authWithEmail(false)">Sign in</button>
+                    <button type="button" class="btn-secondary" style="width:100%;" onclick="authWithEmail(true)">Create account</button>
+                </div>
+                <div class="auth-msg" id="authMsg" role="status"></div>
+                <p style="margin-top:1rem;font-size:0.8rem;color:#71717a;line-height:1.45;">
+                    Same account on web, iOS, and Android. You can keep exploring public stories without signing in.
+                </p>
+            </div>
+        </div>
+
         <!-- Footer -->
         <footer>
             <div class="footer-content">
@@ -1556,16 +1982,18 @@
                     <p>&copy; 2025 Between Us. All rights reserved. Made with 💜 for mental wellness.</p>
                     <div style="margin-top: 1rem; display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap;">
                         <button onclick="showPage('home')" style="color: #a78bfa; background: none; border: none; cursor: pointer; font-size: 0.9rem;">Home</button>
+                        <button onclick="navigateJournal()" style="color: #a78bfa; background: none; border: none; cursor: pointer; font-size: 0.9rem;">Journal</button>
                         <button onclick="showPage('privacy')" style="color: #a78bfa; background: none; border: none; cursor: pointer; font-size: 0.9rem;">Privacy</button>
                         <button onclick="showPage('terms')" style="color: #a78bfa; background: none; border: none; cursor: pointer; font-size: 0.9rem;">Terms</button>
                         <button onclick="showPage('support')" style="color: #a78bfa; background: none; border: none; cursor: pointer; font-size: 0.9rem;">Support</button>
-                        <a href="mailto:support@betweenus.semprog.de" style="color: #a78bfa; text-decoration: none; font-size: 0.9rem;">Contact</a>
+                        <a href="mailto:support@betweenus.fun" style="color: #a78bfa; text-decoration: none; font-size: 0.9rem;">Contact</a>
                     </div>
                 </div>
             </div>
         </footer>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.1/dist/umd/supabase.min.js"></script>
     <script>
         // Configuration - Ready to use!
         const SUPABASE_PROJECT_ID = 'qoqbdiixztolvtcjdnle';
@@ -1574,7 +2002,7 @@
         // Generate Floating Stars
         function createStars() {
             const starsContainer = document.getElementById('starsContainer');
-            const starCount = 50;
+            const starCount = 28;
             
             for (let i = 0; i < starCount; i++) {
                 const star = document.createElement('div');
@@ -1594,7 +2022,235 @@
 
         // Page Navigation + public website routing
         const API_BASE = `https://${SUPABASE_PROJECT_ID}.supabase.co/functions/v1/make-server-6c9b0e48`
+        const SUPABASE_URL = `https://${SUPABASE_PROJECT_ID}.supabase.co`
+        const SESSION_KEY = 'between_us_session'
+        const USER_KEY = 'between_us_user'
         let currentStoryId = null
+        let pendingAuthAction = null
+        let supabaseClient = null
+
+        function getSupabase() {
+            if (supabaseClient) return supabaseClient
+            if (!window.supabase || !window.supabase.createClient) {
+                console.error('Supabase JS failed to load')
+                return null
+            }
+            supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+            return supabaseClient
+        }
+
+        function saveWebSession(accessToken, user) {
+            try {
+                localStorage.setItem(SESSION_KEY, accessToken)
+                localStorage.setItem(USER_KEY, JSON.stringify({
+                    id: user.id,
+                    email: user.email,
+                    user_metadata: user.user_metadata || {},
+                }))
+            } catch (e) {
+                console.warn('Could not persist session', e)
+            }
+            updateAuthNav()
+        }
+
+        function clearWebSession() {
+            localStorage.removeItem(SESSION_KEY)
+            localStorage.removeItem(USER_KEY)
+            updateAuthNav()
+        }
+
+        function getWebUser() {
+            try {
+                const raw = localStorage.getItem(USER_KEY)
+                return raw ? JSON.parse(raw) : null
+            } catch {
+                return null
+            }
+        }
+
+        function updateAuthNav() {
+            const user = getWebUser()
+            const joinBtn = document.getElementById('navJoinBtn')
+            const navUser = document.getElementById('navUser')
+            if (!joinBtn || !navUser) return
+            if (user) {
+                navUser.hidden = false
+                navUser.textContent = user.email || 'Signed in'
+                joinBtn.textContent = 'Sign out'
+                joinBtn.onclick = () => { clearWebSession(); getSupabase()?.auth.signOut() }
+            } else {
+                navUser.hidden = true
+                navUser.textContent = ''
+                joinBtn.textContent = 'Join'
+                joinBtn.onclick = () => openAuthPanel()
+            }
+        }
+
+        function openAuthPanel(action) {
+            pendingAuthAction = action || null
+            const overlay = document.getElementById('authOverlay')
+            if (!overlay) return
+            overlay.hidden = false
+            overlay.classList.add('open')
+            document.getElementById('authMsg').textContent = ''
+            document.getElementById('authMsg').className = 'auth-msg'
+        }
+
+        function closeAuthPanel() {
+            const overlay = document.getElementById('authOverlay')
+            if (!overlay) return
+            overlay.classList.remove('open')
+            overlay.hidden = true
+            pendingAuthAction = null
+        }
+
+        function toggleAuthEmail() {
+            document.getElementById('authEmailFields').classList.toggle('open')
+        }
+
+        function setAuthMsg(text, kind) {
+            const el = document.getElementById('authMsg')
+            el.textContent = text
+            el.className = 'auth-msg' + (kind ? ' ' + kind : '')
+        }
+
+        async function authWithGoogle() {
+            const client = getSupabase()
+            if (!client) return setAuthMsg('Auth unavailable. Please refresh.', 'error')
+            setAuthMsg('Redirecting to Google…')
+            const { error } = await client.auth.signInWithOAuth({
+                provider: 'google',
+                options: {
+                    redirectTo: window.location.origin + '/',
+                    queryParams: { access_type: 'offline', prompt: 'consent' },
+                },
+            })
+            if (error) setAuthMsg(error.message || 'Google sign-in failed', 'error')
+        }
+
+        async function authWithApple() {
+            const client = getSupabase()
+            if (!client) return setAuthMsg('Auth unavailable. Please refresh.', 'error')
+            setAuthMsg('Redirecting to Apple…')
+            const { error } = await client.auth.signInWithOAuth({
+                provider: 'apple',
+                options: { redirectTo: window.location.origin + '/' },
+            })
+            if (error) setAuthMsg(error.message || 'Apple sign-in failed. Email works anytime.', 'error')
+        }
+
+        async function authWithEmail(isSignUp) {
+            const email = document.getElementById('authEmail').value.trim()
+            const password = document.getElementById('authPassword').value
+            if (!email || password.length < 6) {
+                setAuthMsg('Enter email and a password with at least 6 characters.', 'error')
+                return
+            }
+            setAuthMsg(isSignUp ? 'Creating account…' : 'Signing in…')
+            try {
+                const endpoint = isSignUp ? '/auth/signup' : '/auth/signin'
+                const res = await fetch(`${API_BASE}${endpoint}`, {
+                    method: 'POST',
+                    headers: {
+                        Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email, password }),
+                })
+                const data = await res.json().catch(() => ({}))
+                if (!res.ok) {
+                    const msg = data.error || data.message || 'Authentication failed'
+                    setAuthMsg(msg, 'error')
+                    return
+                }
+                if (data.access_token && data.user) {
+                    saveWebSession(data.access_token, data.user)
+                    setAuthMsg('You are in.', 'success')
+                    setTimeout(() => {
+                        closeAuthPanel()
+                        if (typeof pendingAuthAction === 'function') pendingAuthAction()
+                    }, 500)
+                    return
+                }
+                setAuthMsg('Unexpected response. Try again.', 'error')
+            } catch (err) {
+                console.error(err)
+                setAuthMsg('Network error. Try again.', 'error')
+            }
+        }
+
+        async function handleOAuthReturn() {
+            const client = getSupabase()
+            if (!client) return
+            try {
+                const { data, error } = await client.auth.getSession()
+                if (error) return
+                if (data?.session?.access_token && data.session.user) {
+                    saveWebSession(data.session.access_token, data.session.user)
+                    if (window.location.hash && window.location.hash.includes('access_token')) {
+                        history.replaceState({}, '', window.location.pathname + window.location.search)
+                    }
+                }
+            } catch (e) {
+                console.warn('OAuth session check failed', e)
+            }
+        }
+
+        function closeMobileNav() {
+            const nav = document.getElementById('mobileNav')
+            const toggle = document.getElementById('navToggle')
+            if (!nav) return
+            nav.classList.remove('open')
+            nav.hidden = true
+            if (toggle) toggle.setAttribute('aria-expanded', 'false')
+        }
+
+        function toggleMobileNav() {
+            const nav = document.getElementById('mobileNav')
+            const toggle = document.getElementById('navToggle')
+            if (!nav) return
+            const open = !nav.classList.contains('open')
+            nav.classList.toggle('open', open)
+            nav.hidden = !open
+            if (toggle) toggle.setAttribute('aria-expanded', open ? 'true' : 'false')
+        }
+
+        function navigateJournal() {
+            history.pushState({}, '', '/journal')
+            showPage('journal')
+            document.title = 'Between Us Journal'
+            const canonical = document.querySelector('link[rel="canonical"]')
+            if (canonical) canonical.setAttribute('href', 'https://betweenus.fun/journal')
+        }
+
+        async function loadHeroStack() {
+            const stackRoot = document.getElementById('heroStack')
+            if (!stackRoot) return
+            try {
+                const res = await fetch(`${API_BASE}/posts?sort=trending&limit=3`, {
+                    headers: { Authorization: `Bearer ${SUPABASE_ANON_KEY}` },
+                })
+                const data = await res.json()
+                const posts = Array.isArray(data.posts) ? data.posts : []
+                if (!posts.length) {
+                    stackRoot.innerHTML = '<div class="hero-stack-empty">Stories will appear here.</div>'
+                    return
+                }
+                stackRoot.innerHTML = posts.slice(0, 3).map((post) => {
+                    const cat = post.category || 'Story'
+                    return `
+                      <button type="button" class="hero-stack-card" style="text-align:left;cursor:pointer;width:100%;font:inherit;color:inherit;" onclick="navigateStory('${escapeHtml(post.id)}')" aria-label="Open story">
+                        <div class="hero-stack-meta">${escapeHtml(cat)} · @Anonymous</div>
+                        <div class="hero-stack-text">${escapeHtml(truncate(post.content, 140))}</div>
+                      </button>
+                    `
+                }).join('')
+            } catch (err) {
+                console.error(err)
+                stackRoot.innerHTML = '<div class="hero-stack-empty">Stories load when you are online.</div>'
+            }
+        }
+
 
         function escapeHtml(value) {
             return String(value ?? '')
@@ -1762,6 +2418,11 @@
                 loadStory(decodeURIComponent(storyMatch[1]))
                 return
             }
+            if (path === '/journal' || path.endsWith('/journal')) {
+                showPage('journal')
+                document.title = 'Between Us Journal'
+                return
+            }
             if (path.includes('privacy')) {
                 showPage('privacy')
                 return
@@ -1776,6 +2437,7 @@
             }
             showPage('home')
             loadLiveFeed('trending')
+            loadHeroStack()
         }
 
         function setupStoreCtas() {
@@ -1792,6 +2454,18 @@
         window.addEventListener('DOMContentLoaded', () => {
             createStars()
             setupStoreCtas()
+            updateAuthNav()
+            handleOAuthReturn()
+            document.getElementById('navToggle')?.addEventListener('click', toggleMobileNav)
+            document.getElementById('authOverlay')?.addEventListener('click', (e) => {
+                if (e.target === e.currentTarget) closeAuthPanel()
+            })
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    closeAuthPanel()
+                    closeMobileNav()
+                }
+            })
             routeFromLocation()
         })
 
