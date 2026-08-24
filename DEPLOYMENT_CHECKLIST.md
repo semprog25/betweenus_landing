@@ -75,16 +75,16 @@ Use this checklist to deploy your Between Us landing pages and prepare for app s
 ## ✅ Phase 3: Domain & Hosting Setup
 
 - [ ] **Configure Domain**
-  - [ ] Point betweenus.semprog.de to hosting
+  - [ ] Point betweenus.fun to hosting
   - [ ] Set up SSL certificate (HTTPS)
   - [ ] Configure DNS records
   - [ ] Test domain access
   - [ ] Set up www redirect if needed
 
 - [ ] **Set Up Email Addresses**
-  - [ ] Create support@betweenus.semprog.de
-  - [ ] Create privacy@betweenus.semprog.de
-  - [ ] Create legal@betweenus.semprog.de
+  - [ ] Create support@betweenus.fun
+  - [ ] Create privacy@betweenus.fun
+  - [ ] Create legal@betweenus.fun
   - [ ] Set up email forwarding
   - [ ] Send test emails to verify working
   - [ ] Set up auto-reply (optional)
@@ -100,7 +100,7 @@ Use this checklist to deploy your Between Us landing pages and prepare for app s
 ## ✅ Phase 4: Final Verification
 
 - [ ] **Test Live Site**
-  - [ ] Visit https://betweenus.semprog.de/landing
+  - [ ] Visit https://betweenus.fun/landing
   - [ ] Test all page navigation
   - [ ] Submit test waitlist email
   - [ ] Submit test contact form
@@ -126,9 +126,9 @@ Use this checklist to deploy your Between Us landing pages and prepare for app s
 
 ### Google Play Store
 - [ ] **Required Information**
-  - [ ] Privacy Policy URL: `https://betweenus.semprog.de/landing/privacy`
-  - [ ] Terms of Service URL: `https://betweenus.semprog.de/landing/terms`
-  - [ ] Support Email: `support@betweenus.semprog.de`
+  - [ ] Privacy Policy URL: `https://betweenus.fun/landing/privacy`
+  - [ ] Terms of Service URL: `https://betweenus.fun/landing/terms`
+  - [ ] Support Email: `support@betweenus.fun`
   - [ ] App Screenshots (phone + tablet)
   - [ ] Feature Graphic (1024x500)
   - [ ] App Icon (512x512)
@@ -142,10 +142,10 @@ Use this checklist to deploy your Between Us landing pages and prepare for app s
 
 ### Apple App Store
 - [ ] **Required Information**
-  - [ ] Privacy Policy URL: `https://betweenus.semprog.de/landing/privacy`
-  - [ ] Terms of Use URL: `https://betweenus.semprog.de/landing/terms`
-  - [ ] Support URL: `https://betweenus.semprog.de/landing/support`
-  - [ ] Marketing URL: `https://betweenus.semprog.de/landing`
+  - [ ] Privacy Policy URL: `https://betweenus.fun/landing/privacy`
+  - [ ] Terms of Use URL: `https://betweenus.fun/landing/terms`
+  - [ ] Support URL: `https://betweenus.fun/landing/support`
+  - [ ] Marketing URL: `https://betweenus.fun/landing`
   - [ ] App Screenshots (6.5", 5.5", iPad)
   - [ ] App Preview Videos (optional)
   - [ ] App Icon (1024x1024)
@@ -212,10 +212,10 @@ Use this checklist to deploy your Between Us landing pages and prepare for app s
 
 Once deployed, verify these URLs work:
 
-- **Home**: https://betweenus.semprog.de/landing
-- **Privacy**: https://betweenus.semprog.de/landing/privacy  
-- **Terms**: https://betweenus.semprog.de/landing/terms
-- **Support**: https://betweenus.semprog.de/landing/support
+- **Home**: https://betweenus.fun/landing
+- **Privacy**: https://betweenus.fun/landing/privacy  
+- **Terms**: https://betweenus.fun/landing/terms
+- **Support**: https://betweenus.fun/landing/support
 
 ## 🆘 Troubleshooting
 

@@ -39,12 +39,12 @@ This folder contains the complete landing page system for Between Us, including 
 
 ## Domain Configuration
 
-**Primary Domain**: betweenus.semprog.de
+**Primary Domain**: betweenus.fun
 
 **Email Addresses**:
-- General Support: support@betweenus.semprog.de
-- Privacy Inquiries: privacy@betweenus.semprog.de
-- Legal Matters: legal@betweenus.semprog.de
+- General Support: support@betweenus.fun
+- Privacy Inquiries: privacy@betweenus.fun
+- Legal Matters: legal@betweenus.fun
 
 ## Backend Integration
 
@@ -115,34 +115,34 @@ import { LandingPages } from './landing-pages';
 
 ### Option 3: Subdomain
 
-Deploy to a subdomain like `landing.betweenus.semprog.de` or `www.betweenus.semprog.de`
+Deploy to a subdomain like `landing.betweenus.fun` or `www.betweenus.fun`
 
 ## App Store Requirements
 
 ### Google Play Store
-- ✅ Privacy Policy URL: `https://betweenus.semprog.de/landing/privacy`
-- ✅ Terms of Service URL: `https://betweenus.semprog.de/landing/terms`
-- ✅ Support Email: `support@betweenus.semprog.de`
+- ✅ Privacy Policy URL: `https://betweenus.fun/landing/privacy`
+- ✅ Terms of Service URL: `https://betweenus.fun/landing/terms`
+- ✅ Support Email: `support@betweenus.fun`
 
 ### Apple App Store
-- ✅ Privacy Policy URL: `https://betweenus.semprog.de/landing/privacy`
-- ✅ Terms of Use URL: `https://betweenus.semprog.de/landing/terms`
-- ✅ Support URL: `https://betweenus.semprog.de/landing/support`
-- ✅ Marketing URL: `https://betweenus.semprog.de/landing`
+- ✅ Privacy Policy URL: `https://betweenus.fun/landing/privacy`
+- ✅ Terms of Use URL: `https://betweenus.fun/landing/terms`
+- ✅ Support URL: `https://betweenus.fun/landing/support`
+- ✅ Marketing URL: `https://betweenus.fun/landing`
 
 ## Customization
 
 ### Update Contact Emails
 
 Search and replace in all files:
-- `support@betweenus.semprog.de` → your support email
-- `privacy@betweenus.semprog.de` → your privacy email
-- `legal@betweenus.semprog.de` → your legal email
+- `support@betweenus.fun` → your support email
+- `privacy@betweenus.fun` → your privacy email
+- `legal@betweenus.fun` → your legal email
 
 ### Update Domain
 
 Search and replace:
-- `betweenus.semprog.de` → your domain
+- `betweenus.fun` → your domain
 
 ### Modify Content
 

@@ -3,9 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Between Us - Anonymous Mental Wellness & Support</title>
-    <meta name="description" content="Share your thoughts anonymously, receive support from a caring community, and track your wellness journey with Between Us.">
-    
+    <title>Between Us — Say what you can't say anywhere else</title>
+    <meta name="description" content="Between Us is a text and image community. Write, discover, vote and discuss anonymous stories. Read the LIVE feed, then join the conversation in the app.">
+    <link rel="canonical" href="https://betweenus.fun/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Between Us">
+    <meta property="og:title" content="Between Us — Say what you can't say anywhere else">
+    <meta property="og:description" content="Write, discover, vote and discuss anonymous stories with the community.">
+    <meta property="og:url" content="https://betweenus.fun/">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Between Us">
+    <meta name="twitter:description" content="Say what you can't say anywhere else. Read LIVE stories and join the conversation.">
+    <meta name="robots" content="index,follow">
     <style>
         * {
             margin: 0;
@@ -938,10 +947,11 @@
         <nav>
             <div class="logo"></div>
             <div class="nav-links">
-                <a class="nav-link" onclick="showPage('home')">Home</a>
-                <a class="nav-link" onclick="showPage('privacy')">Privacy</a>
-                <a class="nav-link" onclick="showPage('terms')">Terms</a>
-                <a class="nav-link" onclick="showPage('support')">Support</a>
+                <a class="nav-link" onclick="navigateHome()">Home</a>
+                <a class="nav-link" href="#live" onclick="navigateHome(); setTimeout(()=>document.getElementById('live')?.scrollIntoView({behavior:'smooth'}),50)">LIVE</a>
+                <a class="nav-link" onclick="showPage('privacy'); history.pushState({},'', '/privacy')">Privacy</a>
+                <a class="nav-link" onclick="showPage('terms'); history.pushState({},'', '/terms')">Terms</a>
+                <a class="nav-link" onclick="showPage('support'); history.pushState({},'', '/support')">Support</a>
             </div>
         </nav>
 
@@ -958,15 +968,20 @@
                         <svg class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
                         </svg>
-                        <span>Anonymous Mental Wellness Support</span>
+                        <span>Text + image community</span>
                     </div>
                     
-                    <h1>Your Safe Space for Mental Wellness</h1>
+                    <h1>Say what you can't say anywhere else</h1>
                     
                     <p class="hero-text">
-                        Share your thoughts anonymously, receive support from a caring community, 
-                        and track your wellness journey with beautiful daily check-ins.
+                        Between Us is where people write, discover, vote and discuss anonymous stories —
+                        including images and memes. Read the LIVE feed below, then join the conversation in the app.
                     </p>
+
+                    <div class="store-cta" id="storeCta" style="display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap;margin:1.5rem 0 0.5rem;">
+                        <a id="ctaAppStore" class="btn" href="https://apps.apple.com/search?term=Between%20Us" style="text-decoration:none;display:inline-flex;align-items:center;gap:0.5rem;" aria-label="Get Between Us on the App Store">App Store</a>
+                        <a id="ctaPlayStore" class="btn" href="https://play.google.com/store/apps/details?id=com.betweenus.app" style="text-decoration:none;display:inline-flex;align-items:center;gap:0.5rem;background:linear-gradient(135deg,#f97316,#fb923c);" aria-label="Get Between Us on Google Play">Google Play</a>
+                    </div>
 
                     <!-- Email Signup Form -->
                     <form class="email-form" id="waitlistForm">
@@ -988,15 +1003,33 @@
                     </form>
 
                     <p style="font-size: 0.9rem; color: #6b7280; margin-top: 1rem;">
-                        Be the first to know when we launch. No spam, ever. ✨
+                        Be the first to know about launches and updates. No spam, ever.
                     </p>
 
                     <!-- Scroll Indicator -->
                     <div class="scroll-indicator">
-                        <span>Scroll to explore</span>
+                        <span>Scroll to LIVE stories</span>
                         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
                         </svg>
+                    </div>
+                </section>
+
+                <!-- LIVE Feed -->
+                <section id="live" class="live-section" style="max-width:720px;margin:0 auto 4rem;padding:0 1rem;">
+                    <div style="display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1.25rem;">
+                        <h2 style="font-size:1.75rem;background:linear-gradient(135deg,#e879f9,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">LIVE</h2>
+                        <div class="live-filters" style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+                            <button type="button" class="live-filter active" data-sort="trending" onclick="loadLiveFeed('trending')" style="padding:0.4rem 0.8rem;border-radius:999px;border:1px solid rgba(167,139,250,0.4);background:rgba(167,139,250,0.2);color:#fff;cursor:pointer;">Trending</button>
+                            <button type="button" class="live-filter" data-sort="newest" onclick="loadLiveFeed('newest')" style="padding:0.4rem 0.8rem;border-radius:999px;border:1px solid rgba(167,139,250,0.4);background:transparent;color:#fff;cursor:pointer;">Newest</button>
+                            <button type="button" class="live-filter" data-sort="controversial" onclick="loadLiveFeed('controversial')" style="padding:0.4rem 0.8rem;border-radius:999px;border:1px solid rgba(167,139,250,0.4);background:transparent;color:#fff;cursor:pointer;">Most Discussed</button>
+                        </div>
+                    </div>
+                    <div id="liveFeed" aria-live="polite">Loading stories…</div>
+                    <p style="text-align:center;margin-top:1.5rem;color:#9ca3af;">Want to join the conversation?</p>
+                    <div style="display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap;margin-top:0.75rem;">
+                        <a class="btn" href="https://apps.apple.com/search?term=Between%20Us" style="text-decoration:none;">App Store</a>
+                        <a class="btn" href="https://play.google.com/store/apps/details?id=com.betweenus.app" style="text-decoration:none;background:linear-gradient(135deg,#f97316,#fb923c);">Google Play</a>
                     </div>
                 </section>
 
@@ -1498,6 +1531,22 @@
                     </div>
                 </div>
             </div>
+
+            <!-- STORY PAGE (public share / deep link) -->
+            <div id="story" class="page">
+                <div class="legal-container" style="max-width:720px;">
+                    <button type="button" onclick="navigateHome()" style="color:#a78bfa;background:none;border:none;cursor:pointer;margin-bottom:1rem;" aria-label="Back to home">← Back to LIVE</button>
+                    <div id="storyContent" aria-live="polite">Loading story…</div>
+                    <div style="margin-top:2rem;text-align:center;">
+                        <p style="color:#9ca3af;margin-bottom:0.75rem;">Want to join the conversation?</p>
+                        <div style="display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap;">
+                            <a class="btn" href="https://apps.apple.com/search?term=Between%20Us" style="text-decoration:none;">App Store</a>
+                            <a class="btn" href="https://play.google.com/store/apps/details?id=com.betweenus.app" style="text-decoration:none;background:linear-gradient(135deg,#f97316,#fb923c);">Google Play</a>
+                        </div>
+                        <button type="button" id="shareStoryBtn" onclick="shareCurrentStory()" class="btn" style="margin-top:1rem;background:transparent;border:1px solid rgba(167,139,250,0.5);">Share</button>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Footer -->
@@ -1541,27 +1590,210 @@
             }
         }
 
-        // Initialize stars on load
-        window.addEventListener('DOMContentLoaded', createStars);
+        // Stars are initialized with routeFromLocation on DOMContentLoaded
 
-        // Page Navigation
-        function showPage(pageName) {
-            // Hide all pages
-            document.querySelectorAll('.page').forEach(page => {
-                page.classList.remove('active');
-            });
-            
-            // Show selected page
-            document.getElementById(pageName).classList.add('active');
-            
-            // Update nav links
-            document.querySelectorAll('.nav-link').forEach(link => {
-                link.classList.remove('active');
-            });
-            
-            // Scroll to top
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+        // Page Navigation + public website routing
+        const API_BASE = `https://${SUPABASE_PROJECT_ID}.supabase.co/functions/v1/make-server-6c9b0e48`
+        let currentStoryId = null
+
+        function escapeHtml(value) {
+            return String(value ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
         }
+
+        function truncate(text, max) {
+            const t = String(text || '').trim()
+            if (t.length <= max) return t
+            return t.slice(0, max - 1) + '…'
+        }
+
+        function formatTime(ts) {
+            if (!ts) return ''
+            try {
+                return new Date(ts).toLocaleString()
+            } catch {
+                return ''
+            }
+        }
+
+        function showPage(pageName) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active')
+            })
+            const el = document.getElementById(pageName)
+            if (el) el.classList.add('active')
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active')
+            })
+            window.scrollTo({ top: 0, behavior: 'smooth' })
+        }
+
+        function navigateHome() {
+            history.pushState({}, '', '/')
+            showPage('home')
+            document.title = 'Between Us — Say what you can\'t say anywhere else'
+        }
+
+        function navigateStory(id) {
+            if (!id) return
+            history.pushState({}, '', `/story/${encodeURIComponent(id)}`)
+            showPage('story')
+            loadStory(id)
+        }
+
+        async function loadLiveFeed(sort = 'trending') {
+            const feed = document.getElementById('liveFeed')
+            if (!feed) return
+            document.querySelectorAll('.live-filter').forEach(btn => {
+                const active = btn.getAttribute('data-sort') === sort
+                btn.classList.toggle('active', active)
+                btn.style.background = active ? 'rgba(167,139,250,0.2)' : 'transparent'
+            })
+            feed.textContent = 'Loading stories…'
+            try {
+                const res = await fetch(`${API_BASE}/posts?sort=${encodeURIComponent(sort)}&limit=12`, {
+                    headers: { Authorization: `Bearer ${SUPABASE_ANON_KEY}` },
+                })
+                const data = await res.json()
+                const posts = Array.isArray(data.posts) ? data.posts : []
+                if (!posts.length) {
+                    feed.innerHTML = '<p style="color:#9ca3af;">No public stories yet. Check back soon.</p>'
+                    return
+                }
+                feed.innerHTML = posts.map(post => {
+                    const replies = Array.isArray(post.replies) ? post.replies.length : (post.replyCount || 0)
+                    const img = post.imageUrl || post.image_url
+                    const langs = Array.isArray(post.languages) ? post.languages.join(', ') : ''
+                    return `
+                      <article class="live-card" style="border:1px solid rgba(167,139,250,0.25);border-radius:16px;padding:1rem 1.1rem;margin-bottom:1rem;background:rgba(15,10,30,0.65);">
+                        <p style="white-space:pre-wrap;line-height:1.55;margin-bottom:0.75rem;">${escapeHtml(truncate(post.content, 320))}</p>
+                        ${img ? `<img src="${escapeHtml(img)}" alt="" style="width:100%;max-height:280px;object-fit:cover;border-radius:12px;margin-bottom:0.75rem;" loading="lazy">` : ''}
+                        <div style="display:flex;gap:0.75rem;flex-wrap:wrap;color:#9ca3af;font-size:0.85rem;">
+                          <span>▲ ${escapeHtml(post.upvotes || 0)}</span>
+                          <span>▼ ${escapeHtml(post.downvotes || 0)}</span>
+                          <span>💬 ${escapeHtml(replies)}</span>
+                          ${langs ? `<span>${escapeHtml(langs)}</span>` : ''}
+                          <span>${escapeHtml(formatTime(post.timestamp))}</span>
+                        </div>
+                        <button type="button" onclick="navigateStory('${escapeHtml(post.id)}')" style="margin-top:0.85rem;color:#e879f9;background:none;border:none;cursor:pointer;font-weight:600;" aria-label="Read more">Read more →</button>
+                      </article>
+                    `
+                }).join('')
+            } catch (err) {
+                console.error(err)
+                feed.innerHTML = '<p style="color:#f87171;">Could not load LIVE stories. Please try again.</p>'
+            }
+        }
+
+        async function loadStory(id) {
+            currentStoryId = id
+            const root = document.getElementById('storyContent')
+            if (!root) return
+            root.textContent = 'Loading story…'
+            try {
+                const res = await fetch(`${API_BASE}/posts/${encodeURIComponent(id)}`, {
+                    headers: { Authorization: `Bearer ${SUPABASE_ANON_KEY}` },
+                })
+                if (res.status === 404) {
+                    root.innerHTML = '<h1 style="margin-bottom:0.75rem;">Story not found</h1><p style="color:#9ca3af;">This story may be private, deleted, or the link is invalid.</p>'
+                    document.title = 'Story not found | Between Us'
+                    return
+                }
+                if (!res.ok) throw new Error('Failed')
+                const data = await res.json()
+                const post = data.post
+                if (!post) throw new Error('Missing post')
+                const replies = Array.isArray(post.replies) ? post.replies.length : 0
+                const img = post.imageUrl || post.image_url
+                const langs = Array.isArray(post.languages) ? post.languages.join(', ') : ''
+                document.title = `${truncate(post.content, 60)} | Between Us`
+                const canonical = document.querySelector('link[rel="canonical"]')
+                if (canonical) canonical.setAttribute('href', `https://betweenus.fun/story/${encodeURIComponent(id)}`)
+                root.innerHTML = `
+                  <h1 style="font-size:1.5rem;margin-bottom:1rem;line-height:1.4;">Story</h1>
+                  <p style="white-space:pre-wrap;font-size:1.1rem;line-height:1.65;margin-bottom:1rem;">${escapeHtml(post.content || '')}</p>
+                  ${img ? `<img src="${escapeHtml(img)}" alt="Story image" style="width:100%;border-radius:16px;margin-bottom:1rem;">` : ''}
+                  <div style="display:flex;gap:0.85rem;flex-wrap:wrap;color:#9ca3af;font-size:0.9rem;">
+                    <span>▲ ${escapeHtml(post.upvotes || 0)}</span>
+                    <span>▼ ${escapeHtml(post.downvotes || 0)}</span>
+                    <span>💬 ${escapeHtml(replies)} comments</span>
+                    ${langs ? `<span>${escapeHtml(langs)}</span>` : ''}
+                    <span>${escapeHtml(formatTime(post.timestamp))}</span>
+                  </div>
+                `
+            } catch (err) {
+                console.error(err)
+                root.innerHTML = '<h1>Could not load story</h1><p style="color:#9ca3af;">Please try again later.</p>'
+            }
+        }
+
+        async function shareCurrentStory() {
+            if (!currentStoryId) return
+            const url = `https://betweenus.fun/story/${encodeURIComponent(currentStoryId)}`
+            try {
+                if (navigator.share) {
+                    await navigator.share({ title: 'Between Us', url })
+                    return
+                }
+            } catch {}
+            try {
+                await navigator.clipboard.writeText(url)
+                alert('Link copied')
+            } catch {
+                prompt('Copy this link', url)
+            }
+        }
+
+        function routeFromLocation() {
+            const stored = sessionStorage.getItem('betweenus:path')
+            if (stored) {
+                sessionStorage.removeItem('betweenus:path')
+                if (stored !== window.location.pathname + window.location.search + window.location.hash) {
+                    history.replaceState({}, '', stored)
+                }
+            }
+            const path = window.location.pathname.replace(/\/+$/, '') || '/'
+            const storyMatch = path.match(/^\/story\/([^/]+)$/)
+            if (storyMatch) {
+                showPage('story')
+                loadStory(decodeURIComponent(storyMatch[1]))
+                return
+            }
+            if (path.includes('privacy')) {
+                showPage('privacy')
+                return
+            }
+            if (path.includes('terms')) {
+                showPage('terms')
+                return
+            }
+            if (path.includes('support')) {
+                showPage('support')
+                return
+            }
+            showPage('home')
+            loadLiveFeed('trending')
+        }
+
+        function setupStoreCtas() {
+            const ua = navigator.userAgent || ''
+            const isIOS = /iPhone|iPad|iPod/i.test(ua)
+            const isAndroid = /Android/i.test(ua)
+            const appStore = document.getElementById('ctaAppStore')
+            const playStore = document.getElementById('ctaPlayStore')
+            if (isIOS && playStore) playStore.style.display = 'none'
+            if (isAndroid && appStore) appStore.style.display = 'none'
+        }
+
+        window.addEventListener('popstate', routeFromLocation)
+        window.addEventListener('DOMContentLoaded', () => {
+            createStars()
+            setupStoreCtas()
+            routeFromLocation()
+        })
 
         // Waitlist Form Submission
         document.getElementById('waitlistForm').addEventListener('submit', async (e) => {
