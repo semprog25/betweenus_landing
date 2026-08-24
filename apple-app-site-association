@@ -1,0 +1,20 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appIDs": ["TEAMID.com.betweenus.app"],
+        "components": [
+          {
+            "/": "/story/*",
+            "comment": "Open public story pages in the native app when installed"
+          }
+        ],
+        "paths": ["/story/*"]
+      }
+    ]
+  },
+  "webcredentials": {
+    "apps": ["TEAMID.com.betweenus.app"]
+  }
+}
