@@ -3,11 +3,11 @@
     "apps": [],
     "details": [
       {
-        "appIDs": ["ZVHJ97A744.com.betweenus.app"],
+        "appIDs": ["ZVHJ97A744.com.betweenus.fun"],
         "components": [
           {
             "/": "/story/*",
-            "comment": "Open public story pages in the native app when installed"
+            "comment": "Open public story pages in the native iOS app when installed"
           }
         ],
         "paths": ["/story/*"]
@@ -15,6 +15,6 @@
     ]
   },
   "webcredentials": {
-    "apps": ["ZVHJ97A744.com.betweenus.app"]
+    "apps": ["ZVHJ97A744.com.betweenus.fun"]
   }
 }
