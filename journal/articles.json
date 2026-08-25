@@ -1,6 +1,26 @@
 {
-  "generatedAt": "2026-08-25T09:48:38.576Z",
+  "generatedAt": "2026-08-25T10:16:40.676Z",
   "articles": [
+    {
+      "id": "32e74742-4077-4496-aba1-12c0203f707c",
+      "slug": "things-people-say-behind-your-back",
+      "locale": "en",
+      "title": "Things People Say Behind Your Back",
+      "excerpt": "Sometimes you discover what people really think about you. Sometimes you wish you hadn't. What happens in the conversations you aren't there to hear?",
+      "category": "Friend Drama",
+      "tags": [
+        "gossip",
+        "friendship",
+        "workplace",
+        "drama",
+        "social-life"
+      ],
+      "author": "Between Us Editorial",
+      "featured": false,
+      "publishedAt": "2026-08-25T09:58:00+00:00",
+      "href": "/journal/things-people-say-behind-your-back",
+      "imageUrl": "https://qoqbdiixztolvtcjdnle.supabase.co/storage/v1/object/public/journal-images/journal/1787651686083-le-vu-ii-vf8dahfo-unsplash.jpg"
+    },
     {
       "id": "a1e5f790-ac47-4e9a-8c10-d1f3c609ac97",
       "slug": "the-gossip-we-all-pretend-we-dont-love",
@@ -17,9 +37,9 @@
       ],
       "author": "Between Us Editorial",
       "featured": true,
-      "publishedAt": "2026-08-25T09:48:25.831+00:00",
+      "publishedAt": "2026-08-25T09:48:00+00:00",
       "href": "/journal/the-gossip-we-all-pretend-we-dont-love",
-      "imageUrl": ""
+      "imageUrl": "https://qoqbdiixztolvtcjdnle.supabase.co/storage/v1/object/public/journal-images/journal/1787652513577-stressful-blonde-young-woman-posing-agai.png"
     },
     {
       "id": "235d0f8b-f6fe-44d6-b7ff-9b18549eb71d",
@@ -37,29 +57,9 @@
       ],
       "author": "Between Us Editorial",
       "featured": false,
-      "publishedAt": "2026-08-25T09:48:25.445+00:00",
+      "publishedAt": "2026-08-25T09:48:00+00:00",
       "href": "/journal/when-your-friends-secret-isnt-really-a-secret",
-      "imageUrl": ""
-    },
-    {
-      "id": "32e74742-4077-4496-aba1-12c0203f707c",
-      "slug": "things-people-say-behind-your-back",
-      "locale": "en",
-      "title": "Things People Say Behind Your Back",
-      "excerpt": "Sometimes you discover what people really think about you. Sometimes you wish you hadn't. What happens in the conversations you aren't there to hear?",
-      "category": "Friend Drama",
-      "tags": [
-        "gossip",
-        "friendship",
-        "workplace",
-        "drama",
-        "social-life"
-      ],
-      "author": "Between Us Editorial",
-      "featured": false,
-      "publishedAt": "2026-08-25T09:48:24.939+00:00",
-      "href": "/journal/things-people-say-behind-your-back",
-      "imageUrl": ""
+      "imageUrl": "https://qoqbdiixztolvtcjdnle.supabase.co/storage/v1/object/public/journal-images/journal/1787652594491-cute-thin-blonde-girl-dressed-casual-sty.png"
     },
     {
       "id": "5dd67e11-368e-482b-a35e-76b8e701be98",

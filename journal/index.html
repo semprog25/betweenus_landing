@@ -54,7 +54,11 @@ nav a{margin-left:1rem;color:var(--muted);font-size:.9rem}
 .related a.card{display:block;padding:1rem;border:1px solid rgba(255,255,255,.1);border-radius:14px;color:inherit;background:rgba(255,255,255,.03)}
 .related a.card:hover{border-color:rgba(217,70,239,.45);text-decoration:none}
 footer{border-top:1px solid rgba(255,255,255,.08);padding:2rem 0;color:var(--muted);font-size:.85rem;margin-top:2rem}
-.ad-slot[data-ad-enabled="false"]{display:none}
+
+.ad-slot{margin:1.75rem 0;max-width:100%;overflow:hidden;text-align:center;min-height:0}
+.ad-slot--live{min-height:90px;contain:layout}
+.ad-slot ins.adsbygoogle{max-width:100%!important}
+
 .journal-index h1{font-size:clamp(1.8rem,4vw,2.6rem)}
 .featured{display:grid;gap:1rem;margin:1.5rem 0 2rem}
 @media(min-width:800px){.featured{grid-template-columns:1.2fr .8fr;align-items:center}}
@@ -77,7 +81,6 @@ footer{border-top:1px solid rgba(255,255,255,.08);padding:2rem 0;color:var(--mut
     <p class="eyebrow">Between Us Journal</p>
     <h1>Editorial stories &amp; reflections</h1>
     <p style="color:var(--muted);max-width:40rem">Confessions, dating drama, advice, and the messy middle of relationships. Separate from the anonymous community Stories feed.</p>
-    <aside class="ad-slot" data-ad-placement="journal-top" data-ad-enabled="false" aria-hidden="true"></aside>
     <section class="featured" aria-label="Featured article" data-category="Hot Takes" data-tags="gossip,secrets,social-life,confessions,drama">
   <div>
     <p class="eyebrow">Featured</p>
@@ -85,31 +88,30 @@ footer{border-top:1px solid rgba(255,255,255,.08);padding:2rem 0;color:var(--mut
     <p style="color:var(--muted)">We all say we hate gossip. Yet somehow, the moment someone says “I probably shouldn't tell you…”, everyone suddenly has five minutes to spare. Why are other people's secrets so difficult to ignore?</p>
     <p><a class="btn" href="https://betweenus.fun/journal/the-gossip-we-all-pretend-we-dont-love">Read article</a></p>
   </div>
-  
+  <img src="https://qoqbdiixztolvtcjdnle.supabase.co/storage/v1/object/public/journal-images/journal/1787652513577-stressful-blonde-young-woman-posing-agai.png" alt="The Gossip We All Pretend We Don't Love" width="800" height="450" />
 </section>
-    <aside class="ad-slot" data-ad-placement="journal-mid" data-ad-enabled="false" aria-hidden="true"></aside>
     <section aria-label="Filter Journal">
       <div class="filters" role="toolbar" aria-label="Category filters"><button type="button" class="filter-chip active" data-filter-type="category" data-filter-value="all" aria-pressed="true">All</button><button type="button" class="filter-chip" data-filter-type="category" data-filter-value="Friend Drama" aria-pressed="false">Friend Drama</button><button type="button" class="filter-chip" data-filter-type="category" data-filter-value="Work Drama" aria-pressed="false">Work Drama</button><button type="button" class="filter-chip" data-filter-type="category" data-filter-value="Hot Takes" aria-pressed="false">Hot Takes</button></div>
       <div class="filters" role="toolbar" aria-label="Tag filters"><button type="button" class="filter-chip" data-filter-type="tag" data-filter-value="betrayal" aria-pressed="false">#betrayal</button><button type="button" class="filter-chip" data-filter-type="tag" data-filter-value="colleagues" aria-pressed="false">#colleagues</button><button type="button" class="filter-chip" data-filter-type="tag" data-filter-value="confessions" aria-pressed="false">#confessions</button><button type="button" class="filter-chip" data-filter-type="tag" data-filter-value="drama" aria-pressed="false">#drama</button><button type="button" class="filter-chip" data-filter-type="tag" data-filter-value="friendship" aria-pressed="false">#friendship</button><button type="button" class="filter-chip" data-filter-type="tag" data-filter-value="gossip" aria-pressed="false">#gossip</button><button type="button" class="filter-chip" data-filter-type="tag" data-filter-value="office-drama" aria-pressed="false">#office-drama</button><button type="button" class="filter-chip" data-filter-type="tag" data-filter-value="rumours" aria-pressed="false">#rumours</button><button type="button" class="filter-chip" data-filter-type="tag" data-filter-value="secrets" aria-pressed="false">#secrets</button><button type="button" class="filter-chip" data-filter-type="tag" data-filter-value="social-life" aria-pressed="false">#social-life</button><button type="button" class="filter-chip" data-filter-type="tag" data-filter-value="workplace" aria-pressed="false">#workplace</button></div>
     </section>
     <section aria-label="Latest articles">
       <h2>Latest</h2>
-      <div class="grid"><article class="journal-card" data-category="Friend Drama" data-tags="friendship,secrets,betrayal,gossip,drama">
-  <a href="https://betweenus.fun/journal/when-your-friends-secret-isnt-really-a-secret" style="color:inherit;text-decoration:none">
-    
-    <p class="eyebrow">Friend Drama</p>
-    <h3 style="margin:.25rem 0">When Your Friend's Secret Isn't Really a Secret</h3>
-    <p style="color:var(--muted);font-size:.92rem">They told you something “in confidence.” Then somehow three other people know by the end of the day. So who actually broke the secret?</p>
-    <p style="margin:.35rem 0 0"><span class="tag-chip">#friendship</span><span class="tag-chip">#secrets</span><span class="tag-chip">#betrayal</span><span class="tag-chip">#gossip</span></p>
-  </a>
-</article>
-<article class="journal-card" data-category="Friend Drama" data-tags="gossip,friendship,workplace,drama,social-life">
+      <div class="grid"><article class="journal-card" data-category="Friend Drama" data-tags="gossip,friendship,workplace,drama,social-life">
   <a href="https://betweenus.fun/journal/things-people-say-behind-your-back" style="color:inherit;text-decoration:none">
-    
+    <img class="card-img" src="https://qoqbdiixztolvtcjdnle.supabase.co/storage/v1/object/public/journal-images/journal/1787651686083-le-vu-ii-vf8dahfo-unsplash.jpg" alt="Things People Say Behind Your Back" loading="lazy" width="640" height="360" />
     <p class="eyebrow">Friend Drama</p>
     <h3 style="margin:.25rem 0">Things People Say Behind Your Back</h3>
     <p style="color:var(--muted);font-size:.92rem">Sometimes you discover what people really think about you. Sometimes you wish you hadn't. What happens in the conversations you aren't there to hear?</p>
     <p style="margin:.35rem 0 0"><span class="tag-chip">#gossip</span><span class="tag-chip">#friendship</span><span class="tag-chip">#workplace</span><span class="tag-chip">#drama</span></p>
+  </a>
+</article>
+<article class="journal-card" data-category="Friend Drama" data-tags="friendship,secrets,betrayal,gossip,drama">
+  <a href="https://betweenus.fun/journal/when-your-friends-secret-isnt-really-a-secret" style="color:inherit;text-decoration:none">
+    <img class="card-img" src="https://qoqbdiixztolvtcjdnle.supabase.co/storage/v1/object/public/journal-images/journal/1787652594491-cute-thin-blonde-girl-dressed-casual-sty.png" alt="When Your Friend's Secret Isn't Really a Secret" loading="lazy" width="640" height="360" />
+    <p class="eyebrow">Friend Drama</p>
+    <h3 style="margin:.25rem 0">When Your Friend's Secret Isn't Really a Secret</h3>
+    <p style="color:var(--muted);font-size:.92rem">They told you something “in confidence.” Then somehow three other people know by the end of the day. So who actually broke the secret?</p>
+    <p style="margin:.35rem 0 0"><span class="tag-chip">#friendship</span><span class="tag-chip">#secrets</span><span class="tag-chip">#betrayal</span><span class="tag-chip">#gossip</span></p>
   </a>
 </article>
 <article class="journal-card" data-category="Work Drama" data-tags="office-drama,workplace,gossip,colleagues,rumours">
@@ -122,7 +124,6 @@ footer{border-top:1px solid rgba(255,255,255,.08);padding:2rem 0;color:var(--mut
   </a>
 </article></div>
     </section>
-    <aside class="ad-slot" data-ad-placement="journal-bottom" data-ad-enabled="false" aria-hidden="true"></aside>
     <aside class="cta" aria-label="Download Between Us">
   <h2>Join the conversation</h2>
   <p>Get Between Us on iOS and Android — spill, react, and stay in the conversation.</p>
