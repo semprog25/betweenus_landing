@@ -205,9 +205,50 @@
     return { id: uid(), type: 'paragraph', content: '' }
   }
 
+  /**
+   * Collapse ChatGPT-style blank-line-per-sentence prose into natural paragraph strings.
+   * One pasted Paragraph: region → usually one editor paragraph block (not one block per line).
+   */
+  function consolidateProseToParagraphs(text) {
+    var raw = String(text || '').replace(/\r\n/g, '\n').trim()
+    if (!raw) return []
+
+    var units = raw.split(/\n\s*\n/).map(function (u) {
+      return u.replace(/\n+/g, ' ').replace(/\s+/g, ' ').trim()
+    }).filter(Boolean)
+
+    if (units.length === 1 && /\n/.test(raw)) {
+      units = raw.split(/\n+/).map(function (u) { return u.replace(/\s+/g, ' ').trim() }).filter(Boolean)
+    }
+
+    if (!units.length) return []
+
+    var full = units.join(' ').replace(/\s+/g, ' ').trim()
+    var words = full.split(/\s+/).filter(Boolean).length
+    // Keep a single block for typical section prose; only bifurcate very long regions
+    if (words <= 200) return [full]
+
+    var mid = Math.floor(full.length / 2)
+    var window = full.slice(Math.max(0, mid - 80), Math.min(full.length, mid + 80))
+    var sentenceBreak = window.search(/[.!?…]["”']?\s+/)
+    var cut
+    if (sentenceBreak >= 0) {
+      cut = Math.max(0, mid - 80) + sentenceBreak + (window.match(/[.!?…]["”']?\s+/) || [' '])[0].length
+    } else {
+      var space = full.indexOf(' ', mid)
+      cut = space > 0 ? space + 1 : mid
+    }
+    var a = full.slice(0, cut).trim()
+    var b = full.slice(cut).trim()
+    return [a, b].filter(Boolean)
+  }
+
+  function joinProseLines(text) {
+    return consolidateProseToParagraphs(text).join(' ').replace(/\s+/g, ' ').trim()
+  }
+
   function finalizeBlock(block, contentBuf) {
     var text = contentBuf.join('\n').replace(/^\n+|\n+$/g, '')
-    // Drop any leaked label-only lines inside the buffer
     text = text.split('\n').filter(function (line) {
       return !isParserLabelOnly(line.trim())
     }).join('\n').replace(/^\n+|\n+$/g, '')
@@ -232,6 +273,12 @@
       if (!block.caption && text.indexOf('\n') >= 0) block.caption = text.split('\n').slice(1).join(' ').trim()
       var urlLine = text.match(/https?:\/\/\S+/i)
       if (urlLine) block.url = urlLine[0]
+    } else if (block.type === 'callout' || block.type === 'tip' || block.type === 'quote') {
+      block.content = joinProseLines(text)
+    } else if (block.type === 'paragraph') {
+      // Keep raw for flushBlock expansion via consolidateProseToParagraphs
+      block.content = text
+      block._paragraphParts = consolidateProseToParagraphs(text)
     } else {
       block.content = text
     }
@@ -268,12 +315,20 @@
     function flushBlock() {
       if (!currentBlock || !currentSection) return
       finalizeBlock(currentBlock, contentBuf)
-      var has =
-        (currentBlock.type === 'checklist' && currentBlock.items.some(Boolean)) ||
-        (currentBlock.type === 'table' && currentBlock.rows.some(function (r) { return r.some(Boolean) })) ||
-        (currentBlock.type === 'image' && (currentBlock.url || currentBlock.alt || currentBlock.path)) ||
-        (currentBlock.content && String(currentBlock.content).trim())
-      if (has) currentSection.blocks.push(currentBlock)
+      if (currentBlock.type === 'paragraph') {
+        var parts = currentBlock._paragraphParts || consolidateProseToParagraphs(currentBlock.content || '')
+        parts.forEach(function (part) {
+          if (!part || isParserLabelOnly(part)) return
+          currentSection.blocks.push({ id: uid(), type: 'paragraph', content: part })
+        })
+      } else {
+        var has =
+          (currentBlock.type === 'checklist' && currentBlock.items.some(Boolean)) ||
+          (currentBlock.type === 'table' && currentBlock.rows.some(function (r) { return r.some(Boolean) })) ||
+          (currentBlock.type === 'image' && (currentBlock.url || currentBlock.alt || currentBlock.path)) ||
+          (currentBlock.content && String(currentBlock.content).trim())
+        if (has) currentSection.blocks.push(currentBlock)
+      }
       currentBlock = null
       contentBuf = []
       collectingContent = false
@@ -638,6 +693,8 @@
     buildImageAlt: buildImageAlt,
     suggestRelated: suggestRelated,
     isParserLabelOnly: isParserLabelOnly,
+    consolidateProseToParagraphs: consolidateProseToParagraphs,
+    joinProseLines: joinProseLines,
     stripParserLabelsFromHtml: stripParserLabelsFromHtml,
     estimateReadingTimeMinutes: estimateReadingTimeMinutes,
     matchInstruction: matchInstruction,

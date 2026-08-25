@@ -495,18 +495,31 @@ details.fold:not([open])>summary::after{content:'▸'}
   function markdownToHtml(text) {
     var raw = String(text || '').replace(/\r\n/g, '\n')
     if (!raw.trim()) return ''
-    var lines = raw.split('\n'), html = [], inList = false
+    var lines = raw.split('\n'), html = [], inList = false, proseBuf = []
     function closeList() { if (inList) { html.push('</ul>'); inList = false } }
+    function flushProse() {
+      if (!proseBuf.length) return
+      var joined = proseBuf.join(' ').replace(/\s+/g, ' ').trim()
+      if (joined) html.push('<p>' + inlineFmt(joined) + '</p>')
+      proseBuf = []
+    }
     function inlineFmt(s) {
       return escapeHtml(s).replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>').replace(/__([^_]+)__/g,'<u>$1</u>').replace(/\*([^*]+)\*/g,'<em>$1</em>')
     }
     lines.forEach(function (line) {
       var m = line.match(/^\s*[-*]\s+(.+)$/)
-      if (m) { if (!inList) { html.push('<ul>'); inList = true } html.push('<li>' + inlineFmt(m[1]) + '</li>'); return }
+      if (m) {
+        flushProse()
+        if (!inList) { html.push('<ul>'); inList = true }
+        html.push('<li>' + inlineFmt(m[1]) + '</li>')
+        return
+      }
       closeList()
-      if (!line.trim()) return
-      html.push('<p>' + inlineFmt(line) + '</p>')
+      // Blank line = paragraph boundary only (not every line break)
+      if (!line.trim()) { flushProse(); return }
+      proseBuf.push(line.trim())
     })
+    flushProse()
     closeList()
     return html.join('')
   }
