@@ -129,19 +129,24 @@
 
   function stripParserLabelsFromHtml(html) {
     var raw = String(html || '')
-    // Drop leaked verification / requirement tails from agent prompts
-    raw = raw.replace(/(?:<h[1-6][^>]*>\s*)?FINAL\s+VERIFICATION[\s\S]*$/i, '')
-    raw = raw.replace(/(?:<h[1-6][^>]*>\s*)?FINAL\s+REQUIREMENT[\s\S]*$/i, '')
-    raw = raw.replace(/<p>\s*Do not publish the four articles\.?\s*<\/p>/gi, '')
+
+    // Only truncate when an exact label-only verification/requirement paragraph appears.
+    // Never match prose like "The verification process was surprisingly simple."
+    var verifyTail = /<p\b[^>]*>\s*(?:<(?:strong|em|b|i)\b[^>]*>\s*)*FINAL\s+(?:VERIFICATION|REQUIREMENT)\s*(?:<\/(?:strong|em|b|i)>\s*)*<\/p>/i
+    var verifyMatch = raw.match(verifyTail)
+    if (verifyMatch && typeof verifyMatch.index === 'number') {
+      raw = raw.slice(0, verifyMatch.index)
+    }
+
+    // Exact leaked agent instruction line only (whole paragraph)
+    raw = raw.replace(/<p\b[^>]*>\s*Do not publish the four articles\.?\s*<\/p>/gi, '')
 
     raw = raw.replace(/<(p|h[1-6]|li|td|th|figcaption)(\b[^>]*)>([\s\S]*?)<\/\1>/gi, function (full, tag, attrs, inner) {
-      var plain = String(inner || '').replace(/<[^>]+>/g, '').replace(/&nbsp;/gi, ' ').trim()
+      var plain = String(inner || '').replace(/<[^>]+>/g, '').replace(/&nbsp;/gi, ' ').replace(/\s+/g, ' ').trim()
       if (isParserLabelOnly(plain)) return ''
-      // "Note: …" / "Tip: …" inside callout markup is fine — only strip if the WHOLE cell is a bare label
       return '<' + tag + attrs + '>' + inner + '</' + tag + '>'
     })
 
-    // Collapse leftover empty wrappers / excess newlines
     raw = raw.replace(/<p>\s*<\/p>/gi, '')
     raw = raw.replace(/\n{3,}/g, '\n\n').trim()
     return raw
