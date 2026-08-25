@@ -1,6 +1,6 @@
 /**
  * Between Us Journal — structured article paste parser.
- * Tolerant of ChatGPT-style Title:/SECTION/Block:/Content: documents.
+ * Structural labels (Paragraph:, Heading:, Final CTA paragraph:, etc.) are never content.
  * Browser: window.BetweenUsJournalPaste
  * Node: module.exports
  */
@@ -30,36 +30,39 @@
     table: ['table'],
   }
 
+  /** Labels that start a paragraph-style block (content follows; label discarded). */
+  var CTA_ALIASES = [
+    'final cta paragraph',
+    'final cta',
+    'closing cta',
+    'call to action',
+    'cta paragraph',
+    'cta',
+  ]
+
   var CATEGORIES = [
     'Confessions', 'Dating', 'Friend Drama', 'Work Drama', 'Family Drama', 'Celebrity',
     'Neighbours', 'School & College', 'Social Media', 'Advice', 'Funny Stories', 'Hot Takes',
     'Relationships', 'Friendship', 'Secrets', 'Breakups', 'Boundaries',
   ]
 
+  var WORDS_PER_MINUTE = 225
+
   function normalizeKey(s) {
     return String(s || '').toLowerCase().replace(/[_:]+$/g, '').replace(/\s+/g, ' ').trim()
   }
 
-  function matchField(line) {
-    var m = String(line || '').match(/^([A-Za-z][A-Za-z0-9 _-]{0,40})\s*:\s*(.*)$/)
-    if (!m) return null
-    var key = normalizeKey(m[1])
-    var rest = m[2] == null ? '' : m[2]
-    for (var canon in FIELD_ALIASES) {
-      if (FIELD_ALIASES[canon].indexOf(key) >= 0) return { field: canon, value: rest }
-    }
-    if (key === 'heading' || key === 'block' || key === 'content' || key === 'alt' || key === 'caption' || key === 'url' || key === 'src') {
-      return { field: key, value: rest }
-    }
-    return null
+  function isSectionHeader(line) {
+    return /^section\s*0*\d+\s*:?\s*$/i.test(String(line || '').trim())
   }
 
   function isSectionsMarker(line) {
     return /^sections?\s*:?\s*$/i.test(String(line || '').trim())
   }
 
-  function isSectionHeader(line) {
-    return /^section\s*0*\d+\s*:?\s*$/i.test(String(line || '').trim())
+  function isJunkMarker(line) {
+    var t = normalizeKey(String(line || '').replace(/:$/, ''))
+    return t === 'final verification' || t === 'final requirement' || t === 'test plan'
   }
 
   function normalizeBlockType(raw) {
@@ -68,6 +71,93 @@
       if (BLOCK_ALIASES[canon].indexOf(key) >= 0) return canon
     }
     return 'paragraph'
+  }
+
+  /**
+   * Match a structural instruction at the start of a line (label position only).
+   * Returns null for ordinary prose, even if it contains the words "paragraph" / "heading".
+   */
+  function matchInstruction(line) {
+    var raw = String(line || '')
+    var m = raw.match(/^([A-Za-z][A-Za-z0-9 _/-]{0,48})\s*:\s*(.*)$/)
+    if (!m) {
+      if (isSectionHeader(raw) || isSectionsMarker(raw) || isJunkMarker(raw)) {
+        return { kind: 'marker', key: normalizeKey(raw.replace(/:$/, '')), value: '' }
+      }
+      return null
+    }
+    var key = normalizeKey(m[1])
+    var value = m[2] == null ? '' : m[2]
+
+    for (var canon in FIELD_ALIASES) {
+      if (FIELD_ALIASES[canon].indexOf(key) >= 0) return { kind: 'meta', field: canon, value: value }
+    }
+    if (key === 'heading') return { kind: 'heading', value: value }
+    if (key === 'block') return { kind: 'block', value: value }
+    if (key === 'content') return { kind: 'content', value: value }
+    if (key === 'alt' || key === 'caption' || key === 'url' || key === 'src') {
+      return { kind: 'imageField', field: key, value: value }
+    }
+    if (CTA_ALIASES.indexOf(key) >= 0) return { kind: 'blockType', blockType: 'paragraph', value: value, isCta: true }
+    for (var bt in BLOCK_ALIASES) {
+      if (BLOCK_ALIASES[bt].indexOf(key) >= 0) return { kind: 'blockType', blockType: bt, value: value }
+    }
+    if (/^section\s*0*\d+$/i.test(key)) return { kind: 'marker', key: key, value: '' }
+    if (key === 'sections' || key === 'section') return { kind: 'marker', key: key, value: '' }
+    return null
+  }
+
+  /** True when the entire string is only a structural label (safe to drop from article HTML). */
+  function isParserLabelOnly(text) {
+    var t = String(text || '')
+      .replace(/&nbsp;/gi, ' ')
+      .replace(/<[^>]+>/g, '')
+      .replace(/\s+/g, ' ')
+      .trim()
+    if (!t) return false
+    if (isSectionHeader(t) || isSectionsMarker(t) || isJunkMarker(t)) return true
+    var inst = matchInstruction(t)
+    if (!inst) return false
+    // Label with no trailing prose on the same line (or only whitespace)
+    if (inst.kind === 'meta' || inst.kind === 'heading' || inst.kind === 'block' ||
+        inst.kind === 'content' || inst.kind === 'blockType' || inst.kind === 'imageField' ||
+        inst.kind === 'marker') {
+      return !String(inst.value || '').trim()
+    }
+    return false
+  }
+
+  function stripParserLabelsFromHtml(html) {
+    var raw = String(html || '')
+    // Drop leaked verification / requirement tails from agent prompts
+    raw = raw.replace(/(?:<h[1-6][^>]*>\s*)?FINAL\s+VERIFICATION[\s\S]*$/i, '')
+    raw = raw.replace(/(?:<h[1-6][^>]*>\s*)?FINAL\s+REQUIREMENT[\s\S]*$/i, '')
+    raw = raw.replace(/<p>\s*Do not publish the four articles\.?\s*<\/p>/gi, '')
+
+    raw = raw.replace(/<(p|h[1-6]|li|td|th|figcaption)(\b[^>]*)>([\s\S]*?)<\/\1>/gi, function (full, tag, attrs, inner) {
+      var plain = String(inner || '').replace(/<[^>]+>/g, '').replace(/&nbsp;/gi, ' ').trim()
+      if (isParserLabelOnly(plain)) return ''
+      // "Note: …" / "Tip: …" inside callout markup is fine — only strip if the WHOLE cell is a bare label
+      return '<' + tag + attrs + '>' + inner + '</' + tag + '>'
+    })
+
+    // Collapse leftover empty wrappers / excess newlines
+    raw = raw.replace(/\n{3,}/g, '\n\n').trim()
+    return raw
+  }
+
+  function estimateReadingTimeMinutes(html) {
+    var cleaned = stripParserLabelsFromHtml(html)
+    var text = String(cleaned || '')
+      .replace(/<script[\s\S]*?<\/script>/gi, ' ')
+      .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+      .replace(/<[^>]+>/g, ' ')
+      .replace(/&[a-z#0-9]+;/gi, ' ')
+      .replace(/\s+/g, ' ')
+      .trim()
+    var words = text ? text.split(' ').filter(Boolean).length : 0
+    if (!words) return 1
+    return Math.max(1, Math.round(words / WORDS_PER_MINUTE))
   }
 
   function normalizeTag(t) {
@@ -111,6 +201,11 @@
 
   function finalizeBlock(block, contentBuf) {
     var text = contentBuf.join('\n').replace(/^\n+|\n+$/g, '')
+    // Drop any leaked label-only lines inside the buffer
+    text = text.split('\n').filter(function (line) {
+      return !isParserLabelOnly(line.trim())
+    }).join('\n').replace(/^\n+|\n+$/g, '')
+
     if (block.type === 'checklist') {
       var items = text.split(/\n+/).map(function (l) {
         return l.replace(/^\s*[-*☐☑]\s*/, '').trim()
@@ -152,6 +247,7 @@
     var currentBlock = null
     var contentBuf = []
     var collectingContent = false
+    var stoppedForJunk = false
 
     function flushField() {
       if (!currentField) return
@@ -171,7 +267,7 @@
         (currentBlock.type === 'table' && currentBlock.rows.some(function (r) { return r.some(Boolean) })) ||
         (currentBlock.type === 'image' && (currentBlock.url || currentBlock.alt || currentBlock.path)) ||
         (currentBlock.content && String(currentBlock.content).trim())
-      if (has || currentBlock.type === 'paragraph') currentSection.blocks.push(currentBlock)
+      if (has) currentSection.blocks.push(currentBlock)
       currentBlock = null
       contentBuf = []
       collectingContent = false
@@ -200,48 +296,69 @@
       collectingContent = false
     }
 
+    function beginBlockWithOptionalInline(type, inlineValue) {
+      startBlock(type)
+      if (inlineValue && String(inlineValue).trim()) {
+        collectingContent = true
+        contentBuf = [String(inlineValue)]
+      } else {
+        // Content follows on subsequent lines until next instruction
+        collectingContent = true
+        contentBuf = []
+      }
+    }
+
     for (var i = 0; i < lines.length; i++) {
+      if (stoppedForJunk) break
       var line = lines[i]
       var trimmed = line.trim()
+      var inst = matchInstruction(line)
 
-      if (mode === 'meta' && isSectionsMarker(trimmed)) {
+      if (inst && (isJunkMarker(trimmed) || (inst.kind === 'marker' && (inst.key === 'final verification' || inst.key === 'final requirement')))) {
+        flushField()
+        flushSection()
+        stoppedForJunk = true
+        warnings.push('Stopped before leaked verification/instructions block')
+        break
+      }
+
+      if (mode === 'meta' && (isSectionsMarker(trimmed) || (inst && inst.kind === 'marker' && inst.key === 'sections'))) {
         flushField()
         mode = 'sections'
         continue
       }
 
-      if (isSectionHeader(trimmed)) {
+      if (isSectionHeader(trimmed) || (inst && inst.kind === 'marker' && /^section\s*0*\d+$/i.test(inst.key || ''))) {
         flushField()
         startSection()
         continue
       }
 
-      var matched = matchField(line)
-
       if (mode === 'meta') {
-        if (matched && FIELD_ALIASES[matched.field]) {
+        if (inst && inst.kind === 'meta') {
           flushField()
-          currentField = matched.field
-          fieldBuf = matched.value ? [matched.value] : []
+          currentField = inst.field
+          fieldBuf = inst.value ? [inst.value] : []
           continue
         }
         if (currentField) {
-          if (matched && (matched.field === 'heading' || matched.field === 'block' || matched.field === 'content')) {
+          if (inst && (inst.kind === 'heading' || inst.kind === 'block' || inst.kind === 'content' || inst.kind === 'blockType')) {
             flushField()
-            warnings.push('Unexpected ' + matched.field + ' before Sections:')
-          } else {
-            fieldBuf.push(line)
+            warnings.push('Unexpected structural label before Sections:')
+            i--
+            continue
           }
+          fieldBuf.push(line)
         }
         continue
       }
 
-      // sections / section body
-      if (matched && matched.field === 'heading') {
+      // ---- section body ----
+      if (inst && inst.kind === 'heading') {
         flushBlock()
         if (!currentSection) startSection()
-        if (matched.value.trim()) {
-          currentSection.heading = matched.value.trim()
+        if (inst.value.trim()) {
+          currentSection.heading = inst.value.trim()
         } else {
           currentField = '_heading'
           fieldBuf = []
@@ -249,8 +366,8 @@
         continue
       }
       if (currentField === '_heading') {
-        if (matched || isSectionHeader(trimmed) || !trimmed) {
-          if (trimmed && !matched && !isSectionHeader(trimmed)) {
+        if (inst || isSectionHeader(trimmed) || !trimmed) {
+          if (trimmed && !inst && !isSectionHeader(trimmed)) {
             fieldBuf.push(line)
             currentSection.heading = fieldBuf.join('\n').trim()
             currentField = null
@@ -260,18 +377,16 @@
           currentSection.heading = fieldBuf.join('\n').trim()
           currentField = null
           fieldBuf = []
-          if (matched || isSectionHeader(trimmed)) i--
+          if (inst || isSectionHeader(trimmed)) i--
           continue
         }
         fieldBuf.push(line)
         continue
       }
 
-      if (matched && matched.field === 'block') {
-        if (matched.value.trim()) {
-          startBlock(matched.value)
-        } else {
-          // Block type on following line(s), e.g. "Block:\nCallout"
+      if (inst && inst.kind === 'block') {
+        if (inst.value.trim()) beginBlockWithOptionalInline(inst.value, '')
+        else {
           currentField = '_blockType'
           fieldBuf = []
         }
@@ -279,40 +394,37 @@
       }
       if (currentField === '_blockType') {
         if (!trimmed) continue
-        if (matched && matched.field === 'content') {
-          startBlock('paragraph')
+        if (inst && inst.kind === 'content') {
+          beginBlockWithOptionalInline('paragraph', inst.value)
           currentField = null
-          fieldBuf = []
-          i--
           continue
         }
-        startBlock(trimmed)
+        beginBlockWithOptionalInline(trimmed, '')
         currentField = null
-        fieldBuf = []
         continue
       }
 
-      if (matched && matched.field === 'content') {
+      if (inst && inst.kind === 'blockType') {
+        beginBlockWithOptionalInline(inst.blockType, inst.value)
+        continue
+      }
+
+      if (inst && inst.kind === 'content') {
         if (!currentBlock) startBlock('paragraph')
         collectingContent = true
-        contentBuf = matched.value ? [matched.value] : []
+        contentBuf = inst.value ? [inst.value] : []
         continue
       }
 
-      if (matched && currentBlock && currentBlock.type === 'image') {
-        if (matched.field === 'alt') currentBlock.alt = matched.value.trim()
-        else if (matched.field === 'caption') currentBlock.caption = matched.value.trim()
-        else if (matched.field === 'url' || matched.field === 'src') currentBlock.url = matched.value.trim()
-        else if (matched.field === 'content') {
-          collectingContent = true
-          contentBuf = matched.value ? [matched.value] : []
-        }
+      if (inst && inst.kind === 'imageField' && currentBlock && currentBlock.type === 'image') {
+        if (inst.field === 'alt') currentBlock.alt = inst.value.trim()
+        else if (inst.field === 'caption') currentBlock.caption = inst.value.trim()
+        else if (inst.field === 'url' || inst.field === 'src') currentBlock.url = inst.value.trim()
         continue
       }
 
       if (collectingContent && currentBlock) {
-        if (matched && (matched.field === 'block' || matched.field === 'heading' || FIELD_ALIASES[matched.field])) {
-          // end content — reprocess this line
+        if (inst) {
           i--
           collectingContent = false
           continue
@@ -322,19 +434,21 @@
           collectingContent = false
           continue
         }
+        if (isParserLabelOnly(trimmed)) continue
         contentBuf.push(line)
         continue
       }
 
-      // Loose paragraph lines inside a section without Block: wrapper
-      if (currentSection && trimmed && !matched) {
+      // Bare prose inside a section (not a label)
+      if (currentSection && trimmed && !inst) {
+        if (isParserLabelOnly(trimmed)) continue
         if (!currentBlock) {
-          startBlock('paragraph')
-          collectingContent = true
-          contentBuf = [line]
+          beginBlockWithOptionalInline('paragraph', line)
         } else if (currentBlock.type === 'paragraph' && !collectingContent) {
           collectingContent = true
           contentBuf = [line]
+        } else if (currentBlock.type === 'paragraph' && collectingContent) {
+          contentBuf.push(line)
         }
       }
     }
@@ -348,6 +462,17 @@
       warnings.push('No sections found')
       sections = [{ id: uid(), heading: '', headingLevel: 'h2', blocks: [emptyBlock('paragraph')] }]
     }
+
+    // Final pass: drop any label-only paragraph blocks
+    sections.forEach(function (s) {
+      s.blocks = (s.blocks || []).filter(function (b) {
+        if (b.type === 'paragraph' || b.type === 'callout' || b.type === 'tip' || b.type === 'quote') {
+          return !isParserLabelOnly(b.content)
+        }
+        return true
+      })
+      if (!s.blocks.length) s.blocks.push(emptyBlock('paragraph'))
+    })
 
     var blockCount = 0
     sections.forEach(function (s) { blockCount += (s.blocks || []).length })
@@ -372,7 +497,10 @@
     if (article.category) {
       var exact = CATEGORIES.find(function (c) { return c.toLowerCase() === article.category.toLowerCase() })
       if (exact) return { value: exact, suggested: false }
-      var fuzzy = CATEGORIES.find(function (c) { return c.toLowerCase().indexOf(article.category.toLowerCase()) >= 0 || article.category.toLowerCase().indexOf(c.toLowerCase()) >= 0 })
+      var fuzzy = CATEGORIES.find(function (c) {
+        return c.toLowerCase().indexOf(article.category.toLowerCase()) >= 0 ||
+          article.category.toLowerCase().indexOf(c.toLowerCase()) >= 0
+      })
       if (fuzzy) return { value: fuzzy, suggested: true, note: 'Mapped from "' + article.category + '"' }
     }
     var hay = [article.title, article.excerpt, article.seoKeywords]
@@ -408,7 +536,9 @@
 
     var hay = [article.title, article.excerpt, article.category, article.seoKeywords]
       .concat((article.sections || []).map(function (s) {
-        return s.heading + ' ' + (s.blocks || []).map(function (b) { return b.content || (b.items || []).join(' ') || b.alt || '' }).join(' ')
+        return s.heading + ' ' + (s.blocks || []).map(function (b) {
+          return b.content || (b.items || []).join(' ') || b.alt || ''
+        }).join(' ')
       }))
       .join(' ')
       .toLowerCase()
@@ -425,7 +555,6 @@
         if (existing.indexOf(t) < 0 && suggested.indexOf(t) < 0) suggested.push(t)
       }
     })
-    // title words as light suggestions
     String(article.title || '').toLowerCase().split(/[^a-z0-9]+/).forEach(function (w) {
       if (w.length < 5) return
       var t = normalizeTag(w)
@@ -502,7 +631,12 @@
     buildImageBrief: buildImageBrief,
     buildImageAlt: buildImageAlt,
     suggestRelated: suggestRelated,
+    isParserLabelOnly: isParserLabelOnly,
+    stripParserLabelsFromHtml: stripParserLabelsFromHtml,
+    estimateReadingTimeMinutes: estimateReadingTimeMinutes,
+    matchInstruction: matchInstruction,
     CATEGORIES: CATEGORIES,
+    WORDS_PER_MINUTE: WORDS_PER_MINUTE,
     normalizeTag: normalizeTag,
     slugify: slugify,
   }

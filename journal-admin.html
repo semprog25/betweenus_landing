@@ -462,9 +462,12 @@ details.fold:not([open])>summary::after{content:'▸'}
     return String(t || '').trim().toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9_-]/g,'').slice(0,40)
   }
   function readingEstimate(html) {
+    if (window.BetweenUsJournalPaste && typeof window.BetweenUsJournalPaste.estimateReadingTimeMinutes === 'function') {
+      return window.BetweenUsJournalPaste.estimateReadingTimeMinutes(html)
+    }
     var text = String(html || '').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim()
-    var words = text ? text.split(' ').length : 0
-    return Math.max(1, Math.ceil(words / 200))
+    var words = text ? text.split(' ').filter(Boolean).length : 0
+    return Math.max(1, Math.round(words / 225))
   }
   function resolveImageUrl(pathOrUrl) {
     if (!pathOrUrl) return ''
@@ -528,24 +531,34 @@ details.fold:not([open])>summary::after{content:'▸'}
 
   function serializeSections() {
     var parts = []
+    var isLabel = function (text) {
+      if (window.BetweenUsJournalPaste && typeof window.BetweenUsJournalPaste.isParserLabelOnly === 'function') {
+        return window.BetweenUsJournalPaste.isParserLabelOnly(text)
+      }
+      return false
+    }
     sections.forEach(function (section) {
       var heading = String(section.heading || '').trim()
-      if (heading) {
+      if (heading && !isLabel(heading)) {
         var level = section.headingLevel === 'h1' ? 'h1' : section.headingLevel === 'h3' ? 'h3' : 'h2'
         parts.push('<' + level + '>' + escapeHtml(heading) + '</' + level + '>')
       }
       ;(section.blocks || []).forEach(function (block) {
         if (block.type === 'paragraph') {
+          if (isLabel(block.content)) return
           var p = markdownToHtml(block.content); if (p) parts.push(p)
         } else if (block.type === 'tip') {
           var tip = String(block.content || '').trim()
-          if (tip) parts.push('<blockquote><p><strong>Tip:</strong> ' + escapeHtml(tip) + '</p></blockquote>')
+          if (!tip || isLabel(tip)) return
+          parts.push('<blockquote><p><strong>Tip:</strong> ' + escapeHtml(tip) + '</p></blockquote>')
         } else if (block.type === 'callout') {
           var call = String(block.content || '').trim()
-          if (call) parts.push('<blockquote><p><strong>Note:</strong> ' + escapeHtml(call) + '</p></blockquote>')
+          if (!call || isLabel(call)) return
+          parts.push('<blockquote><p><strong>Note:</strong> ' + escapeHtml(call) + '</p></blockquote>')
         } else if (block.type === 'quote') {
           var q = String(block.content || '').trim()
-          if (q) parts.push('<blockquote><p>' + escapeHtml(q) + '</p></blockquote>')
+          if (!q || isLabel(q)) return
+          parts.push('<blockquote><p>' + escapeHtml(q) + '</p></blockquote>')
         } else if (block.type === 'checklist') {
           var items = (block.items || []).map(function (it) { return String(it || '').trim() }).filter(Boolean)
           if (items.length) parts.push('<ul>' + items.map(function (it) { return '<li>☐ ' + escapeHtml(it) + '</li>' }).join('') + '</ul>')
@@ -571,7 +584,11 @@ details.fold:not([open])>summary::after{content:'▸'}
         }
       })
     })
-    return parts.join('\n')
+    var html = parts.join('\n')
+    if (window.BetweenUsJournalPaste && typeof window.BetweenUsJournalPaste.stripParserLabelsFromHtml === 'function') {
+      html = window.BetweenUsJournalPaste.stripParserLabelsFromHtml(html)
+    }
+    return html
   }
 
   function parseBodyToSections(html) {
@@ -1502,6 +1519,18 @@ details.fold:not([open])>summary::after{content:'▸'}
     relatedIds = (a.related_article_ids || []).slice()
     $('fFeatured').checked = !!a.featured; $('fNoindex').checked = !!a.noindex; $('fStatus').value = a.status || 'draft'
     sections = parseBodyToSections(a.body || '')
+    // Drop any leaked parser-label-only blocks already stored in HTML
+    if (window.BetweenUsJournalPaste && typeof window.BetweenUsJournalPaste.isParserLabelOnly === 'function') {
+      sections.forEach(function (s) {
+        s.blocks = (s.blocks || []).filter(function (b) {
+          if (b.type === 'paragraph' || b.type === 'callout' || b.type === 'tip' || b.type === 'quote') {
+            return !window.BetweenUsJournalPaste.isParserLabelOnly(b.content)
+          }
+          return true
+        })
+        if (!s.blocks.length) s.blocks.push(emptyParagraph())
+      })
+    }
     updateMediaBox('thumb'); updateMediaBox('hero')
     renderSections(); renderTags(); renderRelatedPicker(); renderRelatedSelected(); syncBodyFields()
   }
