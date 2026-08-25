@@ -11,502 +11,354 @@
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.8/dist/umd/supabase.min.js"></script>
   <style>
-    :root {
-      --bg: #0a0a0a;
-      --panel: #1a1a1a;
-      --panel-2: #252525;
-      --border: rgba(255,255,255,.1);
-      --text: #f4f4f5;
-      --muted: #a1a1aa;
-      --accent: #d946ef;
-      --accent-2: #f97316;
-      --danger: #f43f5e;
-      --ok: #34d399;
-      --blue: #60a5fa;
-      --tip: #fbbf24;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: Outfit, system-ui, sans-serif;
-      background: radial-gradient(1200px 600px at 10% -10%, rgba(217,70,239,.18), transparent 55%),
-                  radial-gradient(900px 500px at 100% 0%, rgba(249,115,22,.12), transparent 50%),
-                  var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-    }
-    .wrap { max-width: 1100px; margin: 0 auto; padding: 1.25rem; }
-    h1 { font-size: 1.5rem; margin: 0 0 .25rem; }
-    h2 { font-size: 1.15rem; margin: 0 0 .75rem; }
-    .muted { color: var(--muted); font-size: .9rem; }
-    .card {
-      background: rgba(255,255,255,.04);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 1.25rem;
-      margin-top: 1rem;
-      backdrop-filter: blur(10px);
-    }
-    label { display: block; font-size: .8rem; color: var(--muted); margin: .75rem 0 .35rem; }
-    input, select, textarea {
-      width: 100%;
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      color: var(--text);
-      padding: .65rem .75rem;
-      font: inherit;
-    }
-    textarea { min-height: 120px; resize: vertical; }
-    .row { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
-    @media (max-width: 720px) { .row { grid-template-columns: 1fr; } }
-    .actions { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1rem; }
-    button, .btn {
-      border: 0;
-      border-radius: 12px;
-      padding: .6rem 1rem;
-      font: inherit;
-      font-weight: 600;
-      cursor: pointer;
-      background: linear-gradient(90deg, var(--accent), var(--accent-2));
-      color: #fff;
-      min-height: 44px;
-    }
-    button.secondary, .btn.secondary {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--text);
-    }
-    button.ghost {
-      background: rgba(255,255,255,.05);
-      border: 1px solid var(--border);
-      color: var(--text);
-    }
-    button.danger { background: var(--danger); }
-    button:disabled { opacity: .4; cursor: not-allowed; }
-    button.icon {
-      min-height: 36px;
-      min-width: 36px;
-      padding: .4rem;
-      border-radius: 8px;
-      background: transparent;
-      border: 1px solid transparent;
-      color: var(--muted);
-    }
-    button.icon:hover:not(:disabled) {
-      background: rgba(255,255,255,.08);
-      color: var(--text);
-    }
-    button.icon.danger:hover:not(:disabled) {
-      background: rgba(244,63,94,.15);
-      color: #fb7185;
-    }
-    table { width: 100%; border-collapse: collapse; font-size: .88rem; }
-    th, td { text-align: left; padding: .55rem .4rem; border-bottom: 1px solid var(--border); vertical-align: top; }
-    .badge {
-      display: inline-block;
-      padding: .15rem .5rem;
-      border-radius: 999px;
-      font-size: .72rem;
-      border: 1px solid var(--border);
-      text-transform: uppercase;
-      letter-spacing: .03em;
-    }
-    .badge.published { color: var(--ok); }
-    .badge.draft { color: #fbbf24; }
-    .badge.scheduled { color: var(--blue); }
-    .badge.archived { color: var(--muted); }
-    #toast {
-      position: fixed; bottom: 1rem; right: 1rem; max-width: 22rem;
-      background: #18181b; border: 1px solid var(--border); padding: .75rem 1rem;
-      border-radius: 12px; display: none; z-index: 50;
-    }
-    #toast.error { border-color: var(--danger); }
-    .hidden { display: none !important; }
-    .stats { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: .75rem; }
-    .stat {
-      min-width: 7rem; padding: .75rem; border-radius: 12px;
-      border: 1px solid var(--border); background: rgba(255,255,255,.03);
-    }
-    .stat b { display: block; font-size: 1.25rem; }
-    #previewPane {
-      border: 1px solid var(--border); border-radius: 12px; padding: 1rem;
-      background: #0b0b10; margin-top: 1rem; max-height: 28rem; overflow: auto;
-    }
-    #previewPane img { max-width: 100%; height: auto; border-radius: 8px; }
-    .toolbar { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; }
-    .tabs {
-      display: flex; gap: .35rem; flex-wrap: wrap; margin: 1rem 0 .5rem;
-      border-bottom: 1px solid var(--border); padding-bottom: .5rem;
-    }
-    .tabs button {
-      background: transparent;
-      border: 1px solid transparent;
-      color: var(--muted);
-      border-radius: 999px;
-      padding: .45rem .9rem;
-      min-height: 40px;
-    }
-    .tabs button.active {
-      color: var(--text);
-      border-color: var(--border);
-      background: rgba(255,255,255,.06);
-    }
-    .hero-upload {
-      border: 2px dashed rgba(255,255,255,.14);
-      border-radius: 16px;
-      padding: 1rem;
-      background: var(--panel);
-      text-align: center;
-    }
-    .hero-upload.has-image { border-style: solid; padding: 0; overflow: hidden; }
-    .hero-upload img {
-      display: block; width: 100%; max-height: 280px; object-fit: cover;
-    }
-    .hero-actions {
-      display: flex; gap: .5rem; justify-content: center; flex-wrap: wrap;
-      padding: .75rem; background: rgba(0,0,0,.35);
-    }
-    .section-card {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 1rem;
-      margin-top: .75rem;
-    }
-    .section-head {
-      display: flex; align-items: center; justify-content: space-between; gap: .75rem;
-      margin-bottom: .75rem;
-    }
-    .section-meta {
-      display: flex; align-items: center; gap: .5rem; flex-wrap: wrap;
-    }
-    .pill {
-      font-size: .72rem; font-weight: 600; padding: .2rem .55rem; border-radius: 8px;
-      background: rgba(96,165,250,.18); color: #93c5fd;
-    }
-    .block-card {
-      background: var(--panel-2);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: .9rem;
-      margin-top: .65rem;
-    }
-    .block-head {
-      display: flex; align-items: center; justify-content: space-between; gap: .5rem;
-      margin-bottom: .65rem;
-    }
-    .block-title {
-      display: flex; align-items: center; gap: .5rem;
-      font-size: .9rem; font-weight: 600;
-    }
-    .block-icon {
-      width: 32px; height: 32px; border-radius: 8px;
-      display: inline-flex; align-items: center; justify-content: center;
-      background: rgba(255,255,255,.08); font-size: .85rem;
-    }
-    .fmt-bar {
-      display: flex; gap: .25rem; overflow-x: auto; padding-bottom: .35rem;
-    }
-    .fmt-bar button {
-      min-height: 36px; min-width: 36px; padding: .35rem .5rem;
-      border-radius: 8px; background: transparent; border: 1px solid var(--border);
-      color: var(--muted); font-weight: 700;
-    }
-    .fmt-bar button:hover { background: rgba(255,255,255,.08); color: var(--text); }
-    .level-toggle { display: flex; gap: .25rem; }
-    .level-toggle button {
-      min-height: 32px; padding: .25rem .55rem; font-size: .72rem;
-      border-radius: 8px; background: rgba(255,255,255,.06);
-      border: 1px solid var(--border); color: var(--muted);
-    }
-    .level-toggle button.active {
-      background: rgba(96,165,250,.25); color: #bfdbfe; border-color: rgba(96,165,250,.5);
-    }
-    .add-blocks {
-      margin-top: .75rem;
-      border: 1px dashed rgba(255,255,255,.14);
-      border-radius: 12px;
-      padding: .75rem;
-      background: rgba(255,255,255,.03);
-    }
-    .add-blocks-grid {
-      display: grid; grid-template-columns: repeat(2, 1fr); gap: .5rem;
-    }
-    @media (min-width: 640px) {
-      .add-blocks-grid { grid-template-columns: repeat(4, 1fr); }
-    }
-    .add-blocks-grid button {
-      min-height: 44px;
-      background: var(--panel-2);
-      border: 1px solid var(--border);
-      color: var(--text);
-      font-weight: 500;
-      font-size: .85rem;
-    }
-    .image-empty {
-      border: 2px dashed rgba(255,255,255,.12);
-      border-radius: 12px;
-      padding: 2.5rem 1rem;
-      text-align: center;
-      color: var(--muted);
-      background: rgba(0,0,0,.2);
-    }
-    .image-preview {
-      border-radius: 12px; overflow: hidden; border: 1px solid var(--border);
-      background: #000;
-    }
-    .image-preview img {
-      display: block; width: 100%; max-height: 360px; object-fit: contain;
-    }
-    .details-panel { margin-top: .5rem; }
-    details.meta summary {
-      cursor: pointer; color: var(--muted); font-weight: 600; padding: .5rem 0;
-    }
-    details.meta[open] summary { color: var(--text); }
+
+:root{--bg:#0a0a0a;--panel:#1a1a1a;--panel-2:#252525;--border:rgba(255,255,255,.1);--text:#f4f4f5;--muted:#a1a1aa;--accent:#d946ef;--accent-2:#f97316;--danger:#f43f5e;--ok:#34d399;--blue:#3b82f6;--blue-soft:rgba(59,130,246,.22)}
+*{box-sizing:border-box}body{margin:0;font-family:Outfit,system-ui,sans-serif;background:radial-gradient(1000px 500px at 8% -8%,rgba(217,70,239,.16),transparent 55%),#000;color:var(--text);min-height:100vh}
+.wrap{max-width:980px;margin:0 auto;padding:1rem 1rem 4rem}h1{font-size:1.35rem;margin:0}.muted{color:var(--muted);font-size:.9rem}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;padding:.5rem 0 1rem}
+.card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:16px;padding:1rem;margin-top:.85rem}
+.card-title{font-size:1rem;margin:0 0 .75rem;font-weight:700}
+label{display:block;font-size:.8rem;color:var(--muted);margin:.7rem 0 .3rem}
+input,select,textarea{width:100%;background:var(--panel);border:1px solid var(--border);border-radius:12px;color:var(--text);padding:.7rem .8rem;font:inherit}
+textarea{min-height:110px;resize:vertical}.row{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}@media(max-width:720px){.row{grid-template-columns:1fr}}
+button{border:0;border-radius:12px;padding:.65rem 1rem;font:inherit;font-weight:600;cursor:pointer;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#fff;min-height:44px}
+button.secondary{background:var(--panel-2);border:1px solid var(--border);color:var(--text)}
+button.ghost{background:rgba(255,255,255,.05);border:1px solid var(--border);color:var(--text)}
+button.blue{background:var(--blue);color:#fff}button.danger{background:var(--danger)}button:disabled{opacity:.4;cursor:not-allowed}
+button.icon{min-height:36px;min-width:36px;padding:.35rem;border-radius:8px;background:transparent;border:1px solid transparent;color:var(--muted)}
+button.icon:hover:not(:disabled){background:rgba(255,255,255,.08);color:var(--text)}
+button.icon.danger:hover:not(:disabled){background:rgba(244,63,94,.15);color:#fb7185}
+.hidden{display:none!important}#toast{position:fixed;bottom:1rem;right:1rem;max-width:22rem;background:#18181b;border:1px solid var(--border);padding:.75rem 1rem;border-radius:12px;display:none;z-index:50}#toast.error{border-color:var(--danger)}
+.list-tabs{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.75rem}
+.list-tabs button{background:var(--panel);border:1px solid var(--border);color:var(--muted)}.list-tabs button.active{background:var(--blue);border-color:var(--blue);color:#fff}
+.article-card{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:1rem;margin-top:.75rem}
+.article-card h3{margin:.35rem 0;font-size:1.05rem}.tag-row{display:flex;flex-wrap:wrap;gap:.35rem;margin:.4rem 0}
+.chip{display:inline-flex;align-items:center;gap:.3rem;padding:.2rem .55rem;border-radius:999px;font-size:.72rem;font-weight:600;border:1px solid var(--border);background:rgba(255,255,255,.05)}
+.chip.cat{background:rgba(217,70,239,.15);color:#f0abfc}.chip.tag{background:rgba(52,211,153,.12);color:#6ee7b7}
+.chip button{min-height:auto;padding:0;background:transparent;border:0;color:inherit;font-size:.85rem}
+.meta-row{display:flex;flex-wrap:wrap;gap:.75rem;color:var(--muted);font-size:.8rem;margin-top:.5rem}
+.editor-head{display:flex;justify-content:space-between;align-items:flex-start;gap:.75rem;position:sticky;top:0;z-index:20;background:rgba(0,0,0,.88);backdrop-filter:blur(10px);padding:.75rem 0;margin-bottom:.5rem;border-bottom:1px solid var(--border)}
+.editor-actions{display:flex;gap:.4rem;flex-wrap:wrap}
+.field-error{color:#fb7185;font-size:.78rem;margin-top:.25rem}.field-hint{color:var(--muted);font-size:.75rem;margin-top:.25rem}
+.char-ok{color:var(--ok)}.char-warn{color:#fbbf24}.char-bad{color:#fb7185}
+.media-box{border:2px dashed rgba(255,255,255,.14);border-radius:14px;padding:1rem;background:var(--panel);text-align:center}
+.media-box.has-img{border-style:solid;padding:0;overflow:hidden}.media-box img{display:block;width:100%;max-height:220px;object-fit:cover}
+.media-actions{display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;padding:.65rem;background:rgba(0,0,0,.35)}
+.section-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:.9rem;margin-top:.75rem}
+.section-head{display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin-bottom:.65rem}
+.pill{font-size:.72rem;font-weight:600;padding:.2rem .55rem;border-radius:8px;background:var(--blue-soft);color:#93c5fd}
+.block-card{background:var(--panel-2);border:1px solid var(--border);border-radius:12px;padding:.85rem;margin-top:.6rem}
+.block-head{display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin-bottom:.55rem}
+.block-title{display:flex;align-items:center;gap:.5rem;font-size:.9rem;font-weight:600}
+.block-icon{width:30px;height:30px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;background:rgba(255,255,255,.08);font-size:.8rem}
+.fmt-bar{display:flex;gap:.25rem;overflow-x:auto;padding-bottom:.3rem}
+.fmt-bar button{min-height:34px;min-width:34px;padding:.3rem .45rem;border-radius:8px;background:transparent;border:1px solid var(--border);color:var(--muted);font-weight:700}
+.level-toggle{display:flex;gap:.25rem}.level-toggle button{min-height:30px;padding:.2rem .5rem;font-size:.7rem;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--muted)}
+.level-toggle button.active{background:rgba(59,130,246,.3);color:#bfdbfe;border-color:rgba(59,130,246,.55)}
+.add-blocks{margin-top:.7rem;border:1px dashed rgba(255,255,255,.14);border-radius:12px;padding:.7rem;background:rgba(255,255,255,.03)}
+.add-blocks-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.45rem}@media(min-width:640px){.add-blocks-grid{grid-template-columns:repeat(3,1fr)}}
+.add-blocks-grid button{min-height:44px;background:var(--panel-2);border:1px solid var(--border);color:var(--text);font-weight:500;font-size:.82rem}
+.image-empty{border:2px dashed rgba(255,255,255,.12);border-radius:12px;padding:2rem 1rem;text-align:center;color:var(--muted)}
+.image-preview{border-radius:12px;overflow:hidden;border:1px solid var(--border);background:#000}.image-preview img{display:block;width:100%;max-height:300px;object-fit:contain}
+.tag-input-row{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center}.tag-input-row input{flex:1;min-width:140px}
+.tag-suggest{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.5rem}
+.tag-suggest button{min-height:34px;padding:.3rem .65rem;font-size:.75rem;background:transparent;border:1px dashed var(--border);color:var(--muted);border-radius:999px}
+.seo-preview{background:#fff;color:#202124;border-radius:12px;padding:1rem;margin-top:.75rem;font-family:Arial,sans-serif}
+.seo-preview .site{font-size:.78rem}.seo-preview .title{color:#1a0dab;font-size:1.15rem;line-height:1.3;margin:.15rem 0}
+.seo-preview .url{color:#006621;font-size:.8rem;word-break:break-all}.seo-preview .desc{color:#4d5156;font-size:.85rem;margin-top:.25rem}
+.social-preview{border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-top:.75rem;background:#111}
+.social-preview img{width:100%;aspect-ratio:1.91/1;object-fit:cover;background:#222;display:block;min-height:120px}
+.social-preview .body{padding:.75rem}.social-preview .eyebrow{font-size:.7rem;color:var(--muted);text-transform:uppercase}
+.related-pick{max-height:260px;overflow:auto;border:1px solid var(--border);border-radius:12px;background:var(--panel)}
+.related-item{display:flex;gap:.75rem;align-items:center;padding:.65rem .75rem;border-bottom:1px solid var(--border);cursor:pointer}
+.related-item:hover{background:rgba(255,255,255,.04)}.related-item img{width:56px;height:40px;object-fit:cover;border-radius:8px;background:#222;flex-shrink:0}
+.related-item.selected{outline:1px solid var(--accent)}
+.publish-check{display:grid;gap:.35rem;margin-top:.5rem}.publish-check .ok{color:var(--ok)}.publish-check .miss{color:#fbbf24}
+.stats{display:flex;flex-wrap:wrap;gap:.6rem}.stat{min-width:6.5rem;padding:.65rem;border-radius:12px;border:1px solid var(--border);background:rgba(255,255,255,.03)}.stat b{display:block;font-size:1.15rem}
+details.fold>summary{cursor:pointer;font-weight:700;list-style:none;display:flex;justify-content:space-between;align-items:center}
+details.fold>summary::-webkit-details-marker{display:none}details.fold>summary::after{content:'▾';color:var(--muted)}
+details.fold:not([open])>summary::after{content:'▸'}
+#previewPane{border:1px solid var(--border);border-radius:12px;padding:1rem;background:#0b0b10;margin-top:.75rem;max-height:32rem;overflow:auto}
+#previewPane img{max-width:100%;height:auto;border-radius:8px}
+.toolbar-inline{display:flex;justify-content:space-between;align-items:center;gap:.75rem;flex-wrap:wrap}
+.table-editor{width:100%;border-collapse:collapse;font-size:.85rem} .table-editor th,.table-editor td{border:1px solid var(--border);padding:.35rem}
+.table-editor input{border-radius:6px;padding:.35rem}
+
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="toolbar">
-      <div>
-        <h1>Between Us Journal Admin</h1>
-        <p class="muted">Editorial CMS · Portside-style editor · authorized admins only</p>
+<div class="wrap">
+  <div class="topbar">
+    <div>
+      <h1>Between Us Journal Admin</h1>
+      <p class="muted">Editorial CMS · structured sections · authorized admins only</p>
+    </div>
+    <div id="userBar" class="hidden">
+      <span class="muted" id="userEmail"></span>
+      <button type="button" class="secondary" id="logoutBtn">Log out</button>
+    </div>
+  </div>
+
+  <section id="loginView" class="card">
+    <h2 class="card-title">Sign in</h2>
+    <p class="muted">Use your Supabase Auth email/password.</p>
+    <label for="email">Email</label>
+    <input id="email" type="email" autocomplete="username" />
+    <label for="password">Password</label>
+    <input id="password" type="password" autocomplete="current-password" />
+    <div style="margin-top:1rem"><button type="button" id="loginBtn">Sign in</button></div>
+    <p class="muted" id="loginHint" style="margin-top:1rem"></p>
+  </section>
+
+  <section id="appView" class="hidden">
+    <div id="listView">
+      <div class="card">
+        <h2 class="card-title">Dashboard</h2>
+        <div class="stats" id="stats"></div>
       </div>
-      <div id="userBar" class="hidden">
-        <span class="muted" id="userEmail"></span>
-        <button type="button" class="secondary" id="logoutBtn">Log out</button>
+      <div class="card">
+        <div class="list-tabs" role="tablist">
+          <button type="button" class="active" id="tabPublished" data-list="published">Published (0)</button>
+          <button type="button" id="tabDrafts" data-list="drafts">Drafts (0)</button>
+        </div>
+        <button type="button" class="blue" id="newBtn" style="width:100%">+ Create Article</button>
+        <div id="listBody"></div>
       </div>
     </div>
 
-    <section id="loginView" class="card">
-      <h2>Sign in</h2>
-      <p class="muted">Use your Supabase Auth email/password. Access requires LANDING_CMS_BOOTSTRAP_ADMIN_IDS.</p>
-      <label for="email">Email</label>
-      <input id="email" type="email" autocomplete="username" />
-      <label for="password">Password</label>
-      <input id="password" type="password" autocomplete="current-password" />
-      <div class="actions">
-        <button type="button" id="loginBtn">Sign in</button>
-      </div>
-      <p class="muted" id="loginHint" style="margin-top:1rem"></p>
-    </section>
-
-    <section id="appView" class="hidden">
-      <div class="card">
-        <h2>Dashboard</h2>
-        <div class="stats" id="stats"></div>
-      </div>
-
-      <div class="card">
-        <div class="toolbar">
-          <h2 style="margin:0">Articles</h2>
-          <button type="button" id="newBtn">New article</button>
-        </div>
-        <div style="overflow-x:auto;margin-top:1rem">
-          <table>
-            <thead>
-              <tr>
-                <th>Title</th>
-                <th>Status</th>
-                <th>Category</th>
-                <th>Author</th>
-                <th>Updated</th>
-                <th>Published</th>
-                <th>Featured</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody id="listBody"></tbody>
-          </table>
-        </div>
-      </div>
-
-      <div id="editorCard" class="card hidden">
-        <div class="toolbar">
-          <h2 id="editorTitle" style="margin:0">Edit article</h2>
+    <div id="editorView" class="hidden">
+      <div class="editor-head">
+        <div>
+          <button type="button" class="ghost" id="backToListBtn">← Back</button>
+          <h2 id="editorTitle" style="margin-top:.5rem">Create Article</h2>
           <p class="muted" id="readingTime">Reading time: —</p>
         </div>
-        <input type="hidden" id="articleId" />
-
-        <div class="tabs" role="tablist" aria-label="Editor panels">
-          <button type="button" class="active" data-tab="write" id="tabWrite">Write</button>
-          <button type="button" data-tab="details" id="tabDetails">Details &amp; SEO</button>
-          <button type="button" data-tab="preview" id="tabPreview">Preview</button>
-        </div>
-
-        <div id="panelWrite">
-          <div class="row">
-            <div>
-              <label for="fTitle">Title</label>
-              <input id="fTitle" placeholder="Article title" />
-            </div>
-            <div>
-              <label for="fSlug">Slug</label>
-              <input id="fSlug" placeholder="should-you-tell-your-best-friend" />
-            </div>
-          </div>
-          <label for="fSubtitle">Subtitle</label>
-          <input id="fSubtitle" />
-          <label for="fExcerpt">Excerpt</label>
-          <textarea id="fExcerpt" style="min-height:90px" placeholder="Short teaser for cards and SEO"></textarea>
-
-          <label>Featured / hero image</label>
-          <div id="heroUpload" class="hero-upload">
-            <div id="heroEmpty">
-              <p class="muted" style="margin:.5rem 0 1rem">Upload a cover image (JPEG, PNG, WebP, GIF · max 5MB)</p>
-              <button type="button" class="ghost" id="heroPickBtn">Upload hero image</button>
-            </div>
-            <div id="heroPreviewWrap" class="hidden">
-              <img id="heroPreview" alt="Featured preview" />
-              <div class="hero-actions">
-                <button type="button" class="ghost" id="heroReplaceBtn">Replace</button>
-                <button type="button" class="danger" id="heroClearBtn">Remove</button>
-              </div>
-            </div>
-            <input id="fImageFile" type="file" accept="image/jpeg,image/png,image/webp,image/gif" class="hidden" />
-            <input type="hidden" id="fFeaturedImage" />
-          </div>
-          <div class="row">
-            <div>
-              <label for="fFeaturedAlt">Image alt text</label>
-              <input id="fFeaturedAlt" placeholder="Describe the image" />
-            </div>
-            <div>
-              <label for="fSocialImage">Social image path/URL</label>
-              <input id="fSocialImage" placeholder="defaults to featured image" />
-            </div>
-          </div>
-
-          <div class="toolbar" style="margin-top:1.25rem">
-            <label style="margin:0;color:var(--text);font-weight:600;font-size:.95rem">Article sections</label>
-            <button type="button" class="ghost" id="addSectionBtn">+ Add section</button>
-          </div>
-          <div id="sectionsRoot"></div>
-          <textarea id="fBody" class="hidden" aria-hidden="true"></textarea>
-        </div>
-
-        <div id="panelDetails" class="hidden details-panel">
-          <div class="row">
-            <div>
-              <label for="fCategory">Category</label>
-              <input id="fCategory" list="catList" placeholder="Relationships" />
-              <datalist id="catList">
-                <option value="Relationships"></option>
-                <option value="Dating"></option>
-                <option value="Friendship"></option>
-                <option value="Secrets"></option>
-                <option value="Breakups"></option>
-                <option value="Boundaries"></option>
-              </datalist>
-            </div>
-            <div>
-              <label for="fAuthor">Author</label>
-              <input id="fAuthor" value="Between Us Editorial" />
-            </div>
-          </div>
-          <div class="row">
-            <div>
-              <label for="fTags">Tags (comma-separated)</label>
-              <input id="fTags" />
-            </div>
-            <div>
-              <label for="fLocale">Locale</label>
-              <select id="fLocale">
-                <option value="en">en</option>
-                <option value="de">de</option>
-                <option value="fr">fr</option>
-                <option value="es">es</option>
-                <option value="hi">hi</option>
-                <option value="zh">zh</option>
-              </select>
-            </div>
-          </div>
-          <div class="row">
-            <div>
-              <label for="fTranslationGroup">Translation group ID</label>
-              <input id="fTranslationGroup" placeholder="optional UUID" />
-            </div>
-            <div>
-              <label for="fPublishedAt">Publish date</label>
-              <input id="fPublishedAt" type="datetime-local" />
-            </div>
-          </div>
-          <div class="row">
-            <div>
-              <label for="fSeoTitle">SEO title</label>
-              <input id="fSeoTitle" />
-            </div>
-            <div>
-              <label for="fSeoDesc">SEO description</label>
-              <input id="fSeoDesc" />
-            </div>
-          </div>
-          <div class="row">
-            <div>
-              <label for="fCanonical">Canonical URL</label>
-              <input id="fCanonical" placeholder="https://betweenus.fun/journal/..." />
-            </div>
-            <div>
-              <label for="fRelated">Related article IDs (comma UUIDs)</label>
-              <input id="fRelated" />
-            </div>
-          </div>
-          <div class="row">
-            <div>
-              <label><input type="checkbox" id="fFeatured" /> Featured</label>
-              <label><input type="checkbox" id="fNoindex" /> Noindex</label>
-              <label><input type="checkbox" id="fAllowMissingImage" /> Allow publish without featured image</label>
-            </div>
-            <div>
-              <label for="fStatus">Status</label>
-              <select id="fStatus">
-                <option value="draft">draft</option>
-                <option value="scheduled">scheduled</option>
-                <option value="published">published</option>
-                <option value="archived">archived</option>
-              </select>
-            </div>
-          </div>
-          <details class="meta">
-            <summary>Advanced: raw HTML body</summary>
-            <p class="muted">Editing raw HTML replaces the visual sections on next save sync. Prefer the Write tab.</p>
-            <textarea id="fBodyRaw" style="min-height:200px;font-family:ui-monospace,monospace;font-size:.85rem"></textarea>
-            <div class="actions">
-              <button type="button" class="secondary" id="applyRawBtn">Apply raw HTML to sections</button>
-            </div>
-          </details>
-        </div>
-
-        <div id="panelPreview" class="hidden">
-          <div id="previewPane"></div>
-        </div>
-
-        <div class="actions">
-          <button type="button" id="saveDraftBtn">Save draft</button>
-          <button type="button" class="secondary" id="previewBtn">Refresh preview</button>
-          <button type="button" id="publishBtn">Publish…</button>
-          <button type="button" class="secondary" id="archiveBtn">Archive</button>
-          <button type="button" class="danger" id="deleteBtn">Delete</button>
-          <button type="button" class="secondary" id="cancelEditBtn">Close</button>
+        <div class="editor-actions">
+          <button type="button" class="secondary" id="saveDraftBtn">Save</button>
+          <button type="button" class="secondary" id="previewBtn">Preview</button>
+          <button type="button" id="publishBtn">Review to Publish</button>
         </div>
       </div>
-    </section>
-  </div>
-  <div id="toast"></div>
+      <input type="hidden" id="articleId" />
 
-  <script>
+      <div class="card" id="cardBasic">
+        <h2 class="card-title">Basic Information</h2>
+        <label for="fTitle">Title *</label>
+        <input id="fTitle" placeholder="Enter article title…" />
+        <div class="field-error hidden" id="errTitle">Title is required</div>
+        <div class="row">
+          <div>
+            <label for="fSlug">Slug</label>
+            <input id="fSlug" placeholder="auto-from-title" />
+            <div class="field-hint" id="slugHint">Auto-updates from title until you edit it</div>
+            <div class="field-error hidden" id="errSlug">Invalid or duplicate slug</div>
+          </div>
+          <div>
+            <label for="fStatus">Status</label>
+            <select id="fStatus">
+              <option value="draft">draft</option>
+              <option value="scheduled">scheduled</option>
+              <option value="published">published</option>
+              <option value="archived">archived</option>
+            </select>
+          </div>
+        </div>
+        <label for="fExcerpt">Excerpt *</label>
+        <textarea id="fExcerpt" placeholder="Short description (2–3 lines)…" style="min-height:90px"></textarea>
+        <div class="field-error hidden" id="errExcerpt">Excerpt is required</div>
+        <div class="row">
+          <div>
+            <label for="fAuthor">Author *</label>
+            <input id="fAuthor" value="Between Us Editorial" />
+          </div>
+          <div>
+            <label for="fPublishedAt">Publish date</label>
+            <input id="fPublishedAt" type="datetime-local" />
+          </div>
+        </div>
+        <label for="fSubtitle">Subtitle (optional)</label>
+        <input id="fSubtitle" />
+      </div>
+
+      <div class="card" id="cardMedia">
+        <h2 class="card-title">Article Media</h2>
+        <div class="row">
+          <div>
+            <label>Thumbnail image</label>
+            <div class="media-box" id="thumbBox">
+              <div id="thumbEmpty"><p class="muted">Card / list thumbnail</p><button type="button" class="ghost" id="thumbPick">Upload Thumbnail</button></div>
+              <div id="thumbPreviewWrap" class="hidden"><img id="thumbPreview" alt="" /><div class="media-actions"><button type="button" class="ghost" id="thumbReplace">Replace</button><button type="button" class="danger" id="thumbClear">Remove</button></div></div>
+            </div>
+            <input type="hidden" id="fThumbnail" />
+            <input id="thumbFile" type="file" accept="image/jpeg,image/png,image/webp,image/gif" class="hidden" />
+          </div>
+          <div>
+            <label>Hero image</label>
+            <div class="media-box" id="heroBox">
+              <div id="heroEmpty"><p class="muted">Article hero / cover</p><button type="button" class="ghost" id="heroPick">Upload Hero Image</button></div>
+              <div id="heroPreviewWrap" class="hidden"><img id="heroPreview" alt="" /><div class="media-actions"><button type="button" class="ghost" id="heroReplace">Replace</button><button type="button" class="danger" id="heroClear">Remove</button></div></div>
+            </div>
+            <input type="hidden" id="fFeaturedImage" />
+            <input id="heroFile" type="file" accept="image/jpeg,image/png,image/webp,image/gif" class="hidden" />
+          </div>
+        </div>
+        <div class="row">
+          <div>
+            <label for="fFeaturedAlt">Image alt text</label>
+            <input id="fFeaturedAlt" placeholder="Describe the image" />
+          </div>
+          <div>
+            <label for="fSocialImage">Social / share image</label>
+            <input id="fSocialImage" placeholder="defaults to hero" />
+            <button type="button" class="ghost" id="socialPick" style="margin-top:.5rem;width:100%">Upload social image</button>
+            <input id="socialFile" type="file" accept="image/jpeg,image/png,image/webp,image/gif" class="hidden" />
+          </div>
+        </div>
+      </div>
+
+      <div class="card" id="cardSections">
+        <div class="toolbar-inline">
+          <h2 class="card-title" style="margin:0">Article Sections *</h2>
+          <button type="button" class="blue" id="addSectionBtn">+ Add Section</button>
+        </div>
+        <div class="field-error hidden" id="errBody">Add at least one content block</div>
+        <div id="sectionsRoot"></div>
+        <textarea id="fBody" class="hidden" aria-hidden="true"></textarea>
+      </div>
+
+      <div class="card" id="cardTaxonomy">
+        <h2 class="card-title">Category &amp; Tags</h2>
+        <label for="fCategory">Category *</label>
+        <select id="fCategory"></select>
+        <div class="field-error hidden" id="errCategory">Category is required</div>
+        <label>Tags <span class="muted">(max 8)</span></label>
+        <div class="tag-row" id="selectedTags"></div>
+        <div class="tag-input-row">
+          <input id="tagInput" placeholder="Add tag…" maxlength="40" />
+          <button type="button" class="ghost" id="addTagBtn">Add Tag</button>
+        </div>
+        <div class="tag-suggest" id="tagSuggest"></div>
+        <div class="row" style="margin-top:.75rem">
+          <div>
+            <label for="fLocale">Locale</label>
+            <select id="fLocale"><option value="en">en</option><option value="de">de</option><option value="fr">fr</option><option value="es">es</option><option value="hi">hi</option><option value="zh">zh</option></select>
+          </div>
+          <div>
+            <label for="fTranslationGroup">Translation group ID</label>
+            <input id="fTranslationGroup" placeholder="optional UUID" />
+          </div>
+        </div>
+      </div>
+
+      <div class="card" id="cardSeo">
+        <details class="fold" open>
+          <summary>SEO &amp; Social</summary>
+          <div style="margin-top:.75rem">
+            <label for="fSeoTitle">SEO title <span class="field-hint" id="seoTitleCount" style="display:inline">0 / 60</span></label>
+            <input id="fSeoTitle" maxlength="120" placeholder="Custom search title" />
+            <label for="fSeoDesc">SEO description <span class="field-hint" id="seoDescCount" style="display:inline">0 / 160</span></label>
+            <textarea id="fSeoDesc" maxlength="300" placeholder="Short summary for search previews" style="min-height:90px"></textarea>
+            <label for="fFocusKeywords">Focus keywords</label>
+            <input id="fFocusKeywords" placeholder="confession, dating, red-flags" />
+            <div class="field-hint">Merged into article tags on save (normalized, de-duplicated)</div>
+            <label for="fCanonical">Canonical URL</label>
+            <input id="fCanonical" placeholder="https://betweenus.fun/journal/…" />
+            <label><input type="checkbox" id="fNoindex" /> Noindex</label>
+            <div class="seo-preview" aria-label="Google-style search preview">
+              <div class="site">Between Us</div>
+              <div class="title" id="seoPrevTitle">Article title</div>
+              <div class="url" id="seoPrevUrl">betweenus.fun/journal/slug</div>
+              <div class="desc" id="seoPrevDesc">SEO description preview</div>
+            </div>
+            <div class="social-preview" aria-label="Social share preview">
+              <img id="socialPrevImg" alt="" />
+              <div class="body">
+                <div class="eyebrow">betweenus.fun</div>
+                <strong id="socialPrevTitle">Title</strong>
+                <p class="muted" id="socialPrevDesc" style="margin:.25rem 0 0;font-size:.85rem"></p>
+              </div>
+            </div>
+          </div>
+        </details>
+      </div>
+
+      <div class="card" id="cardRelated">
+        <details class="fold" open>
+          <summary>Related Content</summary>
+          <div style="margin-top:.75rem">
+            <label><input type="checkbox" id="fFeatured" /> Featured on Journal homepage</label>
+            <label for="relatedSearch">Search articles</label>
+            <input id="relatedSearch" placeholder="Search by title, category, tags…" />
+            <div class="related-pick" id="relatedPick" style="margin-top:.5rem"></div>
+            <div class="tag-row" id="relatedSelected" style="margin-top:.75rem"></div>
+            <input type="hidden" id="fRelated" />
+          </div>
+        </details>
+      </div>
+
+      <div class="card" id="cardPublish">
+        <h2 class="card-title">Publishing</h2>
+        <div class="publish-check" id="publishCheck"></div>
+        <label><input type="checkbox" id="fAllowMissingImage" /> Allow publish without hero image</label>
+        <div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1rem">
+          <button type="button" class="secondary" id="saveDraftBtn2">Save Draft</button>
+          <button type="button" class="secondary" id="previewBtn2">Preview</button>
+          <button type="button" id="publishBtn2">Publish</button>
+          <button type="button" class="secondary" id="archiveBtn">Archive</button>
+          <button type="button" class="danger" id="deleteBtn">Delete</button>
+        </div>
+        <details class="fold" style="margin-top:1rem">
+          <summary class="muted" style="font-weight:600">Advanced: raw HTML</summary>
+          <p class="muted">Applying raw HTML rebuilds visual sections from the HTML.</p>
+          <textarea id="fBodyRaw" style="min-height:180px;font-family:ui-monospace,monospace;font-size:.85rem"></textarea>
+          <button type="button" class="secondary" id="applyRawBtn" style="margin-top:.5rem">Apply raw HTML to sections</button>
+        </details>
+      </div>
+
+      <div class="card hidden" id="cardPreview">
+        <h2 class="card-title">Preview</h2>
+        <div id="previewPane"></div>
+      </div>
+    </div>
+  </section>
+</div>
+<div id="toast"></div>
+<script>
 (function () {
   var SUPABASE_URL = 'https://qoqbdiixztolvtcjdnle.supabase.co'
   var ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFvcWJkaWl4enRvbHZ0Y2pkbmxlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE0NDEwNjcsImV4cCI6MjA3NzAxNzA2N30.MpuwFgrc1rhlhaCG73LQWgjahM3m0uR4cEd7xvnLO6g'
   var EDGE = SUPABASE_URL + '/functions/v1/make-server-6c9b0e48'
   var PUBLIC_IMG = SUPABASE_URL + '/storage/v1/object/public/journal-images/'
+  var MAX_TAGS_UI = 8
+  var CATEGORIES = [
+    'Confessions','Dating','Friend Drama','Work Drama','Family Drama','Celebrity',
+    'Neighbours','School & College','Social Media','Advice','Funny Stories','Hot Takes',
+    'Relationships','Friendship','Secrets','Breakups','Boundaries'
+  ]
+  var SUGGESTED_TAGS = [
+    'office-drama','best-friends','dating','cheating','family','anonymous','awkward',
+    'red-flags','toxic-friendship','workplace','neighbours','celebrity','social-media',
+    'confession','secret','revenge','funny','advice'
+  ]
+  var BLOCK_TYPES = [
+    { type: 'paragraph', label: 'Paragraph', icon: 'B' },
+    { type: 'image', label: 'Image', icon: '🖼' },
+    { type: 'quote', label: 'Quote', icon: '❝' },
+    { type: 'callout', label: 'Callout', icon: '💬' },
+    { type: 'tip', label: 'Tip', icon: '💡' },
+    { type: 'checklist', label: 'Checklist', icon: '☑' },
+    { type: 'table', label: 'Table', icon: '▦' }
+  ]
+
   var sb = window.supabase.createClient(SUPABASE_URL, ANON_KEY)
   var session = null
   var articles = []
   var sections = []
   var collapsed = {}
-  var activeTab = 'write'
+  var selectedTags = []
+  var relatedIds = []
+  var slugManual = false
+  var listMode = 'published'
 
   function $(id) { return document.getElementById(id) }
   function toast(msg, isError) {
@@ -516,73 +368,55 @@
     el.style.display = 'block'
     setTimeout(function () { el.style.display = 'none' }, 4500)
   }
-  function uid() {
-    return 'id_' + Math.random().toString(36).slice(2, 10) + Date.now().toString(36)
-  }
+  function uid() { return 'id_' + Math.random().toString(36).slice(2, 10) + Date.now().toString(36) }
   function escapeHtml(s) {
-    return String(s || '')
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
+    return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')
   }
   function slugify(title) {
-    return String(title || '').toLowerCase().trim()
-      .replace(/[^a-z0-9\s-]/g, '')
-      .replace(/\s+/g, '-')
-      .replace(/-+/g, '-')
-      .replace(/^-|-$/g, '')
-      .slice(0, 120)
+    return String(title || '').toLowerCase().trim().replace(/[^a-z0-9\s-]/g,'').replace(/\s+/g,'-').replace(/-+/g,'-').replace(/^-|-$/g,'').slice(0,120)
+  }
+  function normalizeTag(t) {
+    return String(t || '').trim().toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9_-]/g,'').slice(0,40)
   }
   function readingEstimate(html) {
-    var text = String(html || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()
+    var text = String(html || '').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim()
     var words = text ? text.split(' ').length : 0
     return Math.max(1, Math.ceil(words / 200))
   }
   function resolveImageUrl(pathOrUrl) {
     if (!pathOrUrl) return ''
     if (/^https?:\/\//i.test(pathOrUrl) || pathOrUrl.startsWith('/')) return pathOrUrl
-    return PUBLIC_IMG + String(pathOrUrl).replace(/^\//, '')
+    return PUBLIC_IMG + String(pathOrUrl).replace(/^\//,'')
   }
-
-  function emptyParagraph() {
-    return { id: uid(), type: 'paragraph', content: '' }
+  function emptyParagraph() { return { id: uid(), type: 'paragraph', content: '' } }
+  function emptyImage() { return { id: uid(), type: 'image', url: '', path: '', alt: '', caption: '' } }
+  function emptyQuote() { return { id: uid(), type: 'quote', content: '' } }
+  function emptyCallout() { return { id: uid(), type: 'callout', content: '' } }
+  function emptyTip() { return { id: uid(), type: 'tip', content: '' } }
+  function emptyChecklist() { return { id: uid(), type: 'checklist', items: [''] } }
+  function emptyTable() { return { id: uid(), type: 'table', rows: [['', ''], ['', '']] } }
+  function emptyBlock(type) {
+    if (type === 'image') return emptyImage()
+    if (type === 'quote') return emptyQuote()
+    if (type === 'callout') return emptyCallout()
+    if (type === 'tip') return emptyTip()
+    if (type === 'checklist') return emptyChecklist()
+    if (type === 'table') return emptyTable()
+    return emptyParagraph()
   }
-  function emptyImage() {
-    return { id: uid(), type: 'image', url: '', path: '', alt: '', caption: '' }
-  }
-  function emptyTip() {
-    return { id: uid(), type: 'tip', content: '' }
-  }
-  function emptyCallout() {
-    return { id: uid(), type: 'callout', content: '' }
-  }
-  function emptySection() {
-    return { id: uid(), heading: '', headingLevel: 'h2', blocks: [emptyParagraph()] }
-  }
+  function emptySection() { return { id: uid(), heading: '', headingLevel: 'h2', blocks: [emptyParagraph()] } }
 
   function markdownToHtml(text) {
     var raw = String(text || '').replace(/\r\n/g, '\n')
     if (!raw.trim()) return ''
-    var lines = raw.split('\n')
-    var html = []
-    var inList = false
-    function closeList() {
-      if (inList) { html.push('</ul>'); inList = false }
-    }
+    var lines = raw.split('\n'), html = [], inList = false
+    function closeList() { if (inList) { html.push('</ul>'); inList = false } }
     function inlineFmt(s) {
-      return escapeHtml(s)
-        .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
-        .replace(/__([^_]+)__/g, '<u>$1</u>')
-        .replace(/\*([^*]+)\*/g, '<em>$1</em>')
+      return escapeHtml(s).replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>').replace(/__([^_]+)__/g,'<u>$1</u>').replace(/\*([^*]+)\*/g,'<em>$1</em>')
     }
     lines.forEach(function (line) {
       var m = line.match(/^\s*[-*]\s+(.+)$/)
-      if (m) {
-        if (!inList) { html.push('<ul>'); inList = true }
-        html.push('<li>' + inlineFmt(m[1]) + '</li>')
-        return
-      }
+      if (m) { if (!inList) { html.push('<ul>'); inList = true } html.push('<li>' + inlineFmt(m[1]) + '</li>'); return }
       closeList()
       if (!line.trim()) return
       html.push('<p>' + inlineFmt(line) + '</p>')
@@ -590,10 +424,8 @@
     closeList()
     return html.join('')
   }
-
   function htmlToMarkdown(html) {
-    var tmp = document.createElement('div')
-    tmp.innerHTML = String(html || '')
+    var tmp = document.createElement('div'); tmp.innerHTML = String(html || '')
     function walk(node) {
       if (node.nodeType === 3) return node.textContent || ''
       if (node.nodeType !== 1) return ''
@@ -616,24 +448,40 @@
     sections.forEach(function (section) {
       var heading = String(section.heading || '').trim()
       if (heading) {
-        var level = section.headingLevel === 'h3' ? 'h3' : section.headingLevel === 'h4' ? 'h4' : 'h2'
+        var level = section.headingLevel === 'h1' ? 'h1' : section.headingLevel === 'h3' ? 'h3' : 'h2'
         parts.push('<' + level + '>' + escapeHtml(heading) + '</' + level + '>')
       }
       ;(section.blocks || []).forEach(function (block) {
         if (block.type === 'paragraph') {
-          var p = markdownToHtml(block.content)
-          if (p) parts.push(p)
+          var p = markdownToHtml(block.content); if (p) parts.push(p)
         } else if (block.type === 'tip') {
           var tip = String(block.content || '').trim()
           if (tip) parts.push('<blockquote><p><strong>Tip:</strong> ' + escapeHtml(tip) + '</p></blockquote>')
         } else if (block.type === 'callout') {
           var call = String(block.content || '').trim()
-          if (call) parts.push('<blockquote><p>' + escapeHtml(call) + '</p></blockquote>')
+          if (call) parts.push('<blockquote><p><strong>Note:</strong> ' + escapeHtml(call) + '</p></blockquote>')
+        } else if (block.type === 'quote') {
+          var q = String(block.content || '').trim()
+          if (q) parts.push('<blockquote><p>' + escapeHtml(q) + '</p></blockquote>')
+        } else if (block.type === 'checklist') {
+          var items = (block.items || []).map(function (it) { return String(it || '').trim() }).filter(Boolean)
+          if (items.length) parts.push('<ul>' + items.map(function (it) { return '<li>☐ ' + escapeHtml(it) + '</li>' }).join('') + '</ul>')
+        } else if (block.type === 'table') {
+          var rows = block.rows || []
+          if (!rows.length) return
+          var t = '<table><tbody>'
+          rows.forEach(function (row, ri) {
+            t += '<tr>' + (row || []).map(function (cell) {
+              var tag = ri === 0 ? 'th' : 'td'
+              return '<' + tag + '>' + escapeHtml(cell || '') + '</' + tag + '>'
+            }).join('') + '</tr>'
+          })
+          t += '</tbody></table>'
+          parts.push(t)
         } else if (block.type === 'image') {
           var src = resolveImageUrl(block.url || block.path)
           if (!src) return
-          var alt = escapeHtml(block.alt || '')
-          var fig = '<figure><img src="' + escapeHtml(src) + '" alt="' + alt + '" />'
+          var fig = '<figure><img src="' + escapeHtml(src) + '" alt="' + escapeHtml(block.alt || '') + '" />'
           if (block.caption) fig += '<figcaption>' + escapeHtml(block.caption) + '</figcaption>'
           fig += '</figure>'
           parts.push(fig)
@@ -646,20 +494,12 @@
   function parseBodyToSections(html) {
     var raw = String(html || '').trim()
     if (!raw) return [emptySection()]
-    var tmp = document.createElement('div')
-    tmp.innerHTML = raw
-    var out = []
-    var current = emptySection()
-    current.blocks = []
-
+    var tmp = document.createElement('div'); tmp.innerHTML = raw
+    var out = [], current = emptySection(); current.blocks = []
     function pushCurrent() {
-      if (!current.blocks.length && !current.heading) {
-        current.blocks = [emptyParagraph()]
-      }
       if (!current.blocks.length) current.blocks.push(emptyParagraph())
       out.push(current)
     }
-
     Array.prototype.forEach.call(tmp.childNodes, function (node) {
       if (node.nodeType === 3) {
         var t = (node.textContent || '').trim()
@@ -668,48 +508,48 @@
       }
       if (node.nodeType !== 1) return
       var tag = node.tagName.toLowerCase()
-      if (tag === 'h2' || tag === 'h3' || tag === 'h4' || tag === 'h1') {
+      if (tag === 'h1' || tag === 'h2' || tag === 'h3' || tag === 'h4') {
         if (current.heading || current.blocks.length) pushCurrent()
-        current = emptySection()
-        current.blocks = []
+        current = emptySection(); current.blocks = []
         current.heading = (node.textContent || '').trim()
-        current.headingLevel = tag === 'h1' ? 'h2' : tag
+        current.headingLevel = tag === 'h4' ? 'h3' : tag
         return
       }
       if (tag === 'figure') {
-        var img = node.querySelector('img')
-        var cap = node.querySelector('figcaption')
-        current.blocks.push({
-          id: uid(),
-          type: 'image',
-          url: img ? (img.getAttribute('src') || '') : '',
-          path: '',
-          alt: img ? (img.getAttribute('alt') || '') : '',
-          caption: cap ? (cap.textContent || '').trim() : '',
-        })
+        var img = node.querySelector('img'), cap = node.querySelector('figcaption')
+        current.blocks.push({ id: uid(), type: 'image', url: img ? (img.getAttribute('src') || '') : '', path: '', alt: img ? (img.getAttribute('alt') || '') : '', caption: cap ? (cap.textContent || '').trim() : '' })
         return
       }
       if (tag === 'img') {
-        current.blocks.push({
-          id: uid(),
-          type: 'image',
-          url: node.getAttribute('src') || '',
-          path: '',
-          alt: node.getAttribute('alt') || '',
-          caption: '',
-        })
+        current.blocks.push({ id: uid(), type: 'image', url: node.getAttribute('src') || '', path: '', alt: node.getAttribute('alt') || '', caption: '' })
         return
       }
       if (tag === 'blockquote') {
         var text = (node.textContent || '').trim()
-        if (/^tip:/i.test(text)) {
-          current.blocks.push({ id: uid(), type: 'tip', content: text.replace(/^tip:\s*/i, '') })
+        if (/^tip:/i.test(text)) current.blocks.push({ id: uid(), type: 'tip', content: text.replace(/^tip:\s*/i, '') })
+        else if (/^note:/i.test(text)) current.blocks.push({ id: uid(), type: 'callout', content: text.replace(/^note:\s*/i, '') })
+        else current.blocks.push({ id: uid(), type: 'quote', content: text })
+        return
+      }
+      if (tag === 'table') {
+        var rows = []
+        Array.prototype.forEach.call(node.querySelectorAll('tr'), function (tr) {
+          rows.push(Array.prototype.map.call(tr.querySelectorAll('th,td'), function (c) { return (c.textContent || '').trim() }))
+        })
+        current.blocks.push({ id: uid(), type: 'table', rows: rows.length ? rows : [['', ''], ['', '']] })
+        return
+      }
+      if (tag === 'ul') {
+        var lis = Array.prototype.map.call(node.querySelectorAll('li'), function (li) { return (li.textContent || '').trim() })
+        var isCheck = lis.length && lis.every(function (x) { return /^[☐☑✓✔]/.test(x) || /checkbox/i.test(x) })
+        if (isCheck) {
+          current.blocks.push({ id: uid(), type: 'checklist', items: lis.map(function (x) { return x.replace(/^[☐☑✓✔]\s*/, '') }) })
         } else {
-          current.blocks.push({ id: uid(), type: 'callout', content: text })
+          current.blocks.push({ id: uid(), type: 'paragraph', content: htmlToMarkdown(node.outerHTML) })
         }
         return
       }
-      if (tag === 'ul' || tag === 'ol') {
+      if (tag === 'ol') {
         current.blocks.push({ id: uid(), type: 'paragraph', content: htmlToMarkdown(node.outerHTML) })
         return
       }
@@ -719,7 +559,6 @@
       }
       current.blocks.push({ id: uid(), type: 'paragraph', content: htmlToMarkdown(node.outerHTML || node.textContent || '') })
     })
-
     pushCurrent()
     return out.length ? out : [emptySection()]
   }
@@ -729,274 +568,208 @@
     $('fBody').value = html
     $('fBodyRaw').value = html
     $('readingTime').textContent = 'Reading time: ~' + readingEstimate(html) + ' min'
+    updateSeoPreviews()
+    updatePublishChecklist()
     return html
   }
 
-  function updateHeroUI() {
-    var path = $('fFeaturedImage').value
-    var url = resolveImageUrl(path)
-    if (url) {
-      $('heroUpload').classList.add('has-image')
-      $('heroEmpty').classList.add('hidden')
-      $('heroPreviewWrap').classList.remove('hidden')
-      $('heroPreview').src = url
-    } else {
-      $('heroUpload').classList.remove('has-image')
-      $('heroEmpty').classList.remove('hidden')
-      $('heroPreviewWrap').classList.add('hidden')
-      $('heroPreview').removeAttribute('src')
+  async function api(path, opts) {
+    opts = opts || {}
+    if (!session || !session.access_token) throw new Error('Not signed in')
+    var res = await fetch(EDGE + path, {
+      method: opts.method || 'GET',
+      headers: { 'Content-Type': 'application/json', 'apikey': ANON_KEY, 'Authorization': 'Bearer ' + session.access_token },
+      body: opts.body ? JSON.stringify(opts.body) : undefined,
+    })
+    var json = await res.json().catch(function () { return {} })
+    if (!res.ok) {
+      var err = new Error(json.error || ('HTTP ' + res.status))
+      err.status = res.status; err.payload = json; throw err
     }
+    return json
   }
 
-  function findSection(sectionId) {
-    for (var i = 0; i < sections.length; i++) if (sections[i].id === sectionId) return sections[i]
-    return null
+  async function uploadImageFile(file) {
+    if (!file) throw new Error('No file selected')
+    if (!/^image\/(jpeg|png|webp|gif)$/i.test(file.type)) throw new Error('Use JPEG, PNG, WebP, or GIF')
+    if (file.size > 5 * 1024 * 1024) throw new Error('Image exceeds 5MB limit')
+    var signed = await api('/landing-cms/journal-images/signed-upload', {
+      method: 'POST', body: { filename: file.name, contentType: file.type, byteSize: file.size },
+    })
+    var up = await fetch(signed.signedUrl, { method: 'PUT', headers: { 'Content-Type': file.type }, body: file })
+    if (!up.ok) throw new Error('Upload failed')
+    return { path: signed.path, url: signed.publicUrl || resolveImageUrl(signed.path) }
   }
-  function findBlock(sectionId, blockId) {
-    var s = findSection(sectionId)
-    if (!s) return null
-    for (var i = 0; i < s.blocks.length; i++) if (s.blocks[i].id === blockId) return s.blocks[i]
+
+  function updateMediaBox(kind) {
+    var path = kind === 'thumb' ? $('fThumbnail').value : $('fFeaturedImage').value
+    var url = resolveImageUrl(path)
+    var box = $(kind === 'thumb' ? 'thumbBox' : 'heroBox')
+    var empty = $(kind === 'thumb' ? 'thumbEmpty' : 'heroEmpty')
+    var wrap = $(kind === 'thumb' ? 'thumbPreviewWrap' : 'heroPreviewWrap')
+    var img = $(kind === 'thumb' ? 'thumbPreview' : 'heroPreview')
+    if (url) { box.classList.add('has-img'); empty.classList.add('hidden'); wrap.classList.remove('hidden'); img.src = url }
+    else { box.classList.remove('has-img'); empty.classList.remove('hidden'); wrap.classList.add('hidden'); img.removeAttribute('src') }
+    updateSeoPreviews()
+  }
+
+  function allKnownTags() {
+    var set = {}
+    SUGGESTED_TAGS.forEach(function (t) { set[t] = true })
+    articles.forEach(function (a) { (a.tags || []).forEach(function (t) { if (t) set[normalizeTag(t)] = true }) })
+    selectedTags.forEach(function (t) { set[t] = true })
+    return Object.keys(set).sort()
+  }
+
+  function renderTags() {
+    var root = $('selectedTags'); root.innerHTML = ''
+    selectedTags.forEach(function (t) {
+      var chip = document.createElement('span'); chip.className = 'chip tag'
+      chip.innerHTML = '#' + escapeHtml(t) + ' <button type="button" aria-label="Remove tag">×</button>'
+      chip.querySelector('button').onclick = function () {
+        selectedTags = selectedTags.filter(function (x) { return x !== t })
+        renderTags(); updateSeoPreviews()
+      }
+      root.appendChild(chip)
+    })
+    var suggest = $('tagSuggest'); suggest.innerHTML = ''
+    allKnownTags().filter(function (t) { return selectedTags.indexOf(t) < 0 }).slice(0, 24).forEach(function (t) {
+      var b = document.createElement('button'); b.type = 'button'; b.textContent = '#' + t
+      b.onclick = function () { addTag(t) }
+      suggest.appendChild(b)
+    })
+  }
+
+  function addTag(raw) {
+    var t = normalizeTag(raw)
+    if (!t) return
+    if (selectedTags.indexOf(t) >= 0) return
+    if (selectedTags.length >= MAX_TAGS_UI) { toast('Maximum ' + MAX_TAGS_UI + ' tags', true); return }
+    selectedTags.push(t)
+    $('tagInput').value = ''
+    renderTags(); updateSeoPreviews()
+  }
+
+  function fillCategories(current) {
+    var sel = $('fCategory'); sel.innerHTML = ''
+    var opts = CATEGORIES.slice()
+    if (current && opts.indexOf(current) < 0) opts.unshift(current)
+    opts.forEach(function (c) {
+      var o = document.createElement('option'); o.value = c; o.textContent = c; sel.appendChild(o)
+    })
+    if (current) sel.value = current
+    else sel.value = 'Confessions'
+  }
+
+  function findSection(id) { for (var i=0;i<sections.length;i++) if (sections[i].id===id) return sections[i]; return null }
+  function findBlock(sid, bid) {
+    var s = findSection(sid); if (!s) return null
+    for (var i=0;i<s.blocks.length;i++) if (s.blocks[i].id===bid) return s.blocks[i]
     return null
   }
 
   function applyFormatting(sectionId, blockId, format) {
     var ta = document.getElementById('ta-' + sectionId + '-' + blockId)
     if (!ta) { toast('Click in the text area first', true); return }
-    var start = ta.selectionStart
-    var end = ta.selectionEnd
-    var selected = ta.value.substring(start, end)
-    var before = ta.value.substring(0, start)
-    var after = ta.value.substring(end)
-    var insert = ''
-    var cursor = start
-    if (format === 'bold') {
-      insert = selected ? '**' + selected + '**' : '****'
-      cursor = selected ? start + selected.length + 4 : start + 2
-    } else if (format === 'italic') {
-      insert = selected ? '*' + selected + '*' : '**'
-      cursor = selected ? start + selected.length + 2 : start + 1
-    } else if (format === 'underline') {
-      insert = selected ? '__' + selected + '__' : '____'
-      cursor = selected ? start + selected.length + 4 : start + 2
-    } else if (format === 'bullet') {
-      if (selected) {
-        insert = selected.split('\n').map(function (l) { return l ? '- ' + l.replace(/^[-*]\s+/, '') : l }).join('\n')
-      } else {
-        insert = '- '
-      }
+    var start = ta.selectionStart, end = ta.selectionEnd
+    var selected = ta.value.substring(start, end), before = ta.value.substring(0, start), after = ta.value.substring(end)
+    var insert = '', cursor = start
+    if (format === 'bold') { insert = selected ? '**'+selected+'**' : '****'; cursor = selected ? start+selected.length+4 : start+2 }
+    else if (format === 'italic') { insert = selected ? '*'+selected+'*' : '**'; cursor = selected ? start+selected.length+2 : start+1 }
+    else if (format === 'underline') { insert = selected ? '__'+selected+'__' : '____'; cursor = selected ? start+selected.length+4 : start+2 }
+    else if (format === 'bullet') {
+      insert = selected ? selected.split('\n').map(function(l){return l?'- '+l.replace(/^[-*]\s+/,''):l}).join('\n') : '- '
       cursor = start + insert.length
     }
     ta.value = before + insert + after
-    var block = findBlock(sectionId, blockId)
-    if (block) block.content = ta.value
-    ta.focus()
-    ta.setSelectionRange(cursor, cursor)
-    syncBodyFields()
-  }
-
-  async function uploadImageFile(file) {
-    if (!file) throw new Error('No file selected')
-    if (file.size > 5 * 1024 * 1024) throw new Error('Image exceeds 5MB limit')
-    var signed = await api('/landing-cms/journal-images/signed-upload', {
-      method: 'POST',
-      body: { filename: file.name, contentType: file.type, byteSize: file.size },
-    })
-    var up = await fetch(signed.signedUrl, {
-      method: 'PUT',
-      headers: { 'Content-Type': file.type },
-      body: file,
-    })
-    if (!up.ok) throw new Error('Upload failed')
-    return {
-      path: signed.path,
-      url: signed.publicUrl || resolveImageUrl(signed.path),
-    }
+    var block = findBlock(sectionId, blockId); if (block) block.content = ta.value
+    ta.focus(); ta.setSelectionRange(cursor, cursor); syncBodyFields()
   }
 
   function renderSections() {
-    var root = $('sectionsRoot')
-    root.innerHTML = ''
+    var root = $('sectionsRoot'); root.innerHTML = ''
     if (!sections.length) sections = [emptySection()]
-
     sections.forEach(function (section, sIndex) {
-      var card = document.createElement('div')
-      card.className = 'section-card'
-      card.dataset.sectionId = section.id
-
-      var head = document.createElement('div')
-      head.className = 'section-head'
-      head.innerHTML =
-        '<div class="section-meta">' +
-          '<button type="button" class="icon" data-act="toggle" aria-label="Collapse section">' + (collapsed[section.id] ? '▸' : '▾') + '</button>' +
-          '<span class="pill">Section ' + (sIndex + 1) + '</span>' +
-          '<span class="muted">' + (section.blocks || []).length + ' blocks</span>' +
-        '</div>' +
-        '<div>' +
-          '<button type="button" class="icon" data-act="up" ' + (sIndex === 0 ? 'disabled' : '') + ' aria-label="Move section up">↑</button>' +
-          '<button type="button" class="icon" data-act="down" ' + (sIndex === sections.length - 1 ? 'disabled' : '') + ' aria-label="Move section down">↓</button>' +
-          '<button type="button" class="icon danger" data-act="remove" ' + (sections.length === 1 ? 'disabled' : '') + ' aria-label="Delete section">✕</button>' +
-        '</div>'
-      card.appendChild(head)
-
+      var card = document.createElement('div'); card.className = 'section-card'
+      var head = document.createElement('div'); head.className = 'section-head'
+      head.innerHTML = '<div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap">' +
+        '<button type="button" class="icon" data-act="toggle" aria-label="Collapse">' + (collapsed[section.id]?'▸':'▾') + '</button>' +
+        '<span class="pill">Section ' + (sIndex+1) + '</span>' +
+        '<span class="muted">' + (section.blocks||[]).length + ' blocks</span></div>' +
+        '<div><button type="button" class="icon" data-act="up" '+(sIndex===0?'disabled':'')+' aria-label="Move up">↑</button>' +
+        '<button type="button" class="icon" data-act="down" '+(sIndex===sections.length-1?'disabled':'')+' aria-label="Move down">↓</button>' +
+        '<button type="button" class="icon danger" data-act="remove" '+(sections.length===1?'disabled':'')+' aria-label="Delete">✕</button></div>'
       head.onclick = function (ev) {
-        var btn = ev.target.closest('button[data-act]')
-        if (!btn) return
+        var btn = ev.target.closest('button[data-act]'); if (!btn) return
         var act = btn.getAttribute('data-act')
-        if (act === 'toggle') {
-          collapsed[section.id] = !collapsed[section.id]
-          renderSections()
-        } else if (act === 'up' && sIndex > 0) {
-          var t = sections[sIndex - 1]
-          sections[sIndex - 1] = sections[sIndex]
-          sections[sIndex] = t
-          renderSections(); syncBodyFields()
-        } else if (act === 'down' && sIndex < sections.length - 1) {
-          var t2 = sections[sIndex + 1]
-          sections[sIndex + 1] = sections[sIndex]
-          sections[sIndex] = t2
-          renderSections(); syncBodyFields()
-        } else if (act === 'remove' && sections.length > 1) {
-          sections.splice(sIndex, 1)
-          renderSections(); syncBodyFields()
-        }
+        if (act==='toggle') { collapsed[section.id]=!collapsed[section.id]; renderSections() }
+        else if (act==='up' && sIndex>0) { var t=sections[sIndex-1]; sections[sIndex-1]=sections[sIndex]; sections[sIndex]=t; renderSections(); syncBodyFields() }
+        else if (act==='down' && sIndex<sections.length-1) { var t2=sections[sIndex+1]; sections[sIndex+1]=sections[sIndex]; sections[sIndex]=t2; renderSections(); syncBodyFields() }
+        else if (act==='remove' && sections.length>1) { sections.splice(sIndex,1); renderSections(); syncBodyFields() }
       }
-
-      if (collapsed[section.id]) {
-        root.appendChild(card)
-        return
-      }
+      card.appendChild(head)
+      if (collapsed[section.id]) { root.appendChild(card); return }
 
       var body = document.createElement('div')
-      var headingRow = document.createElement('div')
-      headingRow.className = 'toolbar'
+      var headingRow = document.createElement('div'); headingRow.className = 'toolbar-inline'
       headingRow.innerHTML = '<label style="margin:0">Section heading</label>'
-      var levels = document.createElement('div')
-      levels.className = 'level-toggle'
-      ;['h2', 'h3', 'h4'].forEach(function (lvl) {
-        var b = document.createElement('button')
-        b.type = 'button'
-        b.textContent = lvl.toUpperCase()
-        if ((section.headingLevel || 'h2') === lvl) b.className = 'active'
-        b.onclick = function () {
-          section.headingLevel = lvl
-          renderSections(); syncBodyFields()
-        }
+      var levels = document.createElement('div'); levels.className = 'level-toggle'
+      ;['h1','h2','h3'].forEach(function (lvl) {
+        var b = document.createElement('button'); b.type='button'; b.textContent=lvl.toUpperCase()
+        if ((section.headingLevel||'h2')===lvl) b.className='active'
+        b.onclick = function () { section.headingLevel = lvl; renderSections(); syncBodyFields() }
         levels.appendChild(b)
       })
-      headingRow.appendChild(levels)
-      body.appendChild(headingRow)
-
+      headingRow.appendChild(levels); body.appendChild(headingRow)
       var headingInput = document.createElement('input')
-      headingInput.value = section.heading || ''
-      headingInput.placeholder = 'Enter section heading…'
-      headingInput.maxLength = 100
-      headingInput.oninput = function () {
-        section.heading = headingInput.value
-        syncBodyFields()
-      }
+      headingInput.value = section.heading || ''; headingInput.placeholder = 'Enter section heading…'; headingInput.maxLength = 100
+      headingInput.oninput = function () { section.heading = headingInput.value; syncBodyFields() }
       body.appendChild(headingInput)
 
-      ;(section.blocks || []).forEach(function (block, bIndex) {
-        body.appendChild(renderBlock(section, block, bIndex))
-      })
+      ;(section.blocks||[]).forEach(function (block, bIndex) { body.appendChild(renderBlock(section, block, bIndex)) })
 
-      var add = document.createElement('div')
-      add.className = 'add-blocks'
+      var add = document.createElement('div'); add.className = 'add-blocks'
       add.innerHTML = '<div class="muted" style="margin-bottom:.5rem;font-weight:600">Add content block</div>'
-      var grid = document.createElement('div')
-      grid.className = 'add-blocks-grid'
-      ;[
-        { type: 'paragraph', label: 'Paragraph', icon: 'B' },
-        { type: 'image', label: 'Image', icon: '🖼' },
-        { type: 'tip', label: 'Tip', icon: '💡' },
-        { type: 'callout', label: 'Callout', icon: '❝' },
-      ].forEach(function (item) {
-        var btn = document.createElement('button')
-        btn.type = 'button'
+      var grid = document.createElement('div'); grid.className = 'add-blocks-grid'
+      BLOCK_TYPES.forEach(function (item) {
+        var btn = document.createElement('button'); btn.type='button'
         btn.textContent = item.icon + ' ' + item.label
-        btn.onclick = function () {
-          var nb = item.type === 'image' ? emptyImage()
-            : item.type === 'tip' ? emptyTip()
-            : item.type === 'callout' ? emptyCallout()
-            : emptyParagraph()
-          section.blocks.push(nb)
-          renderSections(); syncBodyFields()
-        }
+        btn.onclick = function () { section.blocks.push(emptyBlock(item.type)); renderSections(); syncBodyFields() }
         grid.appendChild(btn)
       })
-      add.appendChild(grid)
-      body.appendChild(add)
+      add.appendChild(grid); body.appendChild(add)
 
-      var addBelow = document.createElement('button')
-      addBelow.type = 'button'
-      addBelow.className = 'ghost'
-      addBelow.style.width = '100%'
-      addBelow.style.marginTop = '.75rem'
-      addBelow.textContent = '+ Add section below'
-      addBelow.onclick = function () {
-        sections.splice(sIndex + 1, 0, emptySection())
-        renderSections(); syncBodyFields()
-      }
+      var addBelow = document.createElement('button'); addBelow.type='button'; addBelow.className='ghost'
+      addBelow.style.width='100%'; addBelow.style.marginTop='.75rem'; addBelow.textContent='+ Add Section Below'
+      addBelow.onclick = function () { sections.splice(sIndex+1,0,emptySection()); renderSections(); syncBodyFields() }
       body.appendChild(addBelow)
-
-      card.appendChild(body)
-      root.appendChild(card)
+      card.appendChild(body); root.appendChild(card)
     })
   }
 
   function renderBlock(section, block, bIndex) {
-    var card = document.createElement('div')
-    card.className = 'block-card'
-    var labels = { paragraph: 'Paragraph', image: 'Image', tip: 'Tip', callout: 'Callout' }
-    var icons = { paragraph: 'B', image: '🖼', tip: '💡', callout: '❝' }
-
-    var head = document.createElement('div')
-    head.className = 'block-head'
-    head.innerHTML =
-      '<div class="block-title"><span class="block-icon">' + (icons[block.type] || '?') + '</span>' +
-      '<div><div>' + (labels[block.type] || block.type) + '</div><div class="muted" style="font-size:.75rem;font-weight:400">Block ' + (bIndex + 1) + '</div></div></div>' +
-      '<div>' +
-        '<button type="button" class="icon" data-bact="up" ' + (bIndex === 0 ? 'disabled' : '') + ' aria-label="Move block up">↑</button>' +
-        '<button type="button" class="icon" data-bact="down" ' + (bIndex === section.blocks.length - 1 ? 'disabled' : '') + ' aria-label="Move block down">↓</button>' +
-        '<button type="button" class="icon danger" data-bact="remove" aria-label="Delete block">✕</button>' +
-      '</div>'
+    var card = document.createElement('div'); card.className = 'block-card'
+    var labels = { paragraph:'Paragraph', image:'Image', quote:'Quote', callout:'Callout', tip:'Tip', checklist:'Checklist', table:'Table' }
+    var icons = { paragraph:'B', image:'🖼', quote:'❝', callout:'💬', tip:'💡', checklist:'☑', table:'▦' }
+    var head = document.createElement('div'); head.className = 'block-head'
+    head.innerHTML = '<div class="block-title"><span class="block-icon">'+(icons[block.type]||'?')+'</span><div><div>'+(labels[block.type]||block.type)+'</div><div class="muted" style="font-size:.75rem;font-weight:400">Block '+(bIndex+1)+'</div></div></div>' +
+      '<div><button type="button" class="icon" data-bact="up" '+(bIndex===0?'disabled':'')+' aria-label="Move up">↑</button>' +
+      '<button type="button" class="icon" data-bact="down" '+(bIndex===section.blocks.length-1?'disabled':'')+' aria-label="Move down">↓</button>' +
+      '<button type="button" class="icon danger" data-bact="remove" aria-label="Delete">✕</button></div>'
     head.onclick = function (ev) {
-      var btn = ev.target.closest('button[data-bact]')
-      if (!btn) return
+      var btn = ev.target.closest('button[data-bact]'); if (!btn) return
       var act = btn.getAttribute('data-bact')
-      if (act === 'up' && bIndex > 0) {
-        var t = section.blocks[bIndex - 1]
-        section.blocks[bIndex - 1] = section.blocks[bIndex]
-        section.blocks[bIndex] = t
-        renderSections(); syncBodyFields()
-      } else if (act === 'down' && bIndex < section.blocks.length - 1) {
-        var t2 = section.blocks[bIndex + 1]
-        section.blocks[bIndex + 1] = section.blocks[bIndex]
-        section.blocks[bIndex] = t2
-        renderSections(); syncBodyFields()
-      } else if (act === 'remove') {
-        section.blocks.splice(bIndex, 1)
-        if (!section.blocks.length) section.blocks.push(emptyParagraph())
-        renderSections(); syncBodyFields()
-      }
+      if (act==='up' && bIndex>0) { var t=section.blocks[bIndex-1]; section.blocks[bIndex-1]=section.blocks[bIndex]; section.blocks[bIndex]=t; renderSections(); syncBodyFields() }
+      else if (act==='down' && bIndex<section.blocks.length-1) { var t2=section.blocks[bIndex+1]; section.blocks[bIndex+1]=section.blocks[bIndex]; section.blocks[bIndex]=t2; renderSections(); syncBodyFields() }
+      else if (act==='remove') { section.blocks.splice(bIndex,1); if (!section.blocks.length) section.blocks.push(emptyParagraph()); renderSections(); syncBodyFields() }
     }
     card.appendChild(head)
 
-    if (block.type === 'paragraph' || block.type === 'tip' || block.type === 'callout') {
+    if (block.type === 'paragraph' || block.type === 'tip' || block.type === 'callout' || block.type === 'quote') {
       if (block.type === 'paragraph') {
-        var bar = document.createElement('div')
-        bar.className = 'fmt-bar'
-        ;[
-          { f: 'bold', label: 'B', title: 'Bold' },
-          { f: 'italic', label: 'I', title: 'Italic' },
-          { f: 'underline', label: 'U', title: 'Underline' },
-          { f: 'bullet', label: '• List', title: 'Bullet list' },
-        ].forEach(function (item) {
-          var b = document.createElement('button')
-          b.type = 'button'
-          b.textContent = item.label
-          b.title = item.title
-          b.setAttribute('aria-label', item.title)
+        var bar = document.createElement('div'); bar.className = 'fmt-bar'
+        ;[{f:'bold',l:'B',t:'Bold'},{f:'italic',l:'I',t:'Italic'},{f:'underline',l:'U',t:'Underline'},{f:'bullet',l:'• List',t:'Bullet list'}].forEach(function (item) {
+          var b = document.createElement('button'); b.type='button'; b.textContent=item.l; b.title=item.t; b.setAttribute('aria-label',item.t)
           b.onclick = function () { applyFormatting(section.id, block.id, item.f) }
           bar.appendChild(b)
         })
@@ -1005,293 +778,288 @@
       var ta = document.createElement('textarea')
       ta.id = 'ta-' + section.id + '-' + block.id
       ta.value = block.content || ''
-      ta.placeholder = block.type === 'tip'
-        ? 'Write a short tip…'
-        : block.type === 'callout'
-          ? 'Write a callout…'
-          : 'Write your paragraph here. Use the toolbar for bold, italic, underline, and bullet lists.'
-      ta.style.minHeight = block.type === 'paragraph' ? '180px' : '100px'
-      ta.oninput = function () {
-        block.content = ta.value
-        syncBodyFields()
-      }
+      ta.placeholder = block.type === 'tip' ? 'Write a tip…' : block.type === 'callout' ? 'Write a callout…' : block.type === 'quote' ? 'Write a quote…' : 'Write your paragraph here. Use the toolbar for bold, italic, underline, and bullet lists.'
+      ta.style.minHeight = block.type === 'paragraph' ? '160px' : '90px'
+      ta.oninput = function () { block.content = ta.value; syncBodyFields() }
       card.appendChild(ta)
     }
 
-    if (block.type === 'image') {
-      var tools = document.createElement('div')
-      tools.className = 'toolbar'
-      tools.innerHTML = '<p class="muted" style="margin:0">Upload an image for this block.</p>'
-      var addBtn = document.createElement('button')
-      addBtn.type = 'button'
-      addBtn.className = 'ghost'
-      addBtn.textContent = block.url ? 'Replace image' : 'Add image'
-      var fileInput = document.createElement('input')
-      fileInput.type = 'file'
-      fileInput.accept = 'image/jpeg,image/png,image/webp,image/gif'
-      fileInput.className = 'hidden'
-      addBtn.onclick = function () { fileInput.click() }
-      fileInput.onchange = async function (ev) {
-        var file = ev.target.files && ev.target.files[0]
-        if (!file) return
-        try {
-          toast('Uploading…')
-          var up = await uploadImageFile(file)
-          block.path = up.path
-          block.url = up.url
-          renderSections(); syncBodyFields()
-          toast('Image uploaded')
-        } catch (e) {
-          toast(e.message || 'Upload failed', true)
-        }
-      }
-      tools.appendChild(addBtn)
-      tools.appendChild(fileInput)
-      card.appendChild(tools)
-
-      if (block.url || block.path) {
-        var preview = document.createElement('div')
-        preview.className = 'image-preview'
-        preview.innerHTML = '<img src="' + escapeHtml(resolveImageUrl(block.url || block.path)) + '" alt="" />'
-        card.appendChild(preview)
-      } else {
-        var empty = document.createElement('div')
-        empty.className = 'image-empty'
-        empty.textContent = 'Upload an image to start this block'
-        card.appendChild(empty)
-      }
-
-      var alt = document.createElement('input')
-      alt.placeholder = 'Alt text (accessibility)'
-      alt.value = block.alt || ''
-      alt.oninput = function () { block.alt = alt.value; syncBodyFields() }
-      card.appendChild(document.createElement('label')).textContent = 'Alt text'
-      card.appendChild(alt)
-
-      var cap = document.createElement('input')
-      cap.placeholder = 'Caption (optional)'
-      cap.value = block.caption || ''
-      cap.oninput = function () { block.caption = cap.value; syncBodyFields() }
-      card.appendChild(document.createElement('label')).textContent = 'Caption'
-      card.appendChild(cap)
+    if (block.type === 'checklist') {
+      var list = document.createElement('div')
+      ;(block.items || ['']).forEach(function (item, i) {
+        var row = document.createElement('div'); row.style.display='flex'; row.style.gap='.5rem'; row.style.margin='.35rem 0'
+        var inp = document.createElement('input'); inp.value = item; inp.placeholder = 'Checklist item…'
+        inp.oninput = function () { block.items[i] = inp.value; syncBodyFields() }
+        var rm = document.createElement('button'); rm.type='button'; rm.className='icon danger'; rm.textContent='✕'
+        rm.onclick = function () { block.items.splice(i,1); if (!block.items.length) block.items=['']; renderSections(); syncBodyFields() }
+        row.appendChild(inp); row.appendChild(rm); list.appendChild(row)
+      })
+      card.appendChild(list)
+      var addItem = document.createElement('button'); addItem.type='button'; addItem.className='ghost'; addItem.textContent='+ Add item'
+      addItem.onclick = function () { block.items.push(''); renderSections(); syncBodyFields() }
+      card.appendChild(addItem)
     }
 
+    if (block.type === 'table') {
+      var table = document.createElement('table'); table.className = 'table-editor'
+      ;(block.rows || []).forEach(function (row, ri) {
+        var tr = document.createElement('tr')
+        ;(row || []).forEach(function (cell, ci) {
+          var td = document.createElement(ri===0?'th':'td')
+          var inp = document.createElement('input'); inp.value = cell || ''
+          inp.oninput = function () { block.rows[ri][ci] = inp.value; syncBodyFields() }
+          td.appendChild(inp); tr.appendChild(td)
+        })
+        table.appendChild(tr)
+      })
+      card.appendChild(table)
+      var tacts = document.createElement('div'); tacts.style.display='flex'; tacts.style.gap='.5rem'; tacts.style.marginTop='.5rem'; tacts.style.flexWrap='wrap'
+      var addRow = document.createElement('button'); addRow.type='button'; addRow.className='ghost'; addRow.textContent='+ Row'
+      addRow.onclick = function () { var cols=(block.rows[0]||['','']).length; block.rows.push(Array(cols).fill('')); renderSections(); syncBodyFields() }
+      var addCol = document.createElement('button'); addCol.type='button'; addCol.className='ghost'; addCol.textContent='+ Column'
+      addCol.onclick = function () { block.rows.forEach(function(r){r.push('')}); renderSections(); syncBodyFields() }
+      tacts.appendChild(addRow); tacts.appendChild(addCol); card.appendChild(tacts)
+    }
+
+    if (block.type === 'image') {
+      var tools = document.createElement('div'); tools.className = 'toolbar-inline'
+      tools.innerHTML = '<p class="muted" style="margin:0">Upload an image for this block.</p>'
+      var addBtn = document.createElement('button'); addBtn.type='button'; addBtn.className='ghost'; addBtn.textContent = block.url ? 'Replace image' : 'Add image'
+      var fileInput = document.createElement('input'); fileInput.type='file'; fileInput.accept='image/jpeg,image/png,image/webp,image/gif'; fileInput.className='hidden'
+      addBtn.onclick = function () { fileInput.click() }
+      fileInput.onchange = async function (ev) {
+        var file = ev.target.files && ev.target.files[0]; if (!file) return
+        try { toast('Uploading…'); var up = await uploadImageFile(file); block.path=up.path; block.url=up.url; renderSections(); syncBodyFields(); toast('Image uploaded') }
+        catch (e) { toast(e.message || 'Upload failed', true) }
+      }
+      tools.appendChild(addBtn); tools.appendChild(fileInput); card.appendChild(tools)
+      if (block.url || block.path) {
+        var preview = document.createElement('div'); preview.className='image-preview'
+        preview.innerHTML = '<img src="'+escapeHtml(resolveImageUrl(block.url||block.path))+'" alt="" />'
+        card.appendChild(preview)
+      } else {
+        var empty = document.createElement('div'); empty.className='image-empty'; empty.textContent='Upload an image to start this block'; card.appendChild(empty)
+      }
+      var altLab = document.createElement('label'); altLab.textContent='Alt text'; card.appendChild(altLab)
+      var alt = document.createElement('input'); alt.value=block.alt||''; alt.placeholder='Alt text'; alt.oninput=function(){block.alt=alt.value;syncBodyFields()}; card.appendChild(alt)
+      var capLab = document.createElement('label'); capLab.textContent='Caption'; card.appendChild(capLab)
+      var cap = document.createElement('input'); cap.value=block.caption||''; cap.placeholder='Caption (optional)'; cap.oninput=function(){block.caption=cap.value;syncBodyFields()}; card.appendChild(cap)
+    }
     return card
   }
 
-  function setTab(name) {
-    activeTab = name
-    ;['write', 'details', 'preview'].forEach(function (t) {
-      var btn = document.querySelector('.tabs button[data-tab="' + t + '"]')
-      if (btn) btn.classList.toggle('active', t === name)
-      var panel = $('panel' + t.charAt(0).toUpperCase() + t.slice(1))
-      if (panel) panel.classList.toggle('hidden', t !== name)
-    })
-    if (name === 'preview') renderLocalPreview()
+  function updateSeoPreviews() {
+    var title = $('fSeoTitle').value.trim() || $('fTitle').value.trim() || 'Article title'
+    var desc = $('fSeoDesc').value.trim() || $('fExcerpt').value.trim() || 'SEO description preview'
+    var slug = $('fSlug').value.trim() || slugify($('fTitle').value) || 'slug'
+    $('seoPrevTitle').textContent = title
+    $('seoPrevUrl').textContent = 'betweenus.fun/journal/' + slug + '/'
+    $('seoPrevDesc').textContent = desc
+    var tc = $('fSeoTitle').value.length, dc = $('fSeoDesc').value.length
+    $('seoTitleCount').textContent = tc + ' / 60'
+    $('seoTitleCount').className = 'field-hint ' + (tc===0?'': tc<=60?'char-ok': tc<=70?'char-warn':'char-bad')
+    $('seoDescCount').textContent = dc + ' / 160'
+    $('seoDescCount').className = 'field-hint ' + (dc===0?'': dc<=160?'char-ok': dc<=180?'char-warn':'char-bad')
+    $('socialPrevTitle').textContent = title
+    $('socialPrevDesc').textContent = desc
+    var img = resolveImageUrl($('fSocialImage').value || $('fFeaturedImage').value || $('fThumbnail').value)
+    if (img) $('socialPrevImg').src = img
+    else $('socialPrevImg').removeAttribute('src')
   }
 
-  function renderLocalPreview() {
-    var html = syncBodyFields()
-    var pane = $('previewPane')
-    pane.innerHTML =
-      '<p class="muted">Between Us Journal · Editorial · PREVIEW (not public)</p>' +
-      '<h2>' + escapeHtml($('fTitle').value || 'Untitled') + '</h2>' +
-      ($('fSubtitle').value ? '<p><em>' + escapeHtml($('fSubtitle').value) + '</em></p>' : '') +
-      '<p class="muted">' + escapeHtml($('fAuthor').value) + ' · ' + escapeHtml($('fCategory').value) + '</p>' +
-      ($('fFeaturedImage').value
-        ? '<p><img src="' + escapeHtml(resolveImageUrl($('fFeaturedImage').value)) + '" alt="' + escapeHtml($('fFeaturedAlt').value) + '" /></p>'
-        : '') +
-      '<div>' + html + '</div>'
+  function updatePublishChecklist() {
+    var html = syncBodyFieldsQuiet()
+    var checks = [
+      { ok: !!$('fTitle').value.trim(), label: 'Title' },
+      { ok: !!slugify($('fSlug').value || $('fTitle').value), label: 'Slug' },
+      { ok: !!$('fCategory').value.trim(), label: 'Category' },
+      { ok: !!$('fExcerpt').value.trim(), label: 'Excerpt' },
+      { ok: !!html.trim(), label: 'Article content' },
+      { ok: !!$('fSeoTitle').value.trim(), label: 'SEO title', soft: true },
+      { ok: !!$('fSeoDesc').value.trim(), label: 'SEO description', soft: true },
+      { ok: !!$('fFeaturedImage').value.trim() || $('fAllowMissingImage').checked, label: 'Hero image' },
+    ]
+    $('publishCheck').innerHTML = checks.map(function (c) {
+      return '<div class="' + (c.ok?'ok':'miss') + '">' + (c.ok?'✓':'○') + ' ' + c.label + (c.soft && !c.ok ? ' (recommended)' : '') + '</div>'
+    }).join('')
+    ;['errTitle','errExcerpt','errCategory','errBody','errSlug'].forEach(function(id){ $(id).classList.add('hidden') })
+  }
+  function syncBodyFieldsQuiet() {
+    var html = serializeSections()
+    $('fBody').value = html
+    $('fBodyRaw').value = html
+    $('readingTime').textContent = 'Reading time: ~' + readingEstimate(html) + ' min'
+    return html
   }
 
-  async function api(path, opts) {
-    opts = opts || {}
-    if (!session || !session.access_token) throw new Error('Not signed in')
-    var res = await fetch(EDGE + path, {
-      method: opts.method || 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'apikey': ANON_KEY,
-        'Authorization': 'Bearer ' + session.access_token,
-      },
-      body: opts.body ? JSON.stringify(opts.body) : undefined,
+  function renderRelatedPicker() {
+    var q = ($('relatedSearch').value || '').toLowerCase().trim()
+    var root = $('relatedPick'); root.innerHTML = ''
+    var pool = articles.filter(function (a) { return a.id !== $('articleId').value })
+    if (q) pool = pool.filter(function (a) {
+      return (a.title||'').toLowerCase().indexOf(q)>=0 || (a.category||'').toLowerCase().indexOf(q)>=0 || (a.tags||[]).join(' ').toLowerCase().indexOf(q)>=0
     })
-    var json = await res.json().catch(function () { return {} })
-    if (!res.ok) {
-      var err = new Error(json.error || ('HTTP ' + res.status))
-      err.status = res.status
-      err.payload = json
-      throw err
-    }
-    return json
+    pool.slice(0, 40).forEach(function (a) {
+      var row = document.createElement('div'); row.className = 'related-item' + (relatedIds.indexOf(a.id)>=0?' selected':'')
+      var img = resolveImageUrl(a.thumbnail_image || a.thumbnail_image_url || a.featured_image || a.featured_image_url)
+      row.innerHTML = (img?'<img src="'+escapeHtml(img)+'" alt="" />':'<div style="width:56px;height:40px;border-radius:8px;background:#222;flex-shrink:0"></div>') +
+        '<div style="min-width:0"><strong style="display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+escapeHtml(a.title)+'</strong>' +
+        '<span class="muted" style="font-size:.75rem">'+escapeHtml(a.category||'')+' · '+escapeHtml(a.status||'')+'</span></div>'
+      row.onclick = function () {
+        var i = relatedIds.indexOf(a.id)
+        if (i>=0) relatedIds.splice(i,1); else if (relatedIds.length<12) relatedIds.push(a.id)
+        renderRelatedPicker(); renderRelatedSelected()
+      }
+      root.appendChild(row)
+    })
+    if (!pool.length) root.innerHTML = '<p class="muted" style="padding:1rem">No matching articles</p>'
+  }
+  function renderRelatedSelected() {
+    var root = $('relatedSelected'); root.innerHTML = ''
+    relatedIds.forEach(function (id) {
+      var a = articles.find(function (x) { return x.id === id })
+      var chip = document.createElement('span'); chip.className = 'chip'
+      chip.innerHTML = escapeHtml(a ? a.title : id) + ' <button type="button" aria-label="Remove">×</button>'
+      chip.querySelector('button').onclick = function () {
+        relatedIds = relatedIds.filter(function (x) { return x !== id })
+        renderRelatedPicker(); renderRelatedSelected()
+      }
+      root.appendChild(chip)
+    })
+    $('fRelated').value = relatedIds.join(',')
   }
 
   function showLoggedOut() {
-    $('loginView').classList.remove('hidden')
-    $('appView').classList.add('hidden')
-    $('userBar').classList.add('hidden')
+    $('loginView').classList.remove('hidden'); $('appView').classList.add('hidden'); $('userBar').classList.add('hidden')
   }
-
   async function showLoggedIn() {
     try {
       var me = await api('/landing-cms/me')
       if (!me.success || me.role !== 'admin') throw new Error('No CMS access')
-      $('loginView').classList.add('hidden')
-      $('appView').classList.remove('hidden')
-      $('userBar').classList.remove('hidden')
+      $('loginView').classList.add('hidden'); $('appView').classList.remove('hidden'); $('userBar').classList.remove('hidden')
       $('userEmail').textContent = me.email || me.userId
-      await refreshList()
+      await refreshList(); showList()
     } catch (e) {
       var hint = $('loginHint')
-      if (e.status === 403 && e.payload && e.payload.userId) {
-        hint.textContent = 'Signed in but not a CMS admin. Add this UUID to LANDING_CMS_BOOTSTRAP_ADMIN_IDS and redeploy the Edge Function: ' + e.payload.userId
-      } else {
-        hint.textContent = e.message || 'CMS access denied'
-      }
-      toast(hint.textContent, true)
-      showLoggedOut()
+      if (e.status === 403 && e.payload && e.payload.userId) hint.textContent = 'Signed in but not a CMS admin. Add UUID to LANDING_CMS_BOOTSTRAP_ADMIN_IDS: ' + e.payload.userId
+      else hint.textContent = e.message || 'CMS access denied'
+      toast(hint.textContent, true); showLoggedOut()
     }
   }
 
-  function fmtDate(iso) {
-    if (!iso) return '—'
-    try { return new Date(iso).toLocaleString() } catch (_) { return iso }
+  function showList() {
+    $('listView').classList.remove('hidden'); $('editorView').classList.add('hidden')
+  }
+  function showEditor() {
+    $('listView').classList.add('hidden'); $('editorView').classList.remove('hidden')
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   function renderStats() {
-    var counts = { draft: 0, scheduled: 0, published: 0, archived: 0, featured: 0 }
-    articles.forEach(function (a) {
-      if (counts[a.status] !== undefined) counts[a.status]++
-      if (a.featured) counts.featured++
-    })
-    $('stats').innerHTML =
-      ['draft','scheduled','published','archived','featured'].map(function (k) {
-        return '<div class="stat"><b>' + counts[k] + '</b><span class="muted">' + k + '</span></div>'
-      }).join('')
+    var counts = { draft:0, scheduled:0, published:0, archived:0, featured:0 }
+    articles.forEach(function (a) { if (counts[a.status]!==undefined) counts[a.status]++; if (a.featured) counts.featured++ })
+    $('stats').innerHTML = ['draft','scheduled','published','archived','featured'].map(function(k){
+      return '<div class="stat"><b>'+counts[k]+'</b><span class="muted">'+k+'</span></div>'
+    }).join('')
+    var pubN = articles.filter(function(a){return a.status==='published'||a.status==='scheduled'}).length
+    var draftN = articles.filter(function(a){return a.status==='draft'||a.status==='archived'}).length
+    $('tabPublished').textContent = 'Published (' + pubN + ')'
+    $('tabDrafts').textContent = 'Drafts (' + draftN + ')'
   }
 
   function renderList() {
-    var body = $('listBody')
-    body.innerHTML = ''
-    if (!articles.length) {
-      body.innerHTML = '<tr><td colspan="8" class="muted">No articles yet. Create your first draft.</td></tr>'
+    var body = $('listBody'); body.innerHTML = ''
+    var filtered = articles.filter(function (a) {
+      if (listMode === 'published') return a.status === 'published' || a.status === 'scheduled'
+      return a.status === 'draft' || a.status === 'archived'
+    })
+    if (!filtered.length) {
+      body.innerHTML = '<p class="muted" style="margin-top:1rem">No articles in this list yet.</p>'
       return
     }
-    articles.forEach(function (a) {
-      var tr = document.createElement('tr')
-      tr.innerHTML =
-        '<td>' + escapeHtml(a.title) + '<div class="muted">/' + escapeHtml(a.slug) + '</div></td>' +
-        '<td><span class="badge ' + escapeHtml(a.status) + '">' + escapeHtml(a.status) + '</span></td>' +
-        '<td>' + escapeHtml(a.category || '') + '</td>' +
-        '<td>' + escapeHtml(a.author || '') + '</td>' +
-        '<td>' + fmtDate(a.updated_at) + '</td>' +
-        '<td>' + fmtDate(a.published_at) + '</td>' +
-        '<td>' + (a.featured ? 'yes' : '—') + '</td>' +
-        '<td></td>'
-      var actions = tr.lastElementChild
-      var edit = document.createElement('button')
-      edit.type = 'button'
-      edit.className = 'secondary'
-      edit.textContent = 'Edit'
+    filtered.forEach(function (a) {
+      var card = document.createElement('div'); card.className = 'article-card'
+      var tags = (a.tags||[]).slice(0,5).map(function(t){return '<span class="chip tag">#'+escapeHtml(t)+'</span>'}).join('')
+      card.innerHTML =
+        '<div class="tag-row"><span class="chip cat">'+escapeHtml(a.category||'')+'</span>'+tags+'</div>' +
+        '<h3>'+escapeHtml(a.title)+'</h3>' +
+        '<p class="muted" style="margin:.25rem 0">'+escapeHtml(a.excerpt||'')+'</p>' +
+        '<div class="meta-row"><span>'+escapeHtml(a.author||'')+'</span><span>'+escapeHtml(a.status)+'</span><span>~'+(a.reading_time_minutes||readingEstimate(a.body))+' min</span>'+(a.featured?'<span>Featured</span>':'')+'</div>' +
+        '<div style="display:flex;gap:.5rem;margin-top:.75rem;flex-wrap:wrap"></div>'
+      var actions = card.lastElementChild
+      var edit = document.createElement('button'); edit.type='button'; edit.className='secondary'; edit.textContent='Edit'
       edit.onclick = function () { openEditor(a) }
-      var pub = document.createElement('button')
-      pub.type = 'button'
-      pub.textContent = 'Publish'
-      pub.onclick = function () { publishArticle(a.id).catch(function (e) { toast(e.message, true) }) }
-      actions.appendChild(edit)
-      actions.appendChild(document.createTextNode(' '))
-      actions.appendChild(pub)
-      body.appendChild(tr)
+      var pub = document.createElement('button'); pub.type='button'; pub.textContent = a.status==='published'?'Update':'Publish'
+      pub.onclick = function () { publishArticle(a.id).catch(function(e){toast(e.message,true)}) }
+      actions.appendChild(edit); actions.appendChild(pub)
+      body.appendChild(card)
     })
   }
 
   async function refreshList() {
     var res = await api('/landing-cms/journal-articles')
     articles = res.articles || []
-    renderStats()
-    renderList()
+    renderStats(); renderList(); renderTags()
   }
 
   function clearEditor() {
+    slugManual = false
     $('articleId').value = ''
-    $('fTitle').value = ''
-    $('fSlug').value = ''
-    $('fSubtitle').value = ''
-    $('fExcerpt').value = ''
-    $('fBody').value = ''
-    $('fBodyRaw').value = ''
-    $('fCategory').value = 'Relationships'
+    $('fTitle').value = ''; $('fSlug').value = ''; $('fSubtitle').value = ''; $('fExcerpt').value = ''
+    $('fBody').value = ''; $('fBodyRaw').value = ''
     $('fAuthor').value = 'Between Us Editorial'
-    $('fTags').value = ''
-    $('fLocale').value = 'en'
-    $('fTranslationGroup').value = ''
-    $('fPublishedAt').value = ''
-    $('fFeaturedImage').value = ''
-    $('fFeaturedAlt').value = ''
-    $('fSocialImage').value = ''
-    $('fSeoTitle').value = ''
-    $('fSeoDesc').value = ''
-    $('fCanonical').value = ''
-    $('fRelated').value = ''
-    $('fFeatured').checked = false
-    $('fNoindex').checked = false
-    $('fAllowMissingImage').checked = false
+    fillCategories('Confessions')
+    selectedTags = []; relatedIds = []
+    $('fLocale').value = 'en'; $('fTranslationGroup').value = ''; $('fPublishedAt').value = ''
+    $('fFeaturedImage').value = ''; $('fThumbnail').value = ''; $('fFeaturedAlt').value = ''; $('fSocialImage').value = ''
+    $('fSeoTitle').value = ''; $('fSeoDesc').value = ''; $('fFocusKeywords').value = ''; $('fCanonical').value = ''
+    $('fFeatured').checked = false; $('fNoindex').checked = false; $('fAllowMissingImage').checked = false
     $('fStatus').value = 'draft'
-    sections = [emptySection()]
-    collapsed = {}
-    updateHeroUI()
-    renderSections()
-    syncBodyFields()
-    setTab('write')
+    sections = [emptySection()]; collapsed = {}
+    updateMediaBox('thumb'); updateMediaBox('hero')
+    renderSections(); renderTags(); renderRelatedPicker(); renderRelatedSelected(); syncBodyFields()
+    $('cardPreview').classList.add('hidden')
   }
 
   function openEditor(a) {
     clearEditor()
-    $('editorCard').classList.remove('hidden')
-    $('editorTitle').textContent = a && a.id ? 'Edit article' : 'New article'
-    if (!a) {
-      $('editorCard').scrollIntoView({ behavior: 'smooth' })
-      return
-    }
+    $('editorTitle').textContent = a && a.id ? 'Edit Article' : 'Create Article'
+    showEditor()
+    if (!a) return
+    slugManual = true
     $('articleId').value = a.id || ''
-    $('fTitle').value = a.title || ''
-    $('fSlug').value = a.slug || ''
-    $('fSubtitle').value = a.subtitle || ''
-    $('fExcerpt').value = a.excerpt || ''
-    $('fCategory').value = a.category || ''
-    $('fAuthor').value = a.author || ''
-    $('fTags').value = (a.tags || []).join(', ')
-    $('fLocale').value = a.locale || 'en'
-    $('fTranslationGroup').value = a.translation_group_id || ''
+    $('fTitle').value = a.title || ''; $('fSlug').value = a.slug || ''; $('fSubtitle').value = a.subtitle || ''
+    $('fExcerpt').value = a.excerpt || ''; $('fAuthor').value = a.author || 'Between Us Editorial'
+    fillCategories(a.category || 'Confessions')
+    selectedTags = (a.tags || []).map(normalizeTag).filter(Boolean).slice(0, MAX_TAGS_UI)
+    $('fFocusKeywords').value = selectedTags.join(', ')
+    $('fLocale').value = a.locale || 'en'; $('fTranslationGroup').value = a.translation_group_id || ''
     if (a.published_at) {
       var d = new Date(a.published_at)
-      var local = new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16)
-      $('fPublishedAt').value = local
+      $('fPublishedAt').value = new Date(d.getTime() - d.getTimezoneOffset()*60000).toISOString().slice(0,16)
     }
     $('fFeaturedImage').value = a.featured_image || a.featured_image_url || ''
+    $('fThumbnail').value = a.thumbnail_image || a.thumbnail_image_url || ''
     $('fFeaturedAlt').value = a.featured_image_alt || ''
     $('fSocialImage').value = a.social_image || a.social_image_url || ''
-    $('fSeoTitle').value = a.seo_title || ''
-    $('fSeoDesc').value = a.seo_description || ''
+    $('fSeoTitle').value = a.seo_title || ''; $('fSeoDesc').value = a.seo_description || ''
     $('fCanonical').value = a.canonical_url || ''
-    $('fRelated').value = (a.related_article_ids || []).join(', ')
-    $('fFeatured').checked = !!a.featured
-    $('fNoindex').checked = !!a.noindex
-    $('fStatus').value = a.status || 'draft'
+    relatedIds = (a.related_article_ids || []).slice()
+    $('fFeatured').checked = !!a.featured; $('fNoindex').checked = !!a.noindex; $('fStatus').value = a.status || 'draft'
     sections = parseBodyToSections(a.body || '')
-    updateHeroUI()
-    renderSections()
-    syncBodyFields()
-    $('editorCard').scrollIntoView({ behavior: 'smooth' })
+    updateMediaBox('thumb'); updateMediaBox('hero')
+    renderSections(); renderTags(); renderRelatedPicker(); renderRelatedSelected(); syncBodyFields()
   }
 
   function collectPayload(forceStatus) {
     syncBodyFields()
-    var tags = $('fTags').value.split(',').map(function (t) { return t.trim() }).filter(Boolean)
-    var related = $('fRelated').value.split(',').map(function (t) { return t.trim() }).filter(Boolean)
-    var publishedAt = $('fPublishedAt').value
-      ? new Date($('fPublishedAt').value).toISOString()
-      : null
+    String($('fFocusKeywords').value || '').split(',').forEach(function (raw) {
+      var t = normalizeTag(raw)
+      if (!t || selectedTags.indexOf(t) >= 0) return
+      if (selectedTags.length < MAX_TAGS_UI) selectedTags.push(t)
+    })
+    renderTags()
+    var publishedAt = $('fPublishedAt').value ? new Date($('fPublishedAt').value).toISOString() : null
     return {
       title: $('fTitle').value,
       slug: $('fSlug').value || slugify($('fTitle').value),
@@ -1300,17 +1068,18 @@
       body: $('fBody').value,
       category: $('fCategory').value,
       author: $('fAuthor').value,
-      tags: tags,
+      tags: selectedTags.slice(0, MAX_TAGS_UI),
       locale: $('fLocale').value,
       translation_group_id: $('fTranslationGroup').value || null,
       published_at: publishedAt,
       featured_image: $('fFeaturedImage').value || null,
+      thumbnail_image: $('fThumbnail').value || null,
       featured_image_alt: $('fFeaturedAlt').value || null,
       social_image: $('fSocialImage').value || null,
       seo_title: $('fSeoTitle').value || null,
       seo_description: $('fSeoDesc').value || null,
       canonical_url: $('fCanonical').value || null,
-      related_article_ids: related,
+      related_article_ids: relatedIds.slice(),
       featured: $('fFeatured').checked,
       noindex: $('fNoindex').checked,
       status: forceStatus || $('fStatus').value || 'draft',
@@ -1318,28 +1087,40 @@
     }
   }
 
+  function validateForSave() {
+    var ok = true
+    if (!$('fTitle').value.trim()) { $('errTitle').classList.remove('hidden'); ok=false }
+    if (!$('fExcerpt').value.trim()) { $('errExcerpt').classList.remove('hidden'); ok=false }
+    if (!$('fCategory').value.trim()) { $('errCategory').classList.remove('hidden'); ok=false }
+    var slug = $('fSlug').value || slugify($('fTitle').value)
+    if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) { $('errSlug').classList.remove('hidden'); ok=false }
+    else {
+      var dup = articles.some(function (a) { return a.slug===slug && a.id !== $('articleId').value && (a.locale||'en')===($('fLocale').value||'en') })
+      if (dup) { $('errSlug').textContent='Slug already used'; $('errSlug').classList.remove('hidden'); ok=false }
+    }
+    if (!serializeSections().trim()) { $('errBody').classList.remove('hidden'); ok=false }
+    return ok
+  }
+
   async function saveDraft() {
+    if (!validateForSave()) { toast('Fix validation errors first', true); return }
     var payload = collectPayload('draft')
     var id = $('articleId').value
-    var res
-    if (id) res = await api('/landing-cms/journal-articles/' + id, { method: 'PATCH', body: payload })
-    else res = await api('/landing-cms/journal-articles', { method: 'POST', body: payload })
+    var res = id
+      ? await api('/landing-cms/journal-articles/' + id, { method: 'PATCH', body: payload })
+      : await api('/landing-cms/journal-articles', { method: 'POST', body: payload })
     $('articleId').value = res.article.id
     toast('Draft saved')
     await refreshList()
   }
 
   async function publishArticle(id) {
+    if (!id && !validateForSave()) { toast('Fix validation errors before publishing', true); return }
     if (!confirm('Publish this article?')) return
     var articleId = id || $('articleId').value
-    if (!articleId) {
-      await saveDraft()
-      articleId = $('articleId').value
-    } else if (!id) {
-      await api('/landing-cms/journal-articles/' + articleId, {
-        method: 'PATCH',
-        body: collectPayload(),
-      })
+    if (!articleId) { await saveDraft(); articleId = $('articleId').value }
+    else if (!id) {
+      await api('/landing-cms/journal-articles/' + articleId, { method: 'PATCH', body: collectPayload() })
     }
     var res = await api('/landing-cms/journal-articles/' + articleId + '/publish', {
       method: 'POST',
@@ -1348,109 +1129,112 @@
         published_at: $('fPublishedAt').value ? new Date($('fPublishedAt').value).toISOString() : undefined,
       },
     })
-    toast(res.article.status === 'scheduled' ? 'Scheduled' : 'Published (run generateJournal to update static site)')
+    toast(res.article.status === 'scheduled' ? 'Scheduled' : 'Published (run generateJournal for static site)')
     await refreshList()
     openEditor(res.article)
   }
 
-  async function archiveArticle(id) {
-    var articleId = id || $('articleId').value
-    if (!articleId) return
+  async function archiveArticle() {
+    var articleId = $('articleId').value; if (!articleId) return
     if (!confirm('Archive this article?')) return
     await api('/landing-cms/journal-articles/' + articleId + '/archive', { method: 'POST', body: {} })
-    toast('Archived')
-    await refreshList()
+    toast('Archived'); await refreshList(); showList()
   }
-
-  async function deleteArticle(id) {
-    var articleId = id || $('articleId').value
-    if (!articleId) return
+  async function deleteArticle() {
+    var articleId = $('articleId').value; if (!articleId) return
     if (!confirm('Delete this article permanently?')) return
     await api('/landing-cms/journal-articles/' + articleId, { method: 'DELETE' })
-    toast('Deleted')
-    $('editorCard').classList.add('hidden')
-    await refreshList()
+    toast('Deleted'); await refreshList(); showList()
   }
-
-  async function previewArticle(id) {
-    var articleId = id || $('articleId').value
-    setTab('preview')
-    if (!articleId) {
-      renderLocalPreview()
-      toast('Local preview — save to use server preview')
-      return
-    }
+  async function previewArticle() {
+    $('cardPreview').classList.remove('hidden')
+    var articleId = $('articleId').value
+    var html = syncBodyFields()
     try {
-      await api('/landing-cms/journal-articles/' + articleId, {
-        method: 'PATCH',
-        body: collectPayload(),
-      })
-      var res = await api('/landing-cms/journal-articles/' + articleId + '/preview', { method: 'POST', body: {} })
-      var p = res.preview
-      var pane = $('previewPane')
-      pane.innerHTML =
-        '<p class="muted">Between Us Journal · Editorial · PREVIEW (not public)</p>' +
-        '<h2>' + escapeHtml(p.title) + '</h2>' +
-        (p.subtitle ? '<p><em>' + escapeHtml(p.subtitle) + '</em></p>' : '') +
-        '<p class="muted">' + escapeHtml(p.author) + ' · ' + escapeHtml(p.category) + '</p>' +
-        (p.featured_image_url ? '<p><img src="' + escapeHtml(p.featured_image_url) + '" alt="" /></p>' : '') +
-        '<div>' + (p.body || '') + '</div>'
+      if (articleId) {
+        await api('/landing-cms/journal-articles/' + articleId, { method: 'PATCH', body: collectPayload() })
+        var res = await api('/landing-cms/journal-articles/' + articleId + '/preview', { method: 'POST', body: {} })
+        var p = res.preview
+        $('previewPane').innerHTML = '<p class="muted">PREVIEW (not public)</p><h2>'+escapeHtml(p.title)+'</h2>'+(p.subtitle?'<p><em>'+escapeHtml(p.subtitle)+'</em></p>':'')+'<p class="muted">'+escapeHtml(p.author)+' · '+escapeHtml(p.category)+'</p>'+(p.featured_image_url?'<p><img src="'+escapeHtml(p.featured_image_url)+'" alt="" /></p>':'')+'<div>'+(p.body||'')+'</div>'
+      } else {
+        $('previewPane').innerHTML = '<p class="muted">Local preview — save for server preview</p><h2>'+escapeHtml($('fTitle').value||'Untitled')+'</h2><div>'+html+'</div>'
+      }
     } catch (e) {
-      renderLocalPreview()
-      toast(e.message || 'Preview failed — showing local', true)
+      $('previewPane').innerHTML = '<p class="muted">Local preview</p><h2>'+escapeHtml($('fTitle').value||'Untitled')+'</h2><div>'+html+'</div>'
+      toast(e.message || 'Preview fallback', true)
+    }
+    $('cardPreview').scrollIntoView({ behavior: 'smooth' })
+  }
+
+  function bindImagePicker(pickId, fileId, hiddenId, kind) {
+    function pick() { $(fileId).click() }
+    $(pickId).onclick = pick
+    if ($(pickId.replace('Pick','Replace'))) $(pickId.replace('Pick','Replace')).onclick = pick
+    // explicit replace/clear wired below
+    $(fileId).onchange = async function (ev) {
+      var file = ev.target.files && ev.target.files[0]; if (!file) return
+      try {
+        toast('Uploading…')
+        var up = await uploadImageFile(file)
+        $(hiddenId).value = up.path
+        if (kind === 'hero' && !$('fSocialImage').value) $('fSocialImage').value = up.path
+        if (kind === 'hero') updateMediaBox('hero')
+        if (kind === 'thumb') updateMediaBox('thumb')
+        updateSeoPreviews()
+        toast('Image uploaded')
+      } catch (e) { toast(e.message || 'Upload failed', true) }
+      finally { ev.target.value = '' }
     }
   }
 
-  document.querySelectorAll('.tabs button').forEach(function (btn) {
-    btn.onclick = function () { setTab(btn.getAttribute('data-tab')) }
-  })
+  // Wire UI
+  fillCategories('Confessions')
+  $('tabPublished').onclick = function () { listMode='published'; $('tabPublished').classList.add('active'); $('tabDrafts').classList.remove('active'); renderList() }
+  $('tabDrafts').onclick = function () { listMode='drafts'; $('tabDrafts').classList.add('active'); $('tabPublished').classList.remove('active'); renderList() }
+  $('newBtn').onclick = function () { openEditor(null) }
+  $('backToListBtn').onclick = function () { showList() }
+  $('addSectionBtn').onclick = function () { sections.push(emptySection()); renderSections(); syncBodyFields() }
+  $('addTagBtn').onclick = function () { addTag($('tagInput').value) }
+  $('tagInput').addEventListener('keydown', function (e) { if (e.key==='Enter') { e.preventDefault(); addTag($('tagInput').value) } })
+  $('relatedSearch').oninput = renderRelatedPicker
+  $('applyRawBtn').onclick = function () { sections = parseBodyToSections($('fBodyRaw').value); renderSections(); syncBodyFields(); toast('Applied raw HTML to sections') }
 
-  $('addSectionBtn').onclick = function () {
-    sections.push(emptySection())
-    renderSections(); syncBodyFields()
+  bindImagePicker('thumbPick', 'thumbFile', 'fThumbnail', 'thumb')
+  bindImagePicker('heroPick', 'heroFile', 'fFeaturedImage', 'hero')
+  $('thumbReplace').onclick = function () { $('thumbFile').click() }
+  $('heroReplace').onclick = function () { $('heroFile').click() }
+  $('thumbClear').onclick = function () { $('fThumbnail').value=''; updateMediaBox('thumb') }
+  $('heroClear').onclick = function () { $('fFeaturedImage').value=''; updateMediaBox('hero') }
+  $('socialPick').onclick = function () { $('socialFile').click() }
+  $('socialFile').onchange = async function (ev) {
+    var file = ev.target.files && ev.target.files[0]; if (!file) return
+    try { toast('Uploading…'); var up = await uploadImageFile(file); $('fSocialImage').value = up.path; updateSeoPreviews(); toast('Social image uploaded') }
+    catch (e) { toast(e.message || 'Upload failed', true) }
+    finally { ev.target.value = '' }
   }
 
-  $('applyRawBtn').onclick = function () {
-    sections = parseBodyToSections($('fBodyRaw').value)
-    renderSections(); syncBodyFields()
-    setTab('write')
-    toast('Applied raw HTML to sections')
-  }
-
-  function pickHero() { $('fImageFile').click() }
-  $('heroPickBtn').onclick = pickHero
-  $('heroReplaceBtn').onclick = pickHero
-  $('heroClearBtn').onclick = function () {
-    $('fFeaturedImage').value = ''
-    updateHeroUI()
-  }
-
-  $('fTitle').addEventListener('blur', function () {
-    if (!$('fSlug').value) $('fSlug').value = slugify($('fTitle').value)
+  $('fTitle').addEventListener('input', function () {
+    if (!slugManual) $('fSlug').value = slugify($('fTitle').value)
+    updateSeoPreviews(); updatePublishChecklist()
+  })
+  $('fSlug').addEventListener('input', function () { slugManual = true; updateSeoPreviews() })
+  ;['fExcerpt','fSeoTitle','fSeoDesc','fSocialImage','fAllowMissingImage','fCategory'].forEach(function (id) {
+    $(id).addEventListener('input', function () { updateSeoPreviews(); updatePublishChecklist() })
+    $(id).addEventListener('change', function () { updateSeoPreviews(); updatePublishChecklist() })
   })
 
-  $('fImageFile').addEventListener('change', async function (ev) {
-    var file = ev.target.files && ev.target.files[0]
-    if (!file) return
-    try {
-      toast('Uploading…')
-      var up = await uploadImageFile(file)
-      $('fFeaturedImage').value = up.path
-      if (!$('fSocialImage').value) $('fSocialImage').value = up.path
-      updateHeroUI()
-      toast('Hero image uploaded')
-    } catch (e) {
-      toast(e.message || 'Upload failed', true)
-    } finally {
-      ev.target.value = ''
-    }
-  })
+  function bindSave(id) { $(id).onclick = function () { saveDraft().catch(function(e){toast(e.message,true)}) } }
+  function bindPreview(id) { $(id).onclick = function () { previewArticle().catch(function(e){toast(e.message,true)}) } }
+  function bindPublish(id) { $(id).onclick = function () { publishArticle().catch(function(e){toast(e.message,true)}) } }
+  bindSave('saveDraftBtn'); bindSave('saveDraftBtn2')
+  bindPreview('previewBtn'); bindPreview('previewBtn2')
+  bindPublish('publishBtn'); bindPublish('publishBtn2')
+  $('archiveBtn').onclick = function () { archiveArticle().catch(function(e){toast(e.message,true)}) }
+  $('deleteBtn').onclick = function () { deleteArticle().catch(function(e){toast(e.message,true)}) }
 
   $('loginBtn').onclick = async function () {
     try {
-      var email = $('email').value.trim()
-      var password = $('password').value
-      var { data, error } = await sb.auth.signInWithPassword({ email: email, password: password })
+      var { data, error } = await sb.auth.signInWithPassword({ email: $('email').value.trim(), password: $('password').value })
       if (error) throw error
       session = data.session
       await showLoggedIn()
@@ -1459,18 +1243,7 @@
       $('loginHint').textContent = e.message || 'Login failed'
     }
   }
-  $('logoutBtn').onclick = async function () {
-    await sb.auth.signOut()
-    session = null
-    showLoggedOut()
-  }
-  $('newBtn').onclick = function () { openEditor(null) }
-  $('cancelEditBtn').onclick = function () { $('editorCard').classList.add('hidden') }
-  $('saveDraftBtn').onclick = function () { saveDraft().catch(function (e) { toast(e.message, true) }) }
-  $('publishBtn').onclick = function () { publishArticle().catch(function (e) { toast(e.message, true) }) }
-  $('archiveBtn').onclick = function () { archiveArticle().catch(function (e) { toast(e.message, true) }) }
-  $('deleteBtn').onclick = function () { deleteArticle().catch(function (e) { toast(e.message, true) }) }
-  $('previewBtn').onclick = function () { previewArticle().catch(function (e) { toast(e.message, true) }) }
+  $('logoutBtn').onclick = async function () { await sb.auth.signOut(); session=null; showLoggedOut() }
 
   sb.auth.getSession().then(function (res) {
     session = res.data.session
@@ -1478,6 +1251,7 @@
     else showLoggedOut()
   })
 })()
-  </script>
+
+</script>
 </body>
 </html>
