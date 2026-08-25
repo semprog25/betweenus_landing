@@ -84,6 +84,17 @@ details.fold:not([open])>summary::after{content:'▸'}
 .table-editor{width:100%;border-collapse:collapse;font-size:.85rem} .table-editor th,.table-editor td{border:1px solid var(--border);padding:.35rem}
 .table-editor input{border-radius:6px;padding:.35rem}
 
+.btn-stack{display:grid;gap:.5rem;margin-top:.5rem}
+.paste-area{min-height:320px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.82rem;line-height:1.45}
+.import-preview .stat-line{display:flex;justify-content:space-between;gap:1rem;padding:.35rem 0;border-bottom:1px solid var(--border);font-size:.9rem}
+.import-preview .stat-line span:last-child{color:var(--muted);text-align:right}
+.img-slot{border:1px solid var(--border);border-radius:12px;padding:.75rem;background:var(--panel);margin-top:.6rem}
+.img-slot img{display:block;width:100%;max-height:180px;object-fit:cover;border-radius:8px;margin:.5rem 0;background:#111}
+.img-slot .brief{font-size:.75rem;color:var(--muted);margin:.35rem 0}
+.chip-pick{cursor:pointer;opacity:.85}.chip-pick.selected{outline:1px solid var(--ok);opacity:1;background:rgba(52,211,153,.2)}
+.paste-actions{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1rem}
+.warn-banner{background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.35);color:#fde68a;border-radius:12px;padding:.75rem;margin:.75rem 0;font-size:.85rem}
+
   </style>
 </head>
 <body>
@@ -121,8 +132,79 @@ details.fold:not([open])>summary::after{content:'▸'}
           <button type="button" class="active" id="tabPublished" data-list="published">Published (0)</button>
           <button type="button" id="tabDrafts" data-list="drafts">Drafts (0)</button>
         </div>
-        <button type="button" class="blue" id="newBtn" style="width:100%">+ Create Article</button>
+        <div class="btn-stack">
+          <button type="button" class="blue" id="newBtn" style="width:100%">+ Create Article</button>
+          <button type="button" class="secondary" id="pasteArticleBtn" style="width:100%">Paste Article</button>
+        </div>
         <div id="listBody"></div>
+      </div>
+    </div>
+
+
+    <div id="pasteView" class="hidden">
+      <div class="editor-head">
+        <div>
+          <button type="button" class="ghost" id="pasteBackBtn">← Back</button>
+          <h2 style="margin-top:.5rem">Paste Article</h2>
+          <p class="muted">Paste the article exactly as generated. We’ll organize title, excerpt, sections, blocks, category, tags and SEO.</p>
+        </div>
+      </div>
+      <div class="card">
+        <h2 class="card-title">Paste your article</h2>
+        <label for="pasteInput">Structured article text</label>
+        <textarea id="pasteInput" class="paste-area" placeholder="Title:&#10;…&#10;&#10;Sections:&#10;&#10;SECTION 1&#10;Heading:&#10;…&#10;Block:&#10;Paragraph&#10;Content:&#10;…"></textarea>
+        <div class="paste-actions">
+          <button type="button" class="secondary" id="pasteCancelBtn">Cancel</button>
+          <button type="button" id="pasteParseBtn">Parse Article</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="importReviewView" class="hidden">
+      <div class="editor-head">
+        <div>
+          <button type="button" class="ghost" id="importBackBtn">← Back to paste</button>
+          <h2 style="margin-top:.5rem">Article Import</h2>
+          <p class="muted">Review before applying. Nothing is saved until you apply and then Save Draft.</p>
+        </div>
+      </div>
+      <div class="card import-preview" id="importSummary"></div>
+      <div class="card">
+        <h2 class="card-title">SEO (editable)</h2>
+        <label for="importSeoTitle">SEO Title</label>
+        <input id="importSeoTitle" />
+        <label for="importSeoDesc">SEO Description</label>
+        <textarea id="importSeoDesc" style="min-height:80px"></textarea>
+        <label for="importSeoKeywords">SEO Keywords</label>
+        <input id="importSeoKeywords" />
+        <label for="importCategory">Category</label>
+        <select id="importCategory"></select>
+        <p class="field-hint" id="importCategoryHint"></p>
+        <label>Tags</label>
+        <div class="tag-row" id="importTags"></div>
+        <div id="importSuggestedTagsWrap" class="hidden">
+          <p class="muted" style="margin:.6rem 0 .3rem">Suggested tags</p>
+          <div class="tag-suggest" id="importSuggestedTags"></div>
+          <button type="button" class="ghost" id="importAddAllTags" style="margin-top:.4rem">Add all suggestions</button>
+        </div>
+      </div>
+      <div class="card">
+        <h2 class="card-title">Images</h2>
+        <p class="muted" id="importImageStatus">Preparing image briefs…</p>
+        <div id="importImageSlots"></div>
+        <div class="paste-actions">
+          <button type="button" class="secondary" id="importRegenAllImages">Regenerate Images</button>
+        </div>
+      </div>
+      <div class="card" id="importRelatedCard">
+        <h2 class="card-title">Suggested Related Articles</h2>
+        <div id="importRelated"></div>
+      </div>
+      <div class="card">
+        <div class="paste-actions">
+          <button type="button" class="secondary" id="importCancelBtn">Cancel</button>
+          <button type="button" id="importApplyBtn">Apply Article to Editor</button>
+        </div>
       </div>
     </div>
 
@@ -323,6 +405,7 @@ details.fold:not([open])>summary::after{content:'▸'}
   </section>
 </div>
 <div id="toast"></div>
+<script src="journal-article-parser.js"></script>
 <script>
 (function () {
   var SUPABASE_URL = 'https://qoqbdiixztolvtcjdnle.supabase.co'
@@ -947,12 +1030,384 @@ details.fold:not([open])>summary::after{content:'▸'}
     }
   }
 
+  function hideAllAppViews() {
+    ;['listView', 'editorView', 'pasteView', 'importReviewView'].forEach(function (id) {
+      var el = $(id); if (el) el.classList.add('hidden')
+    })
+  }
   function showList() {
-    $('listView').classList.remove('hidden'); $('editorView').classList.add('hidden')
+    hideAllAppViews()
+    $('listView').classList.remove('hidden')
   }
   function showEditor() {
-    $('listView').classList.add('hidden'); $('editorView').classList.remove('hidden')
+    hideAllAppViews()
+    $('editorView').classList.remove('hidden')
     window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+  function showPaste() {
+    hideAllAppViews()
+    $('pasteView').classList.remove('hidden')
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+  function showImportReview() {
+    hideAllAppViews()
+    $('importReviewView').classList.remove('hidden')
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  var importState = null
+  var Paste = window.BetweenUsJournalPaste
+
+  function ensurePasteLib() {
+    if (!Paste || typeof Paste.parseArticle !== 'function') {
+      throw new Error('Paste parser failed to load. Refresh and try again.')
+    }
+  }
+
+  function createEmptyImageSlot(kind, brief, alt) {
+    return {
+      kind: kind,
+      brief: brief,
+      alt: alt,
+      url: '',
+      path: '',
+      status: 'empty',
+      message: '',
+    }
+  }
+
+  async function tryGenerateArticleImages(article) {
+    ensurePasteLib()
+    var brief = Paste.buildImageBrief(article)
+    var alt = Paste.buildImageAlt(article)
+    var slots = [
+      createEmptyImageSlot('hero', brief, alt),
+      createEmptyImageSlot('thumb', brief + ' Square crop-friendly composition.', alt),
+      createEmptyImageSlot('social', brief + ' Wide 1.91:1 social sharing crop.', alt),
+    ]
+    // Magnific MCP runs only inside Cursor (not the browser). Live CMS cannot call it.
+    // Soft-fail: keep briefs + empty fields so content import still works.
+    var message = 'Images could not be generated automatically. Magnific image tools are not available in the live CMS browser (MCP is Cursor-only and currently requires a Magnific premium account). Upload images manually or regenerate later.'
+    slots.forEach(function (s) {
+      s.status = 'unavailable'
+      s.message = message
+    })
+    return { slots: slots, message: message, ok: false }
+  }
+
+  function renderImportTags() {
+    if (!importState) return
+    var wrap = $('importTags')
+    wrap.innerHTML = ''
+    importState.tags.forEach(function (t, idx) {
+      var chip = document.createElement('span')
+      chip.className = 'chip tag'
+      chip.textContent = t + ' '
+      var rm = document.createElement('button')
+      rm.type = 'button'
+      rm.setAttribute('aria-label', 'Remove tag ' + t)
+      rm.textContent = '×'
+      rm.onclick = function () {
+        importState.tags.splice(idx, 1)
+        renderImportTags()
+        renderImportSuggestedTags()
+      }
+      chip.appendChild(rm)
+      wrap.appendChild(chip)
+    })
+  }
+
+  function renderImportSuggestedTags() {
+    if (!importState) return
+    var wrap = $('importSuggestedTags')
+    var box = $('importSuggestedTagsWrap')
+    wrap.innerHTML = ''
+    var suggested = (importState.suggestedTags || []).filter(function (t) {
+      return importState.tags.indexOf(t) < 0
+    })
+    if (!suggested.length || importState.tags.length >= MAX_TAGS_UI) {
+      box.classList.add('hidden')
+      return
+    }
+    box.classList.remove('hidden')
+    suggested.forEach(function (t) {
+      var btn = document.createElement('button')
+      btn.type = 'button'
+      btn.textContent = '+' + t
+      btn.onclick = function () {
+        if (importState.tags.length >= MAX_TAGS_UI) { toast('Maximum ' + MAX_TAGS_UI + ' tags', true); return }
+        if (importState.tags.indexOf(t) < 0) importState.tags.push(t)
+        renderImportTags()
+        renderImportSuggestedTags()
+      }
+      wrap.appendChild(btn)
+    })
+  }
+
+  function renderImportImageSlots() {
+    if (!importState) return
+    var host = $('importImageSlots')
+    host.innerHTML = ''
+    ;(importState.images || []).forEach(function (slot) {
+      var box = document.createElement('div')
+      box.className = 'img-slot'
+      var title = document.createElement('strong')
+      title.textContent = slot.kind === 'hero' ? 'Hero image' : slot.kind === 'thumb' ? 'Thumbnail' : 'Social image'
+      box.appendChild(title)
+      if (slot.url || slot.path) {
+        var img = document.createElement('img')
+        img.alt = slot.alt || ''
+        img.src = resolveImageUrl(slot.url || slot.path)
+        box.appendChild(img)
+      } else {
+        var empty = document.createElement('p')
+        empty.className = 'muted'
+        empty.textContent = 'No image yet'
+        box.appendChild(empty)
+      }
+      var brief = document.createElement('p')
+      brief.className = 'brief'
+      brief.textContent = 'Brief: ' + (slot.brief || '')
+      box.appendChild(brief)
+      var altLab = document.createElement('label')
+      altLab.textContent = 'Alt text'
+      box.appendChild(altLab)
+      var altIn = document.createElement('input')
+      altIn.value = slot.alt || ''
+      altIn.oninput = function () { slot.alt = altIn.value }
+      box.appendChild(altIn)
+      var actions = document.createElement('div')
+      actions.className = 'paste-actions'
+      var regen = document.createElement('button')
+      regen.type = 'button'
+      regen.className = 'secondary'
+      regen.textContent = 'Regenerate'
+      regen.onclick = function () { regenerateOneImage(slot.kind) }
+      var replace = document.createElement('button')
+      replace.type = 'button'
+      replace.className = 'ghost'
+      replace.textContent = 'Replace'
+      var file = document.createElement('input')
+      file.type = 'file'
+      file.accept = 'image/jpeg,image/png,image/webp,image/gif'
+      file.className = 'hidden'
+      replace.onclick = function () { file.click() }
+      file.onchange = async function (ev) {
+        var f = ev.target.files && ev.target.files[0]
+        if (!f) return
+        try {
+          toast('Uploading…')
+          var up = await uploadImageFile(f)
+          slot.path = up.path
+          slot.url = up.publicUrl || resolveImageUrl(up.path)
+          slot.status = 'ready'
+          slot.message = ''
+          renderImportImageSlots()
+          toast('Image replaced')
+        } catch (e) { toast(e.message || 'Upload failed', true) }
+        finally { ev.target.value = '' }
+      }
+      var remove = document.createElement('button')
+      remove.type = 'button'
+      remove.className = 'danger'
+      remove.textContent = 'Remove'
+      remove.onclick = function () {
+        slot.url = ''; slot.path = ''; slot.status = 'empty'; slot.message = ''
+        renderImportImageSlots()
+      }
+      actions.appendChild(regen)
+      actions.appendChild(replace)
+      actions.appendChild(remove)
+      box.appendChild(actions)
+      box.appendChild(file)
+      host.appendChild(box)
+    })
+  }
+
+  function renderImportRelated() {
+    if (!importState) return
+    var host = $('importRelated')
+    host.innerHTML = ''
+    var list = importState.relatedSuggestions || []
+    if (!list.length) {
+      host.innerHTML = '<p class="muted">No published articles to suggest yet.</p>'
+      return
+    }
+    list.forEach(function (a) {
+      var row = document.createElement('label')
+      row.className = 'related-item'
+      var cb = document.createElement('input')
+      cb.type = 'checkbox'
+      cb.checked = (importState.relatedIds || []).indexOf(a.id) >= 0
+      cb.onchange = function () {
+        importState.relatedIds = importState.relatedIds || []
+        if (cb.checked) {
+          if (importState.relatedIds.indexOf(a.id) < 0 && importState.relatedIds.length < 3) importState.relatedIds.push(a.id)
+          else if (importState.relatedIds.length >= 3) { cb.checked = false; toast('Max 3 related articles', true) }
+        } else {
+          importState.relatedIds = importState.relatedIds.filter(function (id) { return id !== a.id })
+        }
+      }
+      var text = document.createElement('div')
+      text.innerHTML = '<strong>' + escapeHtml(a.title) + '</strong><div class="muted">' + escapeHtml(a.category || '') + '</div>'
+      row.appendChild(cb)
+      row.appendChild(text)
+      host.appendChild(row)
+    })
+  }
+
+  function renderImportReview() {
+    if (!importState) return
+    var a = importState.article
+    var seoOk = !!(importState.seo.seoTitle && importState.seo.seoDescription && importState.seo.seoKeywords)
+    $('importSummary').innerHTML =
+      '<div class="stat-line"><span>Title</span><span>' + escapeHtml(a.title) + '</span></div>' +
+      '<div class="stat-line"><span>Slug</span><span>' + escapeHtml(a.slug) + '</span></div>' +
+      '<div class="stat-line"><span>Category</span><span>' + escapeHtml(importState.category) + '</span></div>' +
+      '<div class="stat-line"><span>Tags</span><span>' + escapeHtml((importState.tags || []).join(', ')) + '</span></div>' +
+      '<div class="stat-line"><span>Sections</span><span>' + a.sectionCount + ' sections · ' + a.blockCount + ' content blocks</span></div>' +
+      '<div class="stat-line"><span>SEO</span><span>' + (seoOk ? 'SEO title ✓ · SEO description ✓ · Keywords ✓' : 'Needs review') + '</span></div>' +
+      (a.warnings && a.warnings.length ? '<div class="warn-banner">' + escapeHtml(a.warnings.join(' · ')) + '</div>' : '')
+    $('importSeoTitle').value = importState.seo.seoTitle || ''
+    $('importSeoDesc').value = importState.seo.seoDescription || ''
+    $('importSeoKeywords').value = importState.seo.seoKeywords || ''
+    var sel = $('importCategory')
+    sel.innerHTML = ''
+    CATEGORIES.forEach(function (c) {
+      var opt = document.createElement('option')
+      opt.value = c; opt.textContent = c
+      if (c === importState.category) opt.selected = true
+      sel.appendChild(opt)
+    })
+    $('importCategoryHint').textContent = importState.categorySuggested
+      ? 'Suggested from article topic (you can change it).'
+      : 'Taken from pasted Category field.'
+    $('importImageStatus').textContent = importState.imageMessage || ''
+    renderImportTags()
+    renderImportSuggestedTags()
+    renderImportImageSlots()
+    renderImportRelated()
+  }
+
+  async function regenerateOneImage(kind) {
+    if (!importState) return
+    toast('Image generation unavailable in live CMS')
+    var slot = (importState.images || []).find(function (s) { return s.kind === kind })
+    if (!slot) return
+    slot.status = 'unavailable'
+    slot.message = importState.imageMessage || 'Images could not be generated automatically.'
+    renderImportImageSlots()
+  }
+
+  async function regenerateAllImages() {
+    if (!importState) return
+    $('importImageStatus').textContent = 'Requesting images…'
+    try {
+      var res = await tryGenerateArticleImages(importState.article)
+      importState.images = res.slots
+      importState.imageMessage = res.message
+      $('importImageStatus').textContent = res.message
+      renderImportImageSlots()
+    } catch (e) {
+      importState.imageMessage = 'Images could not be generated automatically.'
+      $('importImageStatus').textContent = importState.imageMessage
+      toast(e.message || 'Image generation failed', true)
+    }
+  }
+
+  async function handleParsePaste() {
+    try {
+      ensurePasteLib()
+      var raw = $('pasteInput').value
+      if (!String(raw || '').trim()) { toast('Paste an article first', true); return }
+      var parsed = Paste.parseArticle(raw)
+      var catInfo = Paste.suggestCategory(parsed)
+      var tagInfo = Paste.suggestTags(Object.assign({}, parsed, { category: catInfo.value, tags: parsed.tags }))
+      var seo = Paste.suggestSeo(Object.assign({}, parsed, { category: catInfo.value, tags: tagInfo.tags.concat(tagInfo.suggested).slice(0, MAX_TAGS_UI) }))
+      var related = Paste.suggestRelated(Object.assign({}, parsed, { category: catInfo.value, tags: parsed.tags }), articles, 3)
+      var articleForImages = Object.assign({}, parsed, { category: catInfo.value })
+      var imgRes = await tryGenerateArticleImages(articleForImages)
+      importState = {
+        article: parsed,
+        category: catInfo.value,
+        categorySuggested: !!catInfo.suggested && !parsed.category,
+        tags: (parsed.tags && parsed.tags.length ? parsed.tags : []).slice(0, MAX_TAGS_UI),
+        suggestedTags: tagInfo.suggested || [],
+        seo: seo,
+        images: imgRes.slots,
+        imageMessage: imgRes.message,
+        relatedSuggestions: related,
+        relatedIds: [],
+        raw: raw,
+      }
+      if (!importState.tags.length && importState.suggestedTags.length) {
+        // show suggestions only — do not auto-apply
+      }
+      renderImportReview()
+      showImportReview()
+      toast('Article parsed — review before applying')
+    } catch (e) {
+      toast(e.message || 'Parse failed', true)
+    }
+  }
+
+  function applyImportToEditor() {
+    if (!importState) { toast('Nothing to apply', true); return }
+    importState.category = $('importCategory').value || importState.category
+    importState.seo.seoTitle = $('importSeoTitle').value
+    importState.seo.seoDescription = $('importSeoDesc').value
+    importState.seo.seoKeywords = $('importSeoKeywords').value
+    var parsed = importState.article
+    var existing = articles.find(function (a) {
+      return a.slug === parsed.slug && (a.locale || 'en') === 'en'
+    })
+    if (existing) openEditor(existing)
+    else openEditor(null)
+
+    slugManual = true
+    $('fTitle').value = parsed.title || ''
+    $('fSlug').value = parsed.slug || slugify(parsed.title)
+    $('fExcerpt').value = parsed.excerpt || ''
+    $('fStatus').value = 'draft'
+    // Keep author as current editor default / existing author — do not invent
+    if (!$('fAuthor').value.trim()) $('fAuthor').value = 'Between Us Editorial'
+    fillCategories(importState.category || 'Hot Takes')
+    selectedTags = (importState.tags || []).slice(0, MAX_TAGS_UI)
+    $('fSeoTitle').value = importState.seo.seoTitle || ''
+    $('fSeoDesc').value = importState.seo.seoDescription || ''
+    $('fFocusKeywords').value = importState.seo.seoKeywords || ''
+    relatedIds = (importState.relatedIds || []).slice(0, 3)
+
+    var hero = (importState.images || []).find(function (s) { return s.kind === 'hero' })
+    var thumb = (importState.images || []).find(function (s) { return s.kind === 'thumb' })
+    var social = (importState.images || []).find(function (s) { return s.kind === 'social' })
+    if (hero && (hero.path || hero.url)) {
+      $('fFeaturedImage').value = hero.path || hero.url
+      $('fFeaturedAlt').value = hero.alt || ''
+    }
+    if (thumb && (thumb.path || thumb.url)) $('fThumbnail').value = thumb.path || thumb.url
+    if (social && (social.path || social.url)) $('fSocialImage').value = social.path || social.url
+    else if (hero && (hero.path || hero.url)) $('fSocialImage').value = hero.path || hero.url
+
+    // Deep-clone sections into editor state (same shape as manual editor)
+    sections = (parsed.sections || []).map(function (s) {
+      return {
+        id: uid(),
+        heading: s.heading || '',
+        headingLevel: s.headingLevel || 'h2',
+        blocks: (s.blocks || []).map(function (b) {
+          var copy = JSON.parse(JSON.stringify(b))
+          copy.id = uid()
+          return copy
+        }),
+      }
+    })
+    if (!sections.length) sections = [emptySection()]
+    collapsed = {}
+    updateMediaBox('thumb'); updateMediaBox('hero')
+    renderSections(); renderTags(); renderRelatedPicker(); renderRelatedSelected(); syncBodyFields()
+    updateSeoPreviews(); updatePublishChecklist()
+    toast('Applied to editor as DRAFT — review, then Save')
   }
 
   function renderStats() {
@@ -1192,6 +1647,39 @@ details.fold:not([open])>summary::after{content:'▸'}
   $('tabPublished').onclick = function () { listMode='published'; $('tabPublished').classList.add('active'); $('tabDrafts').classList.remove('active'); renderList() }
   $('tabDrafts').onclick = function () { listMode='drafts'; $('tabDrafts').classList.add('active'); $('tabPublished').classList.remove('active'); renderList() }
   $('newBtn').onclick = function () { openEditor(null) }
+  $('pasteArticleBtn').onclick = function () {
+    $('pasteInput').value = ''
+    importState = null
+    showPaste()
+  }
+  $('pasteBackBtn').onclick = function () { showList() }
+  $('pasteCancelBtn').onclick = function () { showList() }
+  $('pasteParseBtn').onclick = function () { handleParsePaste().catch(function (e) { toast(e.message || 'Parse failed', true) }) }
+  $('importBackBtn').onclick = function () { showPaste() }
+  $('importCancelBtn').onclick = function () { importState = null; showList() }
+  $('importApplyBtn').onclick = function () { applyImportToEditor() }
+  $('importRegenAllImages').onclick = function () { regenerateAllImages().catch(function (e) { toast(e.message, true) }) }
+  $('importAddAllTags').onclick = function () {
+    if (!importState) return
+    ;(importState.suggestedTags || []).forEach(function (t) {
+      if (importState.tags.length >= MAX_TAGS_UI) return
+      if (importState.tags.indexOf(t) < 0) importState.tags.push(t)
+    })
+    renderImportTags(); renderImportSuggestedTags()
+  }
+  $('importCategory').onchange = function () {
+    if (!importState) return
+    importState.category = $('importCategory').value
+    importState.categorySuggested = false
+  }
+  ;['importSeoTitle','importSeoDesc','importSeoKeywords'].forEach(function (id) {
+    $(id).addEventListener('input', function () {
+      if (!importState) return
+      importState.seo.seoTitle = $('importSeoTitle').value
+      importState.seo.seoDescription = $('importSeoDesc').value
+      importState.seo.seoKeywords = $('importSeoKeywords').value
+    })
+  })
   $('backToListBtn').onclick = function () { showList() }
   $('addSectionBtn').onclick = function () { sections.push(emptySection()); renderSections(); syncBodyFields() }
   $('addTagBtn').onclick = function () { addTag($('tagInput').value) }
