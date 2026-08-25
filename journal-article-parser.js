@@ -142,6 +142,7 @@
     })
 
     // Collapse leftover empty wrappers / excess newlines
+    raw = raw.replace(/<p>\s*<\/p>/gi, '')
     raw = raw.replace(/\n{3,}/g, '\n\n').trim()
     return raw
   }
