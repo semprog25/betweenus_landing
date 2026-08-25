@@ -1,4 +1,45 @@
 {
-  "generatedAt": "2026-08-24T22:19:54.941Z",
-  "articles": []
+  "generatedAt": "2026-08-25T09:48:38.576Z",
+  "articles": [
+    {
+      "id": "a1e5f790-ac47-4e9a-8c10-d1f3c609ac97",
+      "slug": "the-gossip-we-all-pretend-we-dont-love",
+      "title": "The Gossip We All Pretend We Don't Love",
+      "copy": "We all say we hate gossip. Yet somehow, the moment someone says “I probably shouldn't tell you…”, everyone suddenly has five minutes to spare. Why are other people's secrets so difficult to ignore?",
+      "theme": "rose",
+      "imageUrl": "/assets/journal/healing-breakup.jpg",
+      "imageAlt": "The Gossip We All Pretend We Don't Love",
+      "href": "/journal/the-gossip-we-all-pretend-we-dont-love/"
+    },
+    {
+      "id": "235d0f8b-f6fe-44d6-b7ff-9b18549eb71d",
+      "slug": "when-your-friends-secret-isnt-really-a-secret",
+      "title": "When Your Friend's Secret Isn't Really a Secret",
+      "copy": "They told you something “in confidence.” Then somehow three other people know by the end of the day. So who actually broke the secret?",
+      "theme": "violet",
+      "imageUrl": "/assets/journal/healing-breakup.jpg",
+      "imageAlt": "When Your Friend's Secret Isn't Really a Secret",
+      "href": "/journal/when-your-friends-secret-isnt-really-a-secret/"
+    },
+    {
+      "id": "32e74742-4077-4496-aba1-12c0203f707c",
+      "slug": "things-people-say-behind-your-back",
+      "title": "Things People Say Behind Your Back",
+      "copy": "Sometimes you discover what people really think about you. Sometimes you wish you hadn't. What happens in the conversations you aren't there to hear?",
+      "theme": "sunset",
+      "imageUrl": "/assets/journal/healing-breakup.jpg",
+      "imageAlt": "Things People Say Behind Your Back",
+      "href": "/journal/things-people-say-behind-your-back/"
+    },
+    {
+      "id": "5dd67e11-368e-482b-a35e-76b8e701be98",
+      "slug": "the-office-gossip-nobody-asked-for",
+      "title": "The Office Gossip Nobody Asked For",
+      "copy": "Every workplace has it: the rumours, suspicious meetings, mysterious calendar invitations and the person who somehow knows everything.",
+      "theme": "ocean",
+      "imageUrl": "https://qoqbdiixztolvtcjdnle.supabase.co/storage/v1/object/public/journal-images/journal/1787650333399-17348.jpg",
+      "imageAlt": "The Office Gossip Nobody Asked For",
+      "href": "/journal/the-office-gossip-nobody-asked-for/"
+    }
+  ]
 }

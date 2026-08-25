@@ -33,9 +33,18 @@ nav a{margin-left:1rem;color:var(--muted);font-size:.9rem}
 .meta{color:var(--muted);font-size:.9rem;margin-bottom:1.25rem}
 .hero-img{width:100%;height:auto;border-radius:16px;margin:1rem 0 1.5rem;display:block}
 .article-body{font-size:1.0625rem}
-.article-body h2{margin-top:2rem;font-size:1.35rem}
+.article-body h1,.article-body h2,.article-body h3{margin-top:2rem;font-size:1.35rem}
+.article-body h1{font-size:1.55rem}
+.article-body table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.95rem}
+.article-body th,.article-body td{border:1px solid rgba(255,255,255,.12);padding:.5rem .6rem;text-align:left}
+.article-body blockquote{margin:1rem 0;padding:.75rem 1rem;border-left:3px solid var(--accent);background:rgba(255,255,255,.04);border-radius:0 12px 12px 0}
 .article-body img{max-width:100%;height:auto;border-radius:12px}
 .article-body a{word-break:break-word}
+.filters{display:flex;flex-wrap:wrap;gap:.45rem;margin:1.25rem 0 1rem}
+.filter-chip{appearance:none;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);color:var(--muted);border-radius:999px;padding:.4rem .8rem;font:inherit;font-size:.82rem;font-weight:600;cursor:pointer}
+.filter-chip.active,.filter-chip:hover{color:#fff;border-color:rgba(217,70,239,.55);background:rgba(217,70,239,.16)}
+.tag-chip{display:inline-block;margin:.15rem .25rem 0 0;font-size:.72rem;color:#6ee7b7}
+.journal-card[hidden]{display:none!important}
 .cta{margin:2rem 0;padding:1.25rem;border:1px solid rgba(255,255,255,.12);border-radius:16px;background:rgba(217,70,239,.08)}
 .cta h2{margin:0 0 .5rem;font-size:1.15rem}
 .cta p{margin:0 0 1rem;color:var(--muted)}
@@ -67,15 +76,52 @@ footer{border-top:1px solid rgba(255,255,255,.08);padding:2rem 0;color:var(--mut
   <main class="shell journal-index">
     <p class="eyebrow">Between Us Journal</p>
     <h1>Editorial stories &amp; reflections</h1>
-    <p style="color:var(--muted);max-width:40rem">Guides and reflections about connection, anonymity, and the messy middle of relationships. Separate from the anonymous community Stories feed.</p>
+    <p style="color:var(--muted);max-width:40rem">Confessions, dating drama, advice, and the messy middle of relationships. Separate from the anonymous community Stories feed.</p>
     <aside class="ad-slot" data-ad-placement="journal-top" data-ad-enabled="false" aria-hidden="true"></aside>
-    <div class="empty"><p>No Journal articles published yet.</p><p>Editorial stories will appear here once the team publishes the first piece.</p></div>
+    <section class="featured" aria-label="Featured article" data-category="Hot Takes" data-tags="gossip,secrets,social-life,confessions,drama">
+  <div>
+    <p class="eyebrow">Featured</p>
+    <h2 style="margin:.25rem 0 .75rem;font-size:1.75rem"><a href="https://betweenus.fun/journal/the-gossip-we-all-pretend-we-dont-love" style="color:inherit">The Gossip We All Pretend We Don't Love</a></h2>
+    <p style="color:var(--muted)">We all say we hate gossip. Yet somehow, the moment someone says “I probably shouldn't tell you…”, everyone suddenly has five minutes to spare. Why are other people's secrets so difficult to ignore?</p>
+    <p><a class="btn" href="https://betweenus.fun/journal/the-gossip-we-all-pretend-we-dont-love">Read article</a></p>
+  </div>
+  
+</section>
     <aside class="ad-slot" data-ad-placement="journal-mid" data-ad-enabled="false" aria-hidden="true"></aside>
+    <section aria-label="Filter Journal">
+      <div class="filters" role="toolbar" aria-label="Category filters"><button type="button" class="filter-chip active" data-filter-type="category" data-filter-value="all" aria-pressed="true">All</button><button type="button" class="filter-chip" data-filter-type="category" data-filter-value="Friend Drama" aria-pressed="false">Friend Drama</button><button type="button" class="filter-chip" data-filter-type="category" data-filter-value="Work Drama" aria-pressed="false">Work Drama</button><button type="button" class="filter-chip" data-filter-type="category" data-filter-value="Hot Takes" aria-pressed="false">Hot Takes</button></div>
+      <div class="filters" role="toolbar" aria-label="Tag filters"><button type="button" class="filter-chip" data-filter-type="tag" data-filter-value="betrayal" aria-pressed="false">#betrayal</button><button type="button" class="filter-chip" data-filter-type="tag" data-filter-value="colleagues" aria-pressed="false">#colleagues</button><button type="button" class="filter-chip" data-filter-type="tag" data-filter-value="confessions" aria-pressed="false">#confessions</button><button type="button" class="filter-chip" data-filter-type="tag" data-filter-value="drama" aria-pressed="false">#drama</button><button type="button" class="filter-chip" data-filter-type="tag" data-filter-value="friendship" aria-pressed="false">#friendship</button><button type="button" class="filter-chip" data-filter-type="tag" data-filter-value="gossip" aria-pressed="false">#gossip</button><button type="button" class="filter-chip" data-filter-type="tag" data-filter-value="office-drama" aria-pressed="false">#office-drama</button><button type="button" class="filter-chip" data-filter-type="tag" data-filter-value="rumours" aria-pressed="false">#rumours</button><button type="button" class="filter-chip" data-filter-type="tag" data-filter-value="secrets" aria-pressed="false">#secrets</button><button type="button" class="filter-chip" data-filter-type="tag" data-filter-value="social-life" aria-pressed="false">#social-life</button><button type="button" class="filter-chip" data-filter-type="tag" data-filter-value="workplace" aria-pressed="false">#workplace</button></div>
+    </section>
     <section aria-label="Latest articles">
       <h2>Latest</h2>
-      
-    </section>
+      <div class="grid"><article class="journal-card" data-category="Friend Drama" data-tags="friendship,secrets,betrayal,gossip,drama">
+  <a href="https://betweenus.fun/journal/when-your-friends-secret-isnt-really-a-secret" style="color:inherit;text-decoration:none">
     
+    <p class="eyebrow">Friend Drama</p>
+    <h3 style="margin:.25rem 0">When Your Friend's Secret Isn't Really a Secret</h3>
+    <p style="color:var(--muted);font-size:.92rem">They told you something “in confidence.” Then somehow three other people know by the end of the day. So who actually broke the secret?</p>
+    <p style="margin:.35rem 0 0"><span class="tag-chip">#friendship</span><span class="tag-chip">#secrets</span><span class="tag-chip">#betrayal</span><span class="tag-chip">#gossip</span></p>
+  </a>
+</article>
+<article class="journal-card" data-category="Friend Drama" data-tags="gossip,friendship,workplace,drama,social-life">
+  <a href="https://betweenus.fun/journal/things-people-say-behind-your-back" style="color:inherit;text-decoration:none">
+    
+    <p class="eyebrow">Friend Drama</p>
+    <h3 style="margin:.25rem 0">Things People Say Behind Your Back</h3>
+    <p style="color:var(--muted);font-size:.92rem">Sometimes you discover what people really think about you. Sometimes you wish you hadn't. What happens in the conversations you aren't there to hear?</p>
+    <p style="margin:.35rem 0 0"><span class="tag-chip">#gossip</span><span class="tag-chip">#friendship</span><span class="tag-chip">#workplace</span><span class="tag-chip">#drama</span></p>
+  </a>
+</article>
+<article class="journal-card" data-category="Work Drama" data-tags="office-drama,workplace,gossip,colleagues,rumours">
+  <a href="https://betweenus.fun/journal/the-office-gossip-nobody-asked-for" style="color:inherit;text-decoration:none">
+    <img class="card-img" src="https://qoqbdiixztolvtcjdnle.supabase.co/storage/v1/object/public/journal-images/journal/1787650333399-17348.jpg" alt="The Office Gossip Nobody Asked For" loading="lazy" width="640" height="360" />
+    <p class="eyebrow">Work Drama</p>
+    <h3 style="margin:.25rem 0">The Office Gossip Nobody Asked For</h3>
+    <p style="color:var(--muted);font-size:.92rem">Every workplace has it: the rumours, suspicious meetings, mysterious calendar invitations and the person who somehow knows everything.</p>
+    <p style="margin:.35rem 0 0"><span class="tag-chip">#office-drama</span><span class="tag-chip">#workplace</span><span class="tag-chip">#gossip</span><span class="tag-chip">#colleagues</span></p>
+  </a>
+</article></div>
+    </section>
     <aside class="ad-slot" data-ad-placement="journal-bottom" data-ad-enabled="false" aria-hidden="true"></aside>
     <aside class="cta" aria-label="Download Between Us">
   <h2>Join the conversation</h2>
@@ -85,5 +131,35 @@ footer{border-top:1px solid rgba(255,255,255,.08);padding:2rem 0;color:var(--mut
   </main>
   <footer class="shell"><p>© 2026 Between Us · <a href="https://betweenus.fun/privacy">Privacy</a> · <a href="https://betweenus.fun/terms">Terms</a></p>
 <p>Editorial content is separate from anonymous community stories in the app.</p></footer>
+  <script>
+(function(){
+  var cat='all', tag='';
+  var chips=document.querySelectorAll('.filter-chip');
+  var cards=document.querySelectorAll('.journal-card');
+  function apply(){
+    cards.forEach(function(card){
+      var c=(card.getAttribute('data-category')||'');
+      var tags=(card.getAttribute('data-tags')||'').split(',').filter(Boolean);
+      var okCat=cat==='all'||c===cat;
+      var okTag=!tag||tags.indexOf(tag)>=0;
+      card.hidden=!(okCat&&okTag);
+    });
+  }
+  chips.forEach(function(chip){
+    chip.addEventListener('click',function(){
+      var type=chip.getAttribute('data-filter-type');
+      var value=chip.getAttribute('data-filter-value')||'';
+      if(type==='category'){
+        cat=value;
+        chips.forEach(function(c){ if(c.getAttribute('data-filter-type')==='category'){ c.classList.toggle('active',c===chip); c.setAttribute('aria-pressed',c===chip?'true':'false'); }});
+      } else {
+        tag = (tag===value) ? '' : value;
+        chips.forEach(function(c){ if(c.getAttribute('data-filter-type')==='tag'){ var on=c.getAttribute('data-filter-value')===tag; c.classList.toggle('active',on); c.setAttribute('aria-pressed',on?'true':'false'); }});
+      }
+      apply();
+    });
+  });
+})();
+</script>
 </body>
 </html>

@@ -1,4 +1,85 @@
 {
-  "generatedAt": "2026-08-24T22:19:54.941Z",
-  "articles": []
+  "generatedAt": "2026-08-25T09:48:38.576Z",
+  "articles": [
+    {
+      "id": "a1e5f790-ac47-4e9a-8c10-d1f3c609ac97",
+      "slug": "the-gossip-we-all-pretend-we-dont-love",
+      "locale": "en",
+      "title": "The Gossip We All Pretend We Don't Love",
+      "excerpt": "We all say we hate gossip. Yet somehow, the moment someone says “I probably shouldn't tell you…”, everyone suddenly has five minutes to spare. Why are other people's secrets so difficult to ignore?",
+      "category": "Hot Takes",
+      "tags": [
+        "gossip",
+        "secrets",
+        "social-life",
+        "confessions",
+        "drama"
+      ],
+      "author": "Between Us Editorial",
+      "featured": true,
+      "publishedAt": "2026-08-25T09:48:25.831+00:00",
+      "href": "/journal/the-gossip-we-all-pretend-we-dont-love",
+      "imageUrl": ""
+    },
+    {
+      "id": "235d0f8b-f6fe-44d6-b7ff-9b18549eb71d",
+      "slug": "when-your-friends-secret-isnt-really-a-secret",
+      "locale": "en",
+      "title": "When Your Friend's Secret Isn't Really a Secret",
+      "excerpt": "They told you something “in confidence.” Then somehow three other people know by the end of the day. So who actually broke the secret?",
+      "category": "Friend Drama",
+      "tags": [
+        "friendship",
+        "secrets",
+        "betrayal",
+        "gossip",
+        "drama"
+      ],
+      "author": "Between Us Editorial",
+      "featured": false,
+      "publishedAt": "2026-08-25T09:48:25.445+00:00",
+      "href": "/journal/when-your-friends-secret-isnt-really-a-secret",
+      "imageUrl": ""
+    },
+    {
+      "id": "32e74742-4077-4496-aba1-12c0203f707c",
+      "slug": "things-people-say-behind-your-back",
+      "locale": "en",
+      "title": "Things People Say Behind Your Back",
+      "excerpt": "Sometimes you discover what people really think about you. Sometimes you wish you hadn't. What happens in the conversations you aren't there to hear?",
+      "category": "Friend Drama",
+      "tags": [
+        "gossip",
+        "friendship",
+        "workplace",
+        "drama",
+        "social-life"
+      ],
+      "author": "Between Us Editorial",
+      "featured": false,
+      "publishedAt": "2026-08-25T09:48:24.939+00:00",
+      "href": "/journal/things-people-say-behind-your-back",
+      "imageUrl": ""
+    },
+    {
+      "id": "5dd67e11-368e-482b-a35e-76b8e701be98",
+      "slug": "the-office-gossip-nobody-asked-for",
+      "locale": "en",
+      "title": "The Office Gossip Nobody Asked For",
+      "excerpt": "Every workplace has it: the rumours, suspicious meetings, mysterious calendar invitations and the person who somehow knows everything.",
+      "category": "Work Drama",
+      "tags": [
+        "office-drama",
+        "workplace",
+        "gossip",
+        "colleagues",
+        "rumours"
+      ],
+      "author": "Between Us Editorial",
+      "featured": false,
+      "publishedAt": "2026-08-25T09:40:00+00:00",
+      "href": "/journal/the-office-gossip-nobody-asked-for",
+      "imageUrl": "https://qoqbdiixztolvtcjdnle.supabase.co/storage/v1/object/public/journal-images/journal/1787650333399-17348.jpg"
+    }
+  ]
 }
