@@ -4,46 +4,119 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Download | Between Us</title>
-  <meta name="description" content="Download Between Us for Android and iOS." />
+  <meta name="description" content="Download Between Us for Android and iOS. Spill, react, and stay in the conversation." />
   <meta name="robots" content="index,follow" />
-  <link rel="canonical" href="https://betweenus.fun/download" />
-  <style>
-    body {
-      margin: 0;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: system-ui, -apple-system, sans-serif;
-      background: #05040a;
-      color: #f5f3ff;
-      padding: 1.5rem;
-    }
-    .wrap { max-width: 28rem; text-align: center; }
-    img { height: 2.5rem; width: auto; margin-bottom: 1.25rem; }
-    h1 { font-size: 1.5rem; margin: 0 0 0.75rem; }
-    p { color: #c4b5fd; line-height: 1.5; margin: 0 0 1.5rem; }
-    a.store {
-      display: inline-block;
-      margin: 0.35rem;
-      padding: 0.75rem 1.1rem;
-      border-radius: 0.75rem;
-      background: #a21caf;
-      color: #fff;
-      text-decoration: none;
-      font-weight: 600;
-    }
-    a.home { display: inline-block; margin-top: 1.5rem; color: #c4b5fd; }
-  </style>
+  <link rel="canonical" href="/download" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Download | Between Us" />
+  <meta property="og:description" content="Get Between Us on Google Play. App Store listing coming soon." />
+  <meta property="og:url" content="https://betweenus.fun/download" />
+  <meta property="og:image" content="https://betweenus.fun/assets/betweenus-logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/bu-public.css" />
+  <link rel="stylesheet" href="/bu-journal.css" />
 </head>
-<body>
-  <div class="wrap">
-    <img src="/assets/betweenus-logo.png" alt="Between Us" />
-    <h1>Take Between Us with you</h1>
-    <p>Spill, react, and stay in the conversation on Android and iOS.</p>
-    <a class="store" href="https://play.google.com/store/apps/details?id=com.betweenus.app">Get it on Google Play</a>
-    <p style="font-size:0.875rem;margin-top:1rem">App Store listing coming soon.</p>
-    <a class="home" href="/">Back to Between Us</a>
+<body class="bu-static">
+  <div class="bu-static-root">
+    <div class="bu-public-atmosphere" aria-hidden="true">
+      <div class="bu-public-atmosphere-radials"></div>
+      <div class="bu-public-atmosphere-glow bu-public-atmosphere-glow--purple"></div>
+      <div class="bu-public-atmosphere-glow bu-public-atmosphere-glow--violet"></div>
+      <div class="bu-public-atmosphere-glow bu-public-atmosphere-glow--orange"></div>
+      <div class="bu-public-atmosphere-glow bu-public-atmosphere-glow--pink"></div>
+      <div class="bu-public-atmosphere-stars"></div>
+      <div class="bu-public-atmosphere-dots"></div>
+    </div>
+
+    <header class="bu-public-header">
+      <div class="bu-public-shell bu-public-header-inner">
+        <a class="bu-public-logo-link" href="/" aria-label="Between Us home">
+          <img src="/assets/betweenus-logo.png" alt="Between Us" class="bu-public-logo-img" width="176" height="36" />
+        </a>
+        <nav class="bu-public-nav-desktop" aria-label="Primary">
+          <a href="/stories">Stories</a>
+          <a href="/journal/">Journal</a>
+          <a href="/journey">Journey</a>
+          <a href="/download" aria-current="page">Download</a>
+        </nav>
+        <div class="bu-public-header-actions">
+          <a class="bu-public-login-btn" href="/?auth=login">Log in</a>
+          <a class="bu-public-signup-btn" href="/?auth=signup">Sign up</a>
+          <button type="button" class="bu-public-nav-toggle" aria-label="Open menu" aria-expanded="false" data-bu-nav-toggle>☰</button>
+        </div>
+      </div>
+      <div class="bu-public-mobile-menu" data-bu-mobile-menu hidden>
+        <a href="/stories">Stories</a>
+        <a href="/journal/">Journal</a>
+        <a href="/journey">Journey</a>
+        <a href="/download" aria-current="page">Download</a>
+        <a href="/?auth=login">Log in</a>
+        <a href="/?auth=signup">Sign up</a>
+      </div>
+    </header>
+
+    <main class="bu-static-main bu-download-static">
+      <div class="bu-download-static-inner">
+        <p class="bu-section-eyebrow">Get the app</p>
+        <h1>Take Between Us with you</h1>
+        <p>Spill, react, and stay in the conversation on Android and iOS.</p>
+        <div class="bu-store-buttons">
+          <span class="bu-store-badge bu-store-badge--apple is-disabled" aria-label="App Store listing coming soon">
+            <span class="bu-store-badge-text">
+              <span class="bu-store-badge-label">Coming soon</span>
+              <span class="bu-store-badge-name">App Store</span>
+            </span>
+          </span>
+          <a
+            class="bu-store-badge bu-store-badge--google"
+            href="https://play.google.com/store/apps/details?id=com.betweenus.app"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            <span class="bu-store-badge-text">
+              <span class="bu-store-badge-label">Get it on</span>
+              <span class="bu-store-badge-name">Google Play</span>
+            </span>
+          </a>
+        </div>
+      </div>
+    </main>
+
+    <footer class="bu-public-footer">
+      <div class="bu-public-shell bu-public-footer-inner">
+        <div class="bu-public-footer-brand">
+          <a class="bu-public-footer-logo-link" href="/" aria-label="Between Us home">
+            <img src="/assets/betweenus-logo.png" alt="Between Us" class="bu-public-logo-img" width="160" height="32" />
+          </a>
+          <p class="bu-public-footer-tagline">Say what you can't say anywhere else. Anonymous stories from people who get it.</p>
+        </div>
+        <nav class="bu-public-footer-nav" aria-label="Footer">
+          <a href="/stories">Stories</a>
+          <a href="/journal/">Journal</a>
+          <a href="/journey">Journey</a>
+          <a href="/download">Download</a>
+          <a href="/privacy">Privacy</a>
+          <a href="/terms">Terms</a>
+          <a href="/support">Support</a>
+        </nav>
+        <p class="bu-public-footer-copy">© 2026 Between Us</p>
+      </div>
+    </footer>
   </div>
+  <script>
+  (function(){
+    var toggle=document.querySelector('[data-bu-nav-toggle]');
+    var menu=document.querySelector('[data-bu-mobile-menu]');
+    if(!toggle||!menu) return;
+    toggle.addEventListener('click',function(){
+      var open=menu.classList.toggle('is-open');
+      menu.hidden=!open;
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    });
+  })();
+  </script>
 </body>
 </html>
