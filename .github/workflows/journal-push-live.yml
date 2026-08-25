@@ -1,0 +1,68 @@
+name: Push Journal Live
+
+# Triggered from Journal Admin CMS ("Push live to website") or manually.
+on:
+  repository_dispatch:
+    types: [journal-push-live]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: journal-push-live
+  cancel-in-progress: true
+
+jobs:
+  generate-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout website (betweenus_landing)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Checkout Betweenus app (generator)
+        uses: actions/checkout@v4
+        with:
+          repository: semprog25/Betweenus
+          path: _app
+          fetch-depth: 1
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: _app/package-lock.json
+
+      - name: Install generator deps
+        working-directory: _app
+        run: npm ci --omit=optional --no-audit --no-fund
+
+      - name: Generate Journal static pages
+        working-directory: _app
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          JOURNAL_OUT_DIR: ${{ github.workspace }}/journal
+          JOURNAL_SITEMAP_PATH: ${{ github.workspace }}/sitemap.xml
+        run: |
+          if [ -z "${SUPABASE_SERVICE_ROLE_KEY:-}" ]; then
+            echo "Missing SUPABASE_SERVICE_ROLE_KEY secret on betweenus_landing"
+            exit 1
+          fi
+          mkdir -p "$JOURNAL_OUT_DIR"
+          npm run generate:journal
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name "Between Us Journal CMS"
+          git config user.email "journal-cms@betweenus.fun"
+          git add journal sitemap.xml
+          if git diff --staged --quiet; then
+            echo "No Journal changes to publish"
+            exit 0
+          fi
+          git commit -m "chore(journal): push live from CMS $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push origin HEAD

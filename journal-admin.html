@@ -136,7 +136,9 @@ details.fold:not([open])>summary::after{content:'▸'}
         <div class="btn-stack">
           <button type="button" class="blue" id="newBtn" style="width:100%">+ Create Article</button>
           <button type="button" class="secondary" id="pasteArticleBtn" style="width:100%">Paste Article</button>
+          <button type="button" id="pushLiveBtn" style="width:100%" aria-label="Push published Journal articles live to the website">Push live to website</button>
         </div>
+        <p class="muted" style="margin:.65rem 0 0;font-size:.8rem">Publish marks articles ready. <strong style="color:var(--text);font-weight:600">Push live</strong> regenerates homepage cards and /journal/ on betweenus.fun (1–2 min).</p>
         <div id="listBody"></div>
       </div>
     </div>
@@ -387,6 +389,7 @@ details.fold:not([open])>summary::after{content:'▸'}
           <button type="button" class="secondary" id="saveDraftBtn2">Save Draft</button>
           <button type="button" class="secondary" id="previewBtn2">Preview</button>
           <button type="button" id="publishBtn2">Publish</button>
+          <button type="button" class="secondary" id="pushLiveBtn2">Push live to website</button>
           <button type="button" class="secondary" id="archiveBtn">Archive</button>
           <button type="button" class="danger" id="deleteBtn">Delete</button>
         </div>
@@ -1644,13 +1647,20 @@ details.fold:not([open])>summary::after{content:'▸'}
         published_at: $('fPublishedAt').value ? new Date($('fPublishedAt').value).toISOString() : undefined,
       },
     })
-    toast(res.article.status === 'scheduled' ? 'Scheduled' : 'Published (run generateJournal for static site)')
+    toast(res.article.status === 'scheduled' ? 'Scheduled — use Push live when ready' : 'Published in CMS. Click Push live to website to update betweenus.fun')
     await refreshList()
     showList()
     listMode = 'published'
     $('tabPublished').classList.add('active')
     $('tabDrafts').classList.remove('active')
     renderList()
+  }
+
+  async function pushLiveToWebsite() {
+    if (!confirm('Push all published Journal articles live to betweenus.fun?\n\nThis regenerates the homepage Journal cards and /journal/ pages.')) return
+    toast('Starting live deploy…')
+    var res = await api('/landing-cms/journal/push-live', { method: 'POST', body: {} })
+    toast(res.message || 'Live deploy started')
   }
 
   async function archiveArticle() {
@@ -1779,6 +1789,11 @@ details.fold:not([open])>summary::after{content:'▸'}
   function bindPreview(id) { $(id).onclick = function () { previewArticle().catch(function(e){toast(e.message,true)}) } }
   $('publishBtn').onclick = function () { reviewToPublish() }
   $('publishBtn2').onclick = function () { publishArticle().catch(function(e){toast(e.message,true)}) }
+  function bindPushLive(id) {
+    $(id).onclick = function () { pushLiveToWebsite().catch(function (e) { toast(e.message || 'Push live failed', true) }) }
+  }
+  bindPushLive('pushLiveBtn')
+  bindPushLive('pushLiveBtn2')
   bindSave('saveDraftBtn'); bindSave('saveDraftBtn2')
   bindPreview('previewBtn'); bindPreview('previewBtn2')
   $('archiveBtn').onclick = function () { archiveArticle().catch(function(e){toast(e.message,true)}) }
