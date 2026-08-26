@@ -156,6 +156,24 @@
   color: var(--bu-muted);
 }
 
+.bu-journal-preferred-source {
+  margin: 2rem 0;
+  padding: 1rem 1.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--bu-radius-md);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.bu-journal-preferred-source-text {
+  margin: 0 0 0.75rem;
+  color: var(--bu-muted);
+  font-size: 0.9rem;
+}
+
+.bu-journal-preferred-source [google-add-preferred-source-btn] {
+  min-height: 40px;
+}
+
 .bu-journal-related {
   margin: 2.5rem 0;
 }
