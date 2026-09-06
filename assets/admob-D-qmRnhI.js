@@ -1,0 +1,2 @@
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/index-y75_vHzW.js","assets/index-LtmLlm4T.js","assets/index-BXyjXuSo.css"])))=>i.map(i=>d[i]);
+import{_ as r,M as a}from"./index-LtmLlm4T.js";const n=!1;function o(){return!!a.isNativePlatform()}let t=!1;async function d(){if(!(t||!o()))try{const{AdMob:i}=await r(async()=>{const{AdMob:e}=await import("./index-y75_vHzW.js");return{AdMob:e}},__vite__mapDeps([0,1,2]));await i.initialize({initializeForTesting:!n}),t=!0}catch(i){console.warn("AdMob init skipped:",i)}}export{d as initializeAdMob,o as shouldShowAds};
