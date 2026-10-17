@@ -492,6 +492,12 @@ span.bu-store-badge {
   color: var(--bu-muted);
 }
 
+.bu-public-footer-credit {
+  display: block;
+  margin-top: 0.35rem;
+  color: #808089;
+}
+
 .bu-section-eyebrow {
   margin: 0 0 0.5rem;
   font-size: 0.8rem;
